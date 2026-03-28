@@ -121,7 +121,11 @@ namespace Mod.DungPham.KoiOctiiu957
 				GameScr.info1.addInfo("Auto Khiên Pro\n" + (AutoSkill.isAutoShield ? "[STATUS: ON]" : "[STATUS: OFF]"), 0);
 				return;
 			case 5:
-				GameScr.info1.addInfo("Không Hỗ Trợ Lưu Cài Đặt Ở Mục Này!", 0);
+				AutoSkill.isSaveData = true;
+				Rms.saveRMSInt("AutoSkillIsSaveRms", 1);
+				GameScr.gI().saveKeySkillToRMS();
+				GameScr.gI().saveonScreenSkillToRMS();
+				GameScr.info1.addInfo("Đã Lưu Thứ Tự Skill Hiện Tại!", 0);
 				return;
 			case 6:
 				AutoSkill.isAutoChangeFocus = !AutoSkill.isAutoChangeFocus;
@@ -248,6 +252,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		// Token: 0x06000B1E RID: 2846 RVA: 0x000045ED File Offset: 0x000027ED
 		private static void LoadData()
 		{
+			AutoSkill.isSaveData = (Rms.loadRMSInt("AutoSkillIsSaveRms") == 1);
 		}
 
 		// Token: 0x06000B1F RID: 2847 RVA: 0x000045ED File Offset: 0x000027ED

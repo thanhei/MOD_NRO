@@ -268,6 +268,11 @@ public class GameScr : mScreen, IChatable
 	{
 		Cout.println("GET onScreenSkill!");
 		GameScr.onScreenSkill = new Skill[10];
+		sbyte[] savedSkillIDs = this.loadSkillShortcutFromRMS(StaticObj.SAVE_OSKILL);
+		if (savedSkillIDs != null)
+		{
+			oSkillID = savedSkillIDs;
+		}
 		if (oSkillID == null)
 		{
 			this.loadDefaultonScreenSkill();
@@ -286,6 +291,7 @@ public class GameScr : mScreen, IChatable
 					}
 				}
 			}
+			this.saveonScreenSkillToRMS();
 		}
 	}
 
@@ -294,6 +300,11 @@ public class GameScr : mScreen, IChatable
 	{
 		Cout.println("GET KEYSKILL!");
 		GameScr.keySkill = new Skill[10];
+		sbyte[] savedSkillIDs = this.loadSkillShortcutFromRMS(StaticObj.SAVE_KEYKILL);
+		if (savedSkillIDs != null)
+		{
+			kSkillID = savedSkillIDs;
+		}
 		if (kSkillID == null)
 		{
 			this.loadDefaultKeySkill();
@@ -312,6 +323,7 @@ public class GameScr : mScreen, IChatable
 				}
 			}
 		}
+		this.saveKeySkillToRMS();
 	}
 
 	// Token: 0x06000728 RID: 1832 RVA: 0x00061CE4 File Offset: 0x0005FEE4
@@ -437,6 +449,7 @@ public class GameScr : mScreen, IChatable
 				array[i] = GameScr.onScreenSkill[i].template.id;
 			}
 		}
+		this.saveSkillShortcutToRMS(StaticObj.SAVE_OSKILL, array);
 		Service.gI().changeOnKeyScr(array);
 	}
 
@@ -455,12 +468,46 @@ public class GameScr : mScreen, IChatable
 				array[i] = GameScr.keySkill[i].template.id;
 			}
 		}
+		this.saveSkillShortcutToRMS(StaticObj.SAVE_KEYKILL, array);
 		Service.gI().changeOnKeyScr(array);
 	}
 
 	// Token: 0x0600072F RID: 1839 RVA: 0x000045ED File Offset: 0x000027ED
 	public void saveRMSCurrentSkill(sbyte id)
 	{
+	}
+
+	private string getSkillShortcutRmsKey(string baseKey)
+	{
+		if (global::Char.myCharz() == null)
+		{
+			return baseKey;
+		}
+		return string.Concat(new object[]
+		{
+			baseKey,
+			"_",
+			global::Char.myCharz().cgender
+		});
+	}
+
+	private sbyte[] loadSkillShortcutFromRMS(string baseKey)
+	{
+		sbyte[] array = Rms.loadRMS(this.getSkillShortcutRmsKey(baseKey));
+		if (array == null || array.Length == 0)
+		{
+			return null;
+		}
+		return array;
+	}
+
+	private void saveSkillShortcutToRMS(string baseKey, sbyte[] skillIDs)
+	{
+		if (skillIDs == null || skillIDs.Length == 0)
+		{
+			return;
+		}
+		Rms.saveRMS(this.getSkillShortcutRmsKey(baseKey), skillIDs);
 	}
 
 	// Token: 0x06000730 RID: 1840 RVA: 0x000620F0 File Offset: 0x000602F0

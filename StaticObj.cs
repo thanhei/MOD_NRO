@@ -36,6 +36,9 @@ public class StaticObj
 	// Token: 0x04001315 RID: 4885
 	public const string SAVE_KEYKILL = "keyskill";
 
+	// Token: 0x04001315 RID: 4885
+	public const string SAVE_OSKILL = "onscreenskill";
+
 	// Token: 0x04001316 RID: 4886
 	public const string SAVE_ITEM = "item";
 

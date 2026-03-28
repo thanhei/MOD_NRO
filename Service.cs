@@ -954,6 +954,9 @@ public class Service
 		{
 			return;
 		}
+		global::Char.isLoadingMap = true;
+		GameCanvas.timeLoading = 15;
+		GameCanvas.TIMEOUT = mSystem.currentTimeMillis();
 		Message message = new Message(-23);
 		this.session.sendMessage(message);
 		message.cleanup();

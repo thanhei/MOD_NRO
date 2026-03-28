@@ -2061,17 +2061,9 @@ public class GameCanvas : IActionListener
 	// Token: 0x06000AAA RID: 2730 RVA: 0x000A0268 File Offset: 0x0009E468
 	public void paintChangeMap(mGraphics g)
 	{
-		string empty = string.Empty;
 		GameCanvas.resetTrans(g);
-		int num = GameCanvas.timeLoading * 255 / 15;
 		g.setColor(0);
-		g.fillArg(0, 0, GameCanvas.w, GameCanvas.h, num, 0);
-		if (num > 200)
-		{
-			g.drawImage(LoginScr.imgTitle, GameCanvas.w / 2, GameCanvas.h / 2 - 24, StaticObj.BOTTOM_HCENTER);
-			GameCanvas.paintShukiren(GameCanvas.hw, GameCanvas.h / 2 + 24, g);
-			mFont.tahoma_7b_white.drawString(g, mResources.PLEASEWAIT + ((LoginScr.timeLogin <= 0) ? empty : (" " + LoginScr.timeLogin + "s")), GameCanvas.w / 2, GameCanvas.h / 2, 2);
-		}
+		g.fillRect(0, 0, GameCanvas.w, GameCanvas.h);
 	}
 
 	// Token: 0x06000AAB RID: 2731 RVA: 0x000A0334 File Offset: 0x0009E534
@@ -2081,6 +2073,11 @@ public class GameCanvas : IActionListener
 		{
 			GameCanvas.debugPaint.removeAllElements();
 			GameCanvas.debug("PA", 1);
+			if (global::Char.isLoadingMap && GameCanvas.currentScreen == GameScr.gI())
+			{
+				this.paintChangeMap(this.g);
+				return;
+			}
 			if (GameCanvas.currentScreen != null)
 			{
 				GameCanvas.currentScreen.paint(this.g);

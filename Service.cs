@@ -862,38 +862,39 @@ public class Service
 	// Token: 0x06000530 RID: 1328 RVA: 0x00046424 File Offset: 0x00044624
 	public void sendCheckController()
 	{
-		Message message = null;
-		try
-		{
-			message = new Message(-120);
-			this.session.sendMessage(message);
-		}
-		catch (Exception ex)
-		{
-		}
-		finally
-		{
-			Service.curCheckController = mSystem.currentTimeMillis();
-			message.cleanup();
-		}
+		this.sendKeepAlive((sbyte)(-120), Session_ME.gI());
+		Service.curCheckController = mSystem.currentTimeMillis();
 	}
 
 	// Token: 0x06000531 RID: 1329 RVA: 0x00046480 File Offset: 0x00044680
 	public void sendCheckMap()
 	{
+		ISession isession = (Session_ME2.gI().isConnected() && !Session_ME2.connecting) ? ((ISession)Session_ME2.gI()) : ((ISession)Session_ME.gI());
+		this.sendKeepAlive((sbyte)(-121), isession);
+		Service.curCheckMap = mSystem.currentTimeMillis();
+	}
+
+	private void sendKeepAlive(sbyte command, ISession targetSession)
+	{
 		Message message = null;
 		try
 		{
-			message = new Message(-121);
-			this.session.sendMessage(message);
+			if (targetSession == null)
+			{
+				return;
+			}
+			message = new Message(command);
+			targetSession.sendMessage(message);
 		}
-		catch (Exception ex)
+		catch (Exception)
 		{
 		}
 		finally
 		{
-			Service.curCheckMap = mSystem.currentTimeMillis();
-			message.cleanup();
+			if (message != null)
+			{
+				message.cleanup();
+			}
 		}
 	}
 

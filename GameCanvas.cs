@@ -259,6 +259,12 @@ public class GameCanvas : IActionListener
 			}
 			if (GameCanvas.currentScreen != null)
 			{
+				if (GameCanvas.currentScreen == GameScr.gI() && !global::Char.isLoadingMap && Session_ME.gI().isConnected() && mSystem.currentTimeMillis() - GameCanvas.lastTimeKeepAlive > 15000L)
+				{
+					Service.gI().sendCheckController();
+					Service.gI().sendCheckMap();
+					GameCanvas.lastTimeKeepAlive = mSystem.currentTimeMillis();
+				}
 				if (ChatPopup.serverChatPopUp != null)
 				{
 					ChatPopup.serverChatPopUp.update();
@@ -3403,6 +3409,8 @@ public class GameCanvas : IActionListener
 
 	// Token: 0x04001453 RID: 5203
 	private static long lastTimePress = 0L;
+
+	private static long lastTimeKeepAlive = 0L;
 
 	// Token: 0x04001454 RID: 5204
 	public static int keyAsciiPress;

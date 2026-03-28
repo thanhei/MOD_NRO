@@ -6164,15 +6164,7 @@ public class GameScr : mScreen, IChatable
 					this.rank2[i] = message.reader().readInt();
 				}
 			}
-			if (!GameCanvas.panel.isShow)
-			{
-				if (!GameCanvas.panel.isChangeZone)
-				{
-					GameCanvas.panel.setTypeZone();
-					GameCanvas.panel.show();
-				}
-			}
-			else if (GameCanvas.panel.type == 3 && flag)
+			if (GameCanvas.panel.isShow && GameCanvas.panel.type == 3 && flag)
 			{
 				int num = (GameCanvas.panel.scroll != null) ? GameCanvas.panel.scroll.cmy : 0;
 				GameCanvas.panel.setTabZone();

@@ -2832,6 +2832,8 @@ public class GameCanvas : IActionListener
 					return;
 				}
 				Service.gI().openUIZone();
+				GameCanvas.panel.setTypeZone();
+				GameCanvas.panel.show();
 				return;
 			case 100006:
 				mSystem.onDisconnected();

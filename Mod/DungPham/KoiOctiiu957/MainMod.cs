@@ -637,6 +637,8 @@ namespace Mod.DungPham.KoiOctiiu957
 			else if (GameCanvas.keyAsciiPress == Hotkeys.M)
 			{
 				Service.gI().openUIZone();
+				GameCanvas.panel.setTypeZone();
+				GameCanvas.panel.show();
 				result = true;
 			}
 			else if (GameCanvas.keyAsciiPress == Hotkeys.N)

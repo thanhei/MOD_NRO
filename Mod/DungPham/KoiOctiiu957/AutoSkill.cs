@@ -263,6 +263,19 @@ namespace Mod.DungPham.KoiOctiiu957
 		// Token: 0x06000B20 RID: 2848 RVA: 0x000A41F4 File Offset: 0x000A23F4
 		private static void LoadKeySkills()
 		{
+			bool flag = false;
+			for (int i = 0; i < GameScr.keySkill.Length; i++)
+			{
+				if (GameScr.keySkill[i] != null)
+				{
+					flag = true;
+					break;
+				}
+			}
+			if (flag)
+			{
+				return;
+			}
 			for (int i = 0; i < global::Char.myCharz().nClass.skillTemplates.Length; i++)
 			{
 				SkillTemplate skillTemplate = global::Char.myCharz().nClass.skillTemplates[i];
@@ -271,8 +284,8 @@ namespace Mod.DungPham.KoiOctiiu957
 				{
 					GameScr.keySkill[i] = skill;
 				}
-				GameScr.gI().saveKeySkillToRMS();
 			}
+			GameScr.gI().saveKeySkillToRMS();
 		}
 
 		// Token: 0x06000B21 RID: 2849 RVA: 0x000A4250 File Offset: 0x000A2450

@@ -2578,6 +2578,9 @@ public class Service
 		Message message = null;
 		try
 		{
+			global::Char.isLoadingMap = true;
+			GameCanvas.timeLoading = 15;
+			GameCanvas.TIMEOUT = mSystem.currentTimeMillis();
 			message = new Message(-33);
 			this.session.sendMessage(message);
 		}

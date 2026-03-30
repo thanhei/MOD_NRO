@@ -806,23 +806,18 @@ namespace Mod.DungPham.KoiOctiiu957
 
 		// Token: 0x06000B05 RID: 2821 RVA: 0x000A3478 File Offset: 0x000A1678
 		private static void TeleportTo(int x, int y)
-		{
-			if (GameScr.canAutoPlay)
-			{
-				global::Char.myCharz().cx = x;
-				global::Char.myCharz().cy = y;
-				Service.gI().charMove();
-				return;
-			}
-			global::Char.myCharz().cx = x;
-			global::Char.myCharz().cy = y;
-			Service.gI().charMove();
-			global::Char.myCharz().cx = x;
-			global::Char.myCharz().cy = y + 1;
-			Service.gI().charMove();
-			global::Char.myCharz().cx = x;
-			global::Char.myCharz().cy = y;
-			Service.gI().charMove();
+		{  Char me = Char.myCharz();
+        me.cx = x;
+        me.cy = y;
+        Service.gI().charMove();
+
+        if (!GameScr.canAutoPlay)
+        {
+            me.cy = y + 1;
+            Service.gI().charMove();
+            me.cy = y;
+            Service.gI().charMove();
+        }
 		}
 
 		// Token: 0x06000B06 RID: 2822 RVA: 0x000091D4 File Offset: 0x000073D4
@@ -866,6 +861,13 @@ namespace Mod.DungPham.KoiOctiiu957
 				AutoMap.TeleportInNRDMap(position);
 				return;
 			}
+			GameCanvas.timeLoading = 15;
+			GameCanvas.TIMEOUT = mSystem.currentTimeMillis();
+			global::Char.isLoadingMap = true;
+			global::Char.isLockKey = true;
+			global::Char.ischangingMap = true;
+			GameCanvas.clearKeyHold();
+			GameCanvas.clearKeyPressed();
 			AutoMap.LoadWaypointsInMap();
 			switch (position)
 			{

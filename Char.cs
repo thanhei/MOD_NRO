@@ -3500,6 +3500,14 @@ public class Char : IMapObject
 					{
 						string nameImg = this.strMount + (int)(this.idMount - global::Char.ID_NEW_MOUNT) + "_0";
 						FrameImage fraImage = mSystem.getFraImage(nameImg);
+						if (fraImage == null && this.me)
+						{
+							int num = -1;
+							if (Mod.DungPham.KoiOctiiu957.ModSkin.TryGetBoardFallbackMountImageIndex(out num))
+							{
+								fraImage = mSystem.getFraImage(this.strMount + num.ToString() + "_0");
+							}
+						}
 						if (fraImage != null)
 						{
 							fraImage.drawFrame(this.frameNewMount / 2 % fraImage.nFrame, this.xMount, this.yMount + this.fy, this.transMount, 3, g);
@@ -3602,6 +3610,14 @@ public class Char : IMapObject
 					{
 						string nameImg = this.strMount + (int)(this.idMount - global::Char.ID_NEW_MOUNT) + "_1";
 						FrameImage fraImage = mSystem.getFraImage(nameImg);
+						if (fraImage == null && this.me)
+						{
+							int num = -1;
+							if (Mod.DungPham.KoiOctiiu957.ModSkin.TryGetBoardFallbackMountImageIndex(out num))
+							{
+								fraImage = mSystem.getFraImage(this.strMount + num.ToString() + "_1");
+							}
+						}
 						if (fraImage != null)
 						{
 							fraImage.drawFrame(this.frameNewMount / 2 % fraImage.nFrame, this.xMount, this.yMount + this.fy, this.transMount, 3, g);
@@ -3775,27 +3791,32 @@ public class Char : IMapObject
 				break;
 			}
 		}
+		this.ApplyMountFlags(num);
+		return result;
+	}
+
+	private void ApplyMountFlags(short mountId)
+	{
 		this.isMountVip = false;
 		this.isSpeacialMount = false;
 		this.isEventMount = false;
 		this.idMount = -1;
-		if (num == 349 || num == 350 || num == 351)
+		if (mountId == 349 || mountId == 350 || mountId == 351)
 		{
 			this.isMountVip = true;
 		}
-		else if (num == 396)
+		else if (mountId == 396)
 		{
 			this.isEventMount = true;
 		}
-		else if (num == 532)
+		else if (mountId == 532)
 		{
 			this.isSpeacialMount = true;
 		}
-		else if (num >= global::Char.ID_NEW_MOUNT)
+		else if (mountId >= global::Char.ID_NEW_MOUNT)
 		{
-			this.idMount = num;
+			this.idMount = mountId;
 		}
-		return result;
 	}
 
 	// Token: 0x06000659 RID: 1625 RVA: 0x00054704 File Offset: 0x00052904

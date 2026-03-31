@@ -6599,6 +6599,7 @@ public class Controller : IMessageHandler
 			ImgByName.SetImage(name, img, nFrame);
 			if (array != null)
 			{
+				ImgByName.saveRMS(name, nFrame, array);
 			}
 		}
 		catch (Exception ex)

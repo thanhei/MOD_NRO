@@ -42,14 +42,6 @@ namespace Mod.DungPham.KoiOctiiu957
 			{
 				@char.bag = ModSkin.modBackPart;
 			}
-			if (ModSkin.modPetSmallId != -1)
-			{
-				if (@char.petFollow == null)
-				{
-					@char.petFollow = new PetFollow();
-				}
-				@char.petFollow.smallID = (short)ModSkin.modPetSmallId;
-			}
 		}
 
 		public void onChatFromMe(string text, string to)
@@ -80,15 +72,9 @@ namespace Mod.DungPham.KoiOctiiu957
 					ModSkin.ResetChatTextField();
 					return;
 				}
-				if (ChatTextField.gI().strChat.Equals(ModSkin.inputSkinPet[0]))
-				{
-					ModSkin.HandleInput(ChatTextField.gI().tfChat.getText(), 4);
-					ModSkin.ResetChatTextField();
-					return;
-				}
 				if (ChatTextField.gI().strChat.Equals(ModSkin.inputSkinBoard[0]))
 				{
-					ModSkin.HandleInput(ChatTextField.gI().tfChat.getText(), 5);
+					ModSkin.HandleInput(ChatTextField.gI().tfChat.getText(), 4);
 					ModSkin.ResetChatTextField();
 					return;
 				}
@@ -106,8 +92,30 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static bool TryGetBoardMountId(out short mountId)
 		{
 			ModSkin.EnsureSkinModsResolved();
-			mountId = ModSkin.modBoardMountId;
-			return ModSkin.modBoardMountId != -1;
+			if (ModSkin.modBoardItemId > 0)
+			{
+				ItemTemplate itemTemplate = ItemTemplates.get((short)ModSkin.modBoardItemId);
+				if (itemTemplate != null && ModSkin.TryResolveBoardMountId(itemTemplate, out mountId))
+				{
+					ModSkin.modBoardMountId = mountId;
+					ModSkin.EnsureBoardMountAssetsLoaded(mountId);
+					return true;
+				}
+			}
+			mountId = -1;
+			ModSkin.modBoardMountId = -1;
+			return false;
+		}
+
+		public static bool TryGetBoardFallbackMountImageIndex(out int imageIndex)
+		{
+			imageIndex = -1;
+			if (ModSkin.modBoardItemId <= 0 || ModSkin.modBoardFallbackImageIndex < 0)
+			{
+				return false;
+			}
+			imageIndex = ModSkin.modBoardFallbackImageIndex;
+			return true;
 		}
 
 		public static string GetMenuSummary()
@@ -129,15 +137,11 @@ namespace Mod.DungPham.KoiOctiiu957
 			{
 				num++;
 			}
-			if (ModSkin.modPetItemId > 0)
-			{
-				num++;
-			}
 			if (ModSkin.modBoardItemId > 0)
 			{
 				num++;
 			}
-			return (num != 0) ? ("ON " + num.ToString() + "/6") : "OFF";
+			return (num != 0) ? ("ON " + num.ToString() + "/5") : "OFF";
 		}
 
 		public void perform(int idAction, object p)
@@ -160,9 +164,6 @@ namespace Mod.DungPham.KoiOctiiu957
 				ModSkin.OpenChatInput(ModSkin.inputSkinBack);
 				return;
 			case 42:
-				ModSkin.OpenChatInput(ModSkin.inputSkinPet);
-				return;
-			case 43:
 				ModSkin.OpenChatInput(ModSkin.inputSkinBoard);
 				return;
 			default:
@@ -177,8 +178,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Thân\n" + ModSkin.GetSkinLabel(ModSkin.modBodyItemId), ModSkin.getInstance(), 39, null));
 			myVector.addElement(new Command("Chân\n" + ModSkin.GetSkinLabel(ModSkin.modLegItemId), ModSkin.getInstance(), 40, null));
 			myVector.addElement(new Command("Đeo Lưng\n" + ModSkin.GetSkinLabel(ModSkin.modBackItemId), ModSkin.getInstance(), 41, null));
-			myVector.addElement(new Command("Pet\n" + ModSkin.GetSkinLabel(ModSkin.modPetItemId), ModSkin.getInstance(), 42, null));
-			myVector.addElement(new Command("Ván Bay\n" + ModSkin.GetSkinLabel(ModSkin.modBoardItemId), ModSkin.getInstance(), 43, null));
+			myVector.addElement(new Command("Ván Bay\n" + ModSkin.GetSkinLabel(ModSkin.modBoardItemId), ModSkin.getInstance(), 42, null));
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -286,16 +286,16 @@ namespace Mod.DungPham.KoiOctiiu957
 				GameScr.info1.addInfo("Đã mod đeo lưng ID: " + itemId.ToString(), 0);
 				return;
 			case 4:
-				ModSkin.CaptureOriginalPet();
-				ModSkin.modPetItemId = itemId;
-				ModSkin.modPetSmallId = (int)((itemTemplate.part >= 0) ? itemTemplate.part : itemTemplate.iconID);
-				ModSkin.SaveSkinMod("pet", itemId);
-				GameScr.info1.addInfo("Đã mod pet ID: " + itemId.ToString(), 0);
-				return;
-			case 5:
+				if (!ModSkin.TryResolveBoardMountId(itemTemplate, out ModSkin.modBoardMountId))
+				{
+					GameScr.info1.addInfo("Item này không phải mount/ván bay hợp lệ.", 0);
+					return;
+				}
 				ModSkin.modBoardItemId = itemId;
-				ModSkin.modBoardMountId = (short)((itemTemplate.part >= 0) ? ((int)global::Char.ID_NEW_MOUNT + (int)itemTemplate.part) : itemId);
+				ModSkin.modBoardFallbackImageIndex = itemId;
+				ModSkin.EnsureBoardMountAssetsLoaded(ModSkin.modBoardMountId);
 				ModSkin.SaveSkinMod("board", itemId);
+				ModSkin.RefreshMountState();
 				GameScr.info1.addInfo("Đã mod ván bay ID: " + itemId.ToString(), 0);
 				return;
 			default:
@@ -352,16 +352,11 @@ namespace Mod.DungPham.KoiOctiiu957
 				GameScr.info1.addInfo("Đã tắt mod đeo lưng.", 0);
 				return;
 			case 4:
-				ModSkin.modPetItemId = 0;
-				ModSkin.modPetSmallId = -1;
-				ModSkin.RestoreOriginalPet();
-				ModSkin.SaveSkinMod("pet", 0);
-				GameScr.info1.addInfo("Đã tắt mod pet.", 0);
-				return;
-			case 5:
 				ModSkin.modBoardItemId = 0;
 				ModSkin.modBoardMountId = -1;
+				ModSkin.modBoardFallbackImageIndex = -1;
 				ModSkin.SaveSkinMod("board", 0);
+				ModSkin.RefreshMountState();
 				GameScr.info1.addInfo("Đã tắt mod ván bay.", 0);
 				return;
 			default:
@@ -406,40 +401,6 @@ namespace Mod.DungPham.KoiOctiiu957
 			}
 		}
 
-		private static void CaptureOriginalPet()
-		{
-			if (ModSkin.hasCapturedOriginalPet || global::Char.myCharz() == null)
-			{
-				return;
-			}
-			ModSkin.hasOriginalPet = (global::Char.myCharz().petFollow != null);
-			ModSkin.originalPetSmallId = ((!ModSkin.hasOriginalPet) ? -1 : ((int)global::Char.myCharz().petFollow.smallID));
-			ModSkin.hasCapturedOriginalPet = true;
-		}
-
-		private static void RestoreOriginalPet()
-		{
-			if (!ModSkin.hasCapturedOriginalPet || global::Char.myCharz() == null)
-			{
-				return;
-			}
-			if (!ModSkin.hasOriginalPet)
-			{
-				global::Char.myCharz().petFollow = null;
-			}
-			else
-			{
-				if (global::Char.myCharz().petFollow == null)
-				{
-					global::Char.myCharz().petFollow = new PetFollow();
-				}
-				global::Char.myCharz().petFollow.smallID = (short)ModSkin.originalPetSmallId;
-			}
-			ModSkin.hasCapturedOriginalPet = false;
-			ModSkin.hasOriginalPet = false;
-			ModSkin.originalPetSmallId = -1;
-		}
-
 		private static void SaveSkinMod(string key, int itemId)
 		{
 			Rms.saveRMSString("koi_skin_" + key, itemId.ToString());
@@ -458,12 +419,12 @@ namespace Mod.DungPham.KoiOctiiu957
 
 		private static void LoadSkinMods()
 		{
-			ModSkin.LoadSkinSlot(0, ModSkin.LoadSkinMod("head"));
-			ModSkin.LoadSkinSlot(1, ModSkin.LoadSkinMod("body"));
-			ModSkin.LoadSkinSlot(2, ModSkin.LoadSkinMod("leg"));
-			ModSkin.LoadSkinSlot(3, ModSkin.LoadSkinMod("back"));
-			ModSkin.LoadSkinSlot(4, ModSkin.LoadSkinMod("pet"));
-			ModSkin.LoadSkinSlot(5, ModSkin.LoadSkinMod("board"));
+			ModSkin.modHeadItemId = ModSkin.LoadSkinMod("head");
+			ModSkin.modBodyItemId = ModSkin.LoadSkinMod("body");
+			ModSkin.modLegItemId = ModSkin.LoadSkinMod("leg");
+			ModSkin.modBackItemId = ModSkin.LoadSkinMod("back");
+			ModSkin.modBoardItemId = ModSkin.LoadSkinMod("board");
+			ModSkin.EnsureSkinModsResolved();
 		}
 
 		private static void EnsureSkinModsResolved()
@@ -484,13 +445,9 @@ namespace Mod.DungPham.KoiOctiiu957
 			{
 				ModSkin.LoadSkinSlot(3, ModSkin.modBackItemId);
 			}
-			if (ModSkin.modPetItemId > 0 && ModSkin.modPetSmallId == -1)
-			{
-				ModSkin.LoadSkinSlot(4, ModSkin.modPetItemId);
-			}
 			if (ModSkin.modBoardItemId > 0 && ModSkin.modBoardMountId == -1)
 			{
-				ModSkin.LoadSkinSlot(5, ModSkin.modBoardItemId);
+				ModSkin.LoadSkinSlot(4, ModSkin.modBoardItemId);
 			}
 		}
 
@@ -524,15 +481,69 @@ namespace Mod.DungPham.KoiOctiiu957
 				ModSkin.modBackPart = (int)itemTemplate.part;
 				return;
 			case 4:
-				ModSkin.modPetItemId = itemId;
-				ModSkin.modPetSmallId = (int)((itemTemplate.part >= 0) ? itemTemplate.part : itemTemplate.iconID);
-				return;
-			case 5:
+				if (!ModSkin.TryResolveBoardMountId(itemTemplate, out ModSkin.modBoardMountId))
+				{
+					ModSkin.modBoardItemId = 0;
+					ModSkin.modBoardMountId = -1;
+					ModSkin.modBoardFallbackImageIndex = -1;
+					return;
+				}
 				ModSkin.modBoardItemId = itemId;
-				ModSkin.modBoardMountId = (short)((itemTemplate.part >= 0) ? ((int)global::Char.ID_NEW_MOUNT + (int)itemTemplate.part) : itemId);
+				ModSkin.modBoardFallbackImageIndex = itemId;
+				ModSkin.EnsureBoardMountAssetsLoaded(ModSkin.modBoardMountId);
 				return;
 			default:
 				return;
+			}
+		}
+
+		private static bool TryResolveBoardMountId(ItemTemplate itemTemplate, out short mountId)
+		{
+			mountId = -1;
+			if (itemTemplate == null)
+			{
+				return false;
+			}
+			if (itemTemplate.id == 346 || itemTemplate.id == 347 || itemTemplate.id == 348 || itemTemplate.id == 349 || itemTemplate.id == 350 || itemTemplate.id == 351 || itemTemplate.id == 396 || itemTemplate.id == 532)
+			{
+				mountId = itemTemplate.id;
+				return true;
+			}
+			if ((int)itemTemplate.type != 23 && (int)itemTemplate.type != 24 && itemTemplate.part < 0)
+			{
+				return false;
+			}
+			mountId = (short)((itemTemplate.part >= 0) ? ((int)global::Char.ID_NEW_MOUNT + (int)itemTemplate.part) : itemTemplate.id);
+			return true;
+		}
+
+		private static void EnsureBoardMountAssetsLoaded(short mountId)
+		{
+			if (mountId < global::Char.ID_NEW_MOUNT)
+			{
+				return;
+			}
+			int num = (int)(mountId - global::Char.ID_NEW_MOUNT);
+			ImgByName.getImagePath("mount_" + num.ToString() + "_0", ImgByName.hashImagePath);
+			ImgByName.getImagePath("mount_" + num.ToString() + "_1", ImgByName.hashImagePath);
+			if (ModSkin.modBoardFallbackImageIndex >= 0 && ModSkin.modBoardFallbackImageIndex != num)
+			{
+				ImgByName.getImagePath("mount_" + ModSkin.modBoardFallbackImageIndex.ToString() + "_0", ImgByName.hashImagePath);
+				ImgByName.getImagePath("mount_" + ModSkin.modBoardFallbackImageIndex.ToString() + "_1", ImgByName.hashImagePath);
+			}
+		}
+
+		private static void RefreshMountState()
+		{
+			global::Char @char = global::Char.myCharz();
+			if (@char == null)
+			{
+				return;
+			}
+			@char.isHaveMount = @char.checkHaveMount();
+			if (TileMap.isVoDaiMap())
+			{
+				@char.isHaveMount = false;
 			}
 		}
 
@@ -562,12 +573,6 @@ namespace Mod.DungPham.KoiOctiiu957
 			"itemID"
 		};
 
-		private static readonly string[] inputSkinPet = new string[]
-		{
-			"Nhập item ID pet (0 để tắt)",
-			"itemID"
-		};
-
 		private static readonly string[] inputSkinBoard = new string[]
 		{
 			"Nhập item ID ván bay (0 để tắt)",
@@ -582,8 +587,6 @@ namespace Mod.DungPham.KoiOctiiu957
 
 		private static int modBackItemId;
 
-		private static int modPetItemId;
-
 		private static int modBoardItemId;
 
 		private static int modHeadPart = -1;
@@ -594,9 +597,9 @@ namespace Mod.DungPham.KoiOctiiu957
 
 		private static int modBackPart = -1;
 
-		private static int modPetSmallId = -1;
-
 		private static short modBoardMountId = -1;
+
+		private static int modBoardFallbackImageIndex = -1;
 
 		private static int originalHeadPart = -1;
 
@@ -605,12 +608,6 @@ namespace Mod.DungPham.KoiOctiiu957
 		private static int originalLegPart = -1;
 
 		private static int originalBackPart = -1;
-
-		private static bool hasCapturedOriginalPet;
-
-		private static bool hasOriginalPet;
-
-		private static int originalPetSmallId = -1;
 
 	}
 }

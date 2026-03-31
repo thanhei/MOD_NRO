@@ -3754,8 +3754,12 @@ public class Char : IMapObject
 	{
 		bool result = false;
 		short num = -1;
+		if (this.me && Mod.DungPham.KoiOctiiu957.ModSkin.TryGetBoardMountId(out num))
+		{
+			result = true;
+		}
 		Item[] array = this.arrItemBody;
-		for (int i = 0; i < array.Length; i++)
+		for (int i = 0; i < array.Length && !result; i++)
 		{
 			if (array[i] != null && ((int)array[i].template.type == 24 || (int)array[i].template.type == 23))
 			{

@@ -68,6 +68,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				AutoPick.Update();
 				AutoMap.Update();
 				AutoPoint.Update();
+				ModSkin.Update();
 				global::Char.myCharz().cspeed = MainMod.runSpeed;
 			}
 		}
@@ -723,6 +724,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Ẩn\nServer Chat\n" + (MainMod.hideServerChat ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 34, null));
 			myVector.addElement(new Command("Auto Nhảy\n" + (MainMod.isAutoJump ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 35, null));
 			myVector.addElement(new Command("Auto Di Chuyển\n" + (MainMod.isupkok ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 36, null));
+			myVector.addElement(new Command("Mod Skin\n" + ModSkin.GetMenuSummary(), ModSkin.getInstance(), 37, null));
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -753,6 +755,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			ChatTextField.gI().tfChat.name = "chat";
 			ChatTextField.gI().isShow = false;
 		}
+
 
 		// Token: 0x06000BA5 RID: 2981 RVA: 0x000A9C54 File Offset: 0x000A7E54
 		public static void UseItem(int templateId)
@@ -856,6 +859,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			MainMod.list_1 = new List<int>();
 			MainMod.string_2 = "2.3.1 - 17/05/2023 00:00:00";
 			MainMod.runSpeed = 8;
+			ModSkin.Load();
 		}
 
 		// Token: 0x06000BA9 RID: 2985 RVA: 0x000A9E40 File Offset: 0x000A8040

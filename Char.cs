@@ -3510,7 +3510,8 @@ public class Char : IMapObject
 						}
 						if (fraImage != null)
 						{
-							fraImage.drawFrame(this.frameNewMount / 2 % fraImage.nFrame, this.xMount, this.yMount + this.fy, this.transMount, 3, g);
+							int num2 = Mod.DungPham.KoiOctiiu957.ModSkin.ShouldAnimateBoard() ? (this.frameNewMount / 2 % fraImage.nFrame) : 0;
+							fraImage.drawFrame(num2, this.xMount, this.yMount + this.fy, this.transMount, 3, g);
 						}
 						return;
 					}
@@ -3520,29 +3521,34 @@ public class Char : IMapObject
 					}
 					if (this.isEventMount)
 					{
-						g.drawRegion(global::Char.imgEventMountWing, 0, (int)this.FrameMount[this.frameMount] * 60, 60, 60, this.transMount, this.xMount + this.dxMount, this.yMount + this.dyMount + this.fy, 0);
+						int num3 = Mod.DungPham.KoiOctiiu957.ModSkin.ShouldAnimateBoard() ? ((int)this.FrameMount[this.frameMount] * 60) : ((int)this.FrameMount[0] * 60);
+						g.drawRegion(global::Char.imgEventMountWing, 0, num3, 60, 60, this.transMount, this.xMount + this.dxMount, this.yMount + this.dyMount + this.fy, 0);
 						return;
 					}
 					if (this.genderMount == 2)
 					{
 						if (!this.isMountVip)
 						{
-							g.drawRegion(global::Char.imgMount_XD, 0, (int)this.FrameMount[this.frameMount] * 40, 50, 40, this.transMount, this.xMount + this.dxMount, this.yMount + this.dyMount + this.fy, 0);
+							int num4 = Mod.DungPham.KoiOctiiu957.ModSkin.ShouldAnimateBoard() ? ((int)this.FrameMount[this.frameMount] * 40) : ((int)this.FrameMount[0] * 40);
+							g.drawRegion(global::Char.imgMount_XD, 0, num4, 50, 40, this.transMount, this.xMount + this.dxMount, this.yMount + this.dyMount + this.fy, 0);
 						}
 						else
 						{
-							g.drawRegion(global::Char.imgMount_XD_VIP, 0, (int)this.FrameMount[this.frameMount] * 40, 50, 40, this.transMount, this.xMount + this.dxMount, this.yMount + this.dyMount + this.fy, 0);
+							int num5 = Mod.DungPham.KoiOctiiu957.ModSkin.ShouldAnimateBoard() ? ((int)this.FrameMount[this.frameMount] * 40) : ((int)this.FrameMount[0] * 40);
+							g.drawRegion(global::Char.imgMount_XD_VIP, 0, num5, 50, 40, this.transMount, this.xMount + this.dxMount, this.yMount + this.dyMount + this.fy, 0);
 						}
 					}
 					else if (this.genderMount == 1)
 					{
 						if (!this.isMountVip)
 						{
-							g.drawRegion(global::Char.imgMount_NM, 0, (int)this.FrameMount[this.frameMount] * 40, 50, 40, this.transMount, this.xMount + this.dxMount, this.yMount + this.dyMount + this.fy, 0);
+							int num6 = Mod.DungPham.KoiOctiiu957.ModSkin.ShouldAnimateBoard() ? ((int)this.FrameMount[this.frameMount] * 40) : ((int)this.FrameMount[0] * 40);
+							g.drawRegion(global::Char.imgMount_NM, 0, num6, 50, 40, this.transMount, this.xMount + this.dxMount, this.yMount + this.dyMount + this.fy, 0);
 						}
 						else
 						{
-							g.drawRegion(global::Char.imgMount_NM_VIP, 0, (int)this.FrameMount[this.frameMount] * 40, 50, 40, this.transMount, this.xMount + this.dxMount, this.yMount + this.dyMount + this.fy, 0);
+							int num7 = Mod.DungPham.KoiOctiiu957.ModSkin.ShouldAnimateBoard() ? ((int)this.FrameMount[this.frameMount] * 40) : ((int)this.FrameMount[0] * 40);
+							g.drawRegion(global::Char.imgMount_NM_VIP, 0, num7, 50, 40, this.transMount, this.xMount + this.dxMount, this.yMount + this.dyMount + this.fy, 0);
 						}
 					}
 				}
@@ -3620,13 +3626,21 @@ public class Char : IMapObject
 						}
 						if (fraImage != null)
 						{
-							fraImage.drawFrame(this.frameNewMount / 2 % fraImage.nFrame, this.xMount, this.yMount + this.fy, this.transMount, 3, g);
+							int num2 = Mod.DungPham.KoiOctiiu957.ModSkin.ShouldAnimateBoard() ? (this.frameNewMount / 2 % fraImage.nFrame) : 0;
+							fraImage.drawFrame(num2, this.xMount, this.yMount + this.fy, this.transMount, 3, g);
 						}
 						return;
 					}
 					if (this.isSpeacialMount)
 					{
-						this.checkFrameTick(this.move);
+						if (Mod.DungPham.KoiOctiiu957.ModSkin.ShouldAnimateBoard())
+						{
+							this.checkFrameTick(this.move);
+						}
+						else
+						{
+							this.fM = this.move[0];
+						}
 						if (Mob.arrMobTemplate[50] != null && Mob.arrMobTemplate[50].data != null)
 						{
 							Mob.arrMobTemplate[50].data.paintFrame(g, this.fM, this.xMount + ((this.cdir != 1) ? 8 : -8), this.yMount + 35, (this.cdir != 1) ? 1 : 0, 0);
@@ -3639,29 +3653,34 @@ public class Char : IMapObject
 					}
 					if (this.isEventMount)
 					{
-						g.drawRegion(global::Char.imgEventMount, 0, (int)this.FrameMount[this.frameMount] * 60, 60, 60, this.transMount, this.xMount + this.dxMount, this.yMount + this.dyMount + this.fy, 0);
+						int num3 = Mod.DungPham.KoiOctiiu957.ModSkin.ShouldAnimateBoard() ? ((int)this.FrameMount[this.frameMount] * 60) : ((int)this.FrameMount[0] * 60);
+						g.drawRegion(global::Char.imgEventMount, 0, num3, 60, 60, this.transMount, this.xMount + this.dxMount, this.yMount + this.dyMount + this.fy, 0);
 						return;
 					}
 					if (this.genderMount == 0)
 					{
 						if (!this.isMountVip)
 						{
-							g.drawRegion(global::Char.imgMount_TD, 0, (int)this.FrameMount[this.frameMount] * 40, 50, 40, this.transMount, this.xMount + this.dxMount, this.yMount + this.dyMount + this.fy, 0);
+							int num4 = Mod.DungPham.KoiOctiiu957.ModSkin.ShouldAnimateBoard() ? ((int)this.FrameMount[this.frameMount] * 40) : ((int)this.FrameMount[0] * 40);
+							g.drawRegion(global::Char.imgMount_TD, 0, num4, 50, 40, this.transMount, this.xMount + this.dxMount, this.yMount + this.dyMount + this.fy, 0);
 						}
 						else
 						{
-							g.drawRegion(global::Char.imgMount_TD_VIP, 0, (int)this.FrameMount[this.frameMount] * 40, 50, 40, this.transMount, this.xMount + this.dxMount, this.yMount + this.dyMount + this.fy, 0);
+							int num5 = Mod.DungPham.KoiOctiiu957.ModSkin.ShouldAnimateBoard() ? ((int)this.FrameMount[this.frameMount] * 40) : ((int)this.FrameMount[0] * 40);
+							g.drawRegion(global::Char.imgMount_TD_VIP, 0, num5, 50, 40, this.transMount, this.xMount + this.dxMount, this.yMount + this.dyMount + this.fy, 0);
 						}
 					}
 					else if (this.genderMount == 1)
 					{
 						if (!this.isMountVip)
 						{
-							g.drawRegion(global::Char.imgMount_NM_1, 0, (int)this.FrameMount[this.frameMount] * 40, 50, 40, this.transMount, this.xMount + this.dxMount, this.yMount + this.dyMount + this.fy, 0);
+							int num6 = Mod.DungPham.KoiOctiiu957.ModSkin.ShouldAnimateBoard() ? ((int)this.FrameMount[this.frameMount] * 40) : ((int)this.FrameMount[0] * 40);
+							g.drawRegion(global::Char.imgMount_NM_1, 0, num6, 50, 40, this.transMount, this.xMount + this.dxMount, this.yMount + this.dyMount + this.fy, 0);
 						}
 						else
 						{
-							g.drawRegion(global::Char.imgMount_NM_1_VIP, 0, (int)this.FrameMount[this.frameMount] * 40, 50, 40, this.transMount, this.xMount + this.dxMount, this.yMount + this.dyMount + this.fy, 0);
+							int num7 = Mod.DungPham.KoiOctiiu957.ModSkin.ShouldAnimateBoard() ? ((int)this.FrameMount[this.frameMount] * 40) : ((int)this.FrameMount[0] * 40);
+							g.drawRegion(global::Char.imgMount_NM_1_VIP, 0, num7, 50, 40, this.transMount, this.xMount + this.dxMount, this.yMount + this.dyMount + this.fy, 0);
 						}
 					}
 				}
@@ -5215,6 +5234,10 @@ public class Char : IMapObject
 			this.fBag = 0;
 		}
 		sbyte b = (sbyte)(this.fBag / 4 % id.Length);
+		if (this.me && !Mod.DungPham.KoiOctiiu957.ModSkin.ShouldAnimateBack())
+		{
+			b = 0;
+		}
 		if (!isPaintChar)
 		{
 			if (id.Length == 2)

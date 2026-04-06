@@ -16,6 +16,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static void Load()
 		{
 			ModSkin.LoadSkinMods();
+			ModSkin.LoadAnimationSetting();
 		}
 
 		public static void Update()
@@ -144,6 +145,16 @@ namespace Mod.DungPham.KoiOctiiu957
 			return (num != 0) ? ("ON " + num.ToString() + "/5") : "OFF";
 		}
 
+		public static bool ShouldAnimateBoard()
+		{
+			return ModSkin.isItemAnimationEnabled || ModSkin.modBoardItemId <= 0;
+		}
+
+		public static bool ShouldAnimateBack()
+		{
+			return ModSkin.isItemAnimationEnabled || ModSkin.modBackItemId <= 0;
+		}
+
 		public void perform(int idAction, object p)
 		{
 			switch (idAction)
@@ -166,6 +177,9 @@ namespace Mod.DungPham.KoiOctiiu957
 			case 42:
 				ModSkin.OpenChatInput(ModSkin.inputSkinBoard);
 				return;
+			case 43:
+				ModSkin.ToggleItemAnimation();
+				return;
 			default:
 				return;
 			}
@@ -179,6 +193,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Chân\n" + ModSkin.GetSkinLabel(ModSkin.modLegItemId), ModSkin.getInstance(), 40, null));
 			myVector.addElement(new Command("Đeo Lưng\n" + ModSkin.GetSkinLabel(ModSkin.modBackItemId), ModSkin.getInstance(), 41, null));
 			myVector.addElement(new Command("Ván Bay\n" + ModSkin.GetSkinLabel(ModSkin.modBoardItemId), ModSkin.getInstance(), 42, null));
+			myVector.addElement(new Command("Animation\n" + ModSkin.GetAnimationLabel(), ModSkin.getInstance(), 43, null));
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -200,6 +215,11 @@ namespace Mod.DungPham.KoiOctiiu957
 				return "OFF";
 			}
 			return "ID " + itemId.ToString();
+		}
+
+		private static string GetAnimationLabel()
+		{
+			return ModSkin.isItemAnimationEnabled ? "ON" : "OFF";
 		}
 
 		private static void HandleInput(string text, int slot)
@@ -406,6 +426,11 @@ namespace Mod.DungPham.KoiOctiiu957
 			Rms.saveRMSString("koi_skin_" + key, itemId.ToString());
 		}
 
+		private static void SaveAnimationSetting()
+		{
+			Rms.saveRMSString("koi_skin_item_animation", ModSkin.isItemAnimationEnabled ? "1" : "0");
+		}
+
 		private static int LoadSkinMod(string key)
 		{
 			string text = Rms.loadRMSString("koi_skin_" + key);
@@ -415,6 +440,11 @@ namespace Mod.DungPham.KoiOctiiu957
 				return 0;
 			}
 			return result;
+		}
+
+		private static void LoadAnimationSetting()
+		{
+			ModSkin.isItemAnimationEnabled = Rms.loadRMSString("koi_skin_item_animation") != "0";
 		}
 
 		private static void LoadSkinMods()
@@ -547,6 +577,13 @@ namespace Mod.DungPham.KoiOctiiu957
 			}
 		}
 
+		private static void ToggleItemAnimation()
+		{
+			ModSkin.isItemAnimationEnabled = !ModSkin.isItemAnimationEnabled;
+			ModSkin.SaveAnimationSetting();
+			GameScr.info1.addInfo("Animation vật phẩm: " + (ModSkin.isItemAnimationEnabled ? "BẬT" : "TẮT"), 0);
+		}
+
 		private static ModSkin instance;
 
 		private static readonly string[] inputSkinHead = new string[]
@@ -608,6 +645,8 @@ namespace Mod.DungPham.KoiOctiiu957
 		private static int originalLegPart = -1;
 
 		private static int originalBackPart = -1;
+
+		private static bool isItemAnimationEnabled = true;
 
 	}
 }

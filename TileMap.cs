@@ -265,7 +265,15 @@ public class TileMap
 				}
 				return;
 			}
-			Image image = GameCanvas.loadImageRMS("/t/" + TileMap.tileID + "$1.png");
+			Image image = GameCanvas.loadImageRMS("/t/" + TileMap.tileID + ".png");
+			if (image != null)
+			{
+				Rms.DeleteStorage("$");
+				TileMap.imgTile = new Image[1];
+				TileMap.imgTile[0] = image;
+				return;
+			}
+			image = GameCanvas.loadImageRMS("/t/" + TileMap.tileID + "$1.png");
 			if (image != null)
 			{
 				Rms.DeleteStorage(string.Concat(new object[]
@@ -286,16 +294,6 @@ public class TileMap
 						l + 1,
 						".png"
 					}));
-				}
-			}
-			else
-			{
-				image = GameCanvas.loadImageRMS("/t/" + TileMap.tileID + ".png");
-				if (image != null)
-				{
-					Rms.DeleteStorage("$");
-					TileMap.imgTile = new Image[1];
-					TileMap.imgTile[0] = image;
 				}
 			}
 		}

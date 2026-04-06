@@ -2306,103 +2306,68 @@ public class Panel : IActionListener, IChatable
 		if (GameCanvas.keyPressed[(!Main.isPC) ? 2 : 21])
 		{
 			flag = true;
-			if (this.isTabInven() && this.isnewInventory)
+			this.selected--;
+			if (this.type == 24)
 			{
-				if (this.selected > 0 && this.sellectInventory == 0)
+				this.selected -= 2;
+				if (this.selected < 0)
 				{
-					this.selected--;
+					this.selected = 0;
 				}
 			}
-			else
+			else if (this.selected < 0)
 			{
-				this.selected--;
-				if (this.type == 24)
+				if (this.Equals(GameCanvas.panel) && this.typeShop == 2 && this.currentTabIndex <= 3 && this.maxPageShop[this.currentTabIndex] > 1)
 				{
-					this.selected -= 2;
-					if (this.selected < 0)
+					InfoDlg.showWait();
+					if (this.currPageShop[this.currentTabIndex] <= 0)
 					{
-						this.selected = 0;
-					}
-				}
-				else if (this.selected < 0)
-				{
-					if (this.Equals(GameCanvas.panel) && this.typeShop == 2 && this.currentTabIndex <= 3 && this.maxPageShop[this.currentTabIndex] > 1)
-					{
-						InfoDlg.showWait();
-						if (this.currPageShop[this.currentTabIndex] <= 0)
-						{
-							Service.gI().kigui(4, -1, (sbyte)this.currentTabIndex, this.maxPageShop[this.currentTabIndex] - 1, -1);
-							return;
-						}
-						Service.gI().kigui(4, -1, (sbyte)this.currentTabIndex, this.currPageShop[this.currentTabIndex] - 1, -1);
+						Service.gI().kigui(4, -1, (sbyte)this.currentTabIndex, this.maxPageShop[this.currentTabIndex] - 1, -1);
 						return;
 					}
-					else
-					{
-						this.selected = this.currentListLength - 1;
-						if (this.isClanOption)
-						{
-							this.selected = -1;
-						}
-						if (this.size_tab > 0)
-						{
-							this.selected = -1;
-						}
-					}
+					Service.gI().kigui(4, -1, (sbyte)this.currentTabIndex, this.currPageShop[this.currentTabIndex] - 1, -1);
+					return;
 				}
-				this.lastSelect[this.currentTabIndex] = this.selected;
-				this.cSelected = 0;
-				this.getCurrClanOtion();
+				this.selected = this.currentListLength - 1;
+				if (this.isClanOption)
+				{
+					this.selected = -1;
+				}
 			}
+			this.lastSelect[this.currentTabIndex] = this.selected;
+			this.cSelected = 0;
+			this.getCurrClanOtion();
 		}
 		else if (GameCanvas.keyPressed[(!Main.isPC) ? 8 : 22])
 		{
 			flag = true;
-			if (this.isTabInven() && this.isnewInventory)
+			this.selected++;
+			if (this.type == 24)
 			{
-				if (this.selected < 1 && this.sellectInventory == 0)
+				this.selected += 2;
+				if (this.selected > this.currentListLength - 1)
 				{
-					this.selected++;
+					this.selected = this.currentListLength - 1;
 				}
 			}
-			else
+			else if (this.selected > this.currentListLength - 1)
 			{
-				this.selected++;
-				if (this.type == 24)
+				if (this.Equals(GameCanvas.panel) && this.typeShop == 2 && this.currentTabIndex <= 3 && this.maxPageShop[this.currentTabIndex] > 1)
 				{
-					this.selected += 2;
-					if (this.selected > this.currentListLength - 1)
+					InfoDlg.showWait();
+					if (this.currPageShop[this.currentTabIndex] >= this.maxPageShop[this.currentTabIndex] - 1)
 					{
-						this.selected = this.currentListLength - 1;
-					}
-				}
-				else if (this.selected > this.currentListLength - 1)
-				{
-					if (this.Equals(GameCanvas.panel) && this.typeShop == 2 && this.currentTabIndex <= 3 && this.maxPageShop[this.currentTabIndex] > 1)
-					{
-						InfoDlg.showWait();
-						if (this.currPageShop[this.currentTabIndex] >= this.maxPageShop[this.currentTabIndex] - 1)
-						{
-							Service.gI().kigui(4, -1, (sbyte)this.currentTabIndex, 0, -1);
-							return;
-						}
-						Service.gI().kigui(4, -1, (sbyte)this.currentTabIndex, this.currPageShop[this.currentTabIndex] + 1, -1);
+						Service.gI().kigui(4, -1, (sbyte)this.currentTabIndex, 0, -1);
 						return;
 					}
-					else
-					{
-						this.selected = 0;
-					}
+					Service.gI().kigui(4, -1, (sbyte)this.currentTabIndex, this.currPageShop[this.currentTabIndex] + 1, -1);
+					return;
 				}
-				this.lastSelect[this.currentTabIndex] = this.selected;
-				this.cSelected = 0;
-				this.getCurrClanOtion();
+				this.selected = 0;
 			}
-		}
-		if (this.isnewInventory && GameCanvas.keyPressed[5] && this.itemInvenNew != null)
-		{
-			this.pointerDownTime = 0;
-			this.waitToPerform = 2;
+			this.lastSelect[this.currentTabIndex] = this.selected;
+			this.cSelected = 0;
+			this.getCurrClanOtion();
 		}
 		if (flag)
 		{
@@ -2481,12 +2446,6 @@ public class Panel : IActionListener, IChatable
 				{
 					this.wantUpdateList = false;
 				}
-				if (this.isnewInventory)
-				{
-					int num2 = GameCanvas.px - this.xScroll;
-					int num3 = GameCanvas.py - this.yScroll;
-					this.sellectInventory = num3 / 34 * 5 + num2 / 34;
-				}
 			}
 		}
 		if (GameCanvas.isPointerJustRelease && this.pointerIsDowning)
@@ -2507,10 +2466,6 @@ public class Panel : IActionListener, IChatable
 				this.checkOptionSelect();
 				this.pointerDownTime = 0;
 				this.waitToPerform = 10;
-				if (this.isnewInventory)
-				{
-					this.waitToPerform = -1;
-				}
 				SoundMn.gI().panelClick();
 			}
 			else if (this.selected != -1 && this.pointerDownTime > 5)
@@ -2574,97 +2529,7 @@ public class Panel : IActionListener, IChatable
 			return;
 		}
 		int num = this.currentTabIndex;
-		if (this.isTabInven() && this.isnewInventory)
-		{
-			if (this.selected == -1)
-			{
-				if (GameCanvas.keyPressed[6])
-				{
-					this.currentTabIndex++;
-					if (this.currentTabIndex >= this.currentTabName.Length)
-					{
-						if (GameCanvas.panel2 != null)
-						{
-							this.currentTabIndex = this.currentTabName.Length - 1;
-							GameCanvas.isFocusPanel2 = true;
-						}
-						else
-						{
-							this.currentTabIndex = 0;
-						}
-					}
-					this.selected = this.lastSelect[this.currentTabIndex];
-					this.lastTabIndex[this.type] = this.currentTabIndex;
-				}
-				if (GameCanvas.keyPressed[4])
-				{
-					this.currentTabIndex--;
-					if (this.currentTabIndex < 0)
-					{
-						this.currentTabIndex = this.currentTabName.Length - 1;
-					}
-					if (GameCanvas.isFocusPanel2)
-					{
-						GameCanvas.isFocusPanel2 = false;
-					}
-					this.selected = this.lastSelect[this.currentTabIndex];
-					this.lastTabIndex[this.type] = this.currentTabIndex;
-				}
-			}
-			else if (this.selected > 0)
-			{
-				if (GameCanvas.keyPressed[8])
-				{
-					if (this.newSelected == 0)
-					{
-						this.sellectInventory++;
-					}
-					else
-					{
-						this.sellectInventory += 5;
-					}
-				}
-				else if (GameCanvas.keyPressed[2])
-				{
-					if (this.newSelected == 0)
-					{
-						this.sellectInventory--;
-					}
-					else
-					{
-						this.sellectInventory -= 5;
-					}
-				}
-				else if (GameCanvas.keyPressed[4])
-				{
-					if (this.newSelected == 0)
-					{
-						this.sellectInventory -= 5;
-					}
-					else
-					{
-						this.sellectInventory--;
-					}
-				}
-				else if (GameCanvas.keyPressed[6])
-				{
-					if (this.newSelected == 0)
-					{
-						this.sellectInventory += 5;
-					}
-					else
-					{
-						this.sellectInventory++;
-					}
-				}
-			}
-			int num2 = this.sellectInventory;
-			if (this.sellectInventory == this.nTableItem)
-			{
-				this.sellectInventory = 0;
-			}
-		}
-		else if (!this.IsTabOption())
+		if (!this.IsTabOption())
 		{
 			if (GameCanvas.keyPressed[(!Main.isPC) ? 6 : 24])
 			{
@@ -3091,7 +2956,7 @@ public class Panel : IActionListener, IChatable
 		this.ITEM_HEIGHT = 24;
 		if (this.currentTabIndex == this.currentTabName.Length - 1 && GameCanvas.panel2 == null && this.typeShop != 2)
 		{
-			this.currentListLength = this.checkCurrentListLength(global::Char.myCharz().arrItemBody.Length + global::Char.myCharz().arrItemBag.Length);
+			this.currentListLength = global::Char.myCharz().arrItemBody.Length + global::Char.myCharz().arrItemBag.Length;
 		}
 		else
 		{
@@ -3205,17 +3070,8 @@ public class Panel : IActionListener, IChatable
 	// Token: 0x06000902 RID: 2306 RVA: 0x0007FD50 File Offset: 0x0007DF50
 	private void setTabInventory(bool resetSelect)
 	{
-		if (this.isnewInventory)
-		{
-			int num = global::Char.myCharz().arrItemBody.Length + global::Char.myCharz().arrItemBag.Length;
-			this.currentListLength = this.checkCurrentListLength(num);
-			this.currentListLength = 3;
-			this.newSelected = 0;
-			this.size_tab = (sbyte)(num / 20 + ((num % 20 > 0) ? 1 : 0));
-			Res.outz("sizeTab = " + this.size_tab);
-			return;
-		}
 		this.currentListLength = global::Char.myCharz().arrItemBody.Length + global::Char.myCharz().arrItemBag.Length;
+		this.size_tab = 0;
 		this.ITEM_HEIGHT = 24;
 		this.cmyLim = this.currentListLength * this.ITEM_HEIGHT - this.hScroll;
 		this.cmy = (this.cmtoY = this.cmyLast[this.currentTabIndex]);
@@ -6238,14 +6094,7 @@ public class Panel : IActionListener, IChatable
 			if (this.currentTabIndex == 1)
 			{
 				SmallImage.drawSmallImage(g, global::Char.myCharz().avatarz(), this.X + 25, 50, 0, 33);
-				if (this.isnewInventory)
-				{
-					this.paintCharInfo(g, global::Char.myCharz());
-				}
-				else
-				{
-					this.paintItemBodyBagInfo(g);
-				}
+				this.paintItemBodyBagInfo(g);
 			}
 			if (this.currentTabIndex == 2)
 			{
@@ -7158,19 +7007,6 @@ public class Panel : IActionListener, IChatable
 			return;
 		}
 		this.moveCamera();
-		if (this.isTabInven() && this.isnewInventory)
-		{
-			if (this.eBanner == null)
-			{
-				GameScr.info1.addInfo("CREATE EBANNER", 0);
-				this.eBanner = new Effect(205, 0, 0, 3, 10, -1);
-				this.eBanner.typeEff = 2;
-			}
-			if (this.eBanner != null)
-			{
-				this.eBanner.update();
-			}
-		}
 		if (this.waitToPerform > 0)
 		{
 			this.waitToPerform--;
@@ -7638,33 +7474,23 @@ public class Panel : IActionListener, IChatable
 		}
 		else if (this.typeShop == 0)
 		{
-			if (this.selected == 0)
+			this.currItem = null;
+			Item[] arrItemBody = global::Char.myCharz().arrItemBody;
+			if (this.selected >= 0 && this.selected < arrItemBody.Length)
 			{
-				this.setNewSelected(global::Char.myCharz().arrItemBody.Length + global::Char.myCharz().arrItemBag.Length, false);
+				this.currItem = arrItemBody[this.selected];
 			}
 			else
 			{
-				this.currItem = null;
-				if (!this.GetInventorySelect_isbody(this.selected, this.newSelected, global::Char.myCharz().arrItemBody))
+				int num = this.selected - arrItemBody.Length;
+				if (num >= 0 && num < global::Char.myCharz().arrItemBag.Length)
 				{
-					Item item = global::Char.myCharz().arrItemBag[this.GetInventorySelect_bag(this.selected, this.newSelected, global::Char.myCharz().arrItemBody)];
-					if (item != null)
-					{
-						this.currItem = item;
-					}
+					this.currItem = global::Char.myCharz().arrItemBag[num];
 				}
-				else
-				{
-					Item item2 = global::Char.myCharz().arrItemBody[this.GetInventorySelect_body(this.selected, this.newSelected)];
-					if (item2 != null)
-					{
-						this.currItem = item2;
-					}
-				}
-				if (this.currItem != null)
-				{
-					myVector.addElement(new Command(mResources.SALE, this, 3002, this.currItem));
-				}
+			}
+			if (this.currItem != null)
+			{
+				myVector.addElement(new Command(mResources.SALE, this, 3002, this.currItem));
 			}
 		}
 		else
@@ -7766,7 +7592,7 @@ public class Panel : IActionListener, IChatable
 			{
 				myVector.addElement(new Command(mResources.use_for_trade, this, 7000, this.currItem));
 			}
-			else if (this.GetInventorySelect_isbody(this.selected, this.newSelected, global::Char.myCharz().arrItemBody))
+			else if (this.selected < arrItemBody.Length)
 			{
 				myVector.addElement(new Command(mResources.GETOUT, this, 2002, this.currItem));
 			}
@@ -9398,41 +9224,17 @@ public class Panel : IActionListener, IChatable
 		if (idAction == 2000)
 		{
 			Item[] arrItemBody = global::Char.myCharz().arrItemBody;
-			sbyte id2 = (sbyte)this.GetInventorySelect_bag(this.selected, this.newSelected, arrItemBody);
-			if (this.isnewInventory)
-			{
-				id2 = (sbyte)this.currItem.indexUI;
-			}
+			sbyte id2 = (sbyte)(this.selected - arrItemBody.Length);
 			Service.gI().getItem(Panel.BAG_BODY, id2);
 		}
 		if (idAction == 2001)
 		{
 			Res.outz("use item");
 			Item item7 = (Item)p;
-			bool inventorySelect_isbody = this.GetInventorySelect_isbody(this.selected, this.newSelected, global::Char.myCharz().arrItemBody);
-			sbyte index;
-			if (!inventorySelect_isbody)
-			{
-				index = (sbyte)this.GetInventorySelect_bag(this.selected, this.newSelected, global::Char.myCharz().arrItemBody);
-			}
-			else
-			{
-				index = (sbyte)this.GetInventorySelect_body(this.selected, this.newSelected);
-			}
-			if (this.isnewInventory)
-			{
-				index = (sbyte)this.currItem.indexUI;
-				sbyte where = 0;
-				if (this.newSelected != 0)
-				{
-					where = 1;
-				}
-				Service.gI().useItem(0, where, index, -1);
-			}
-			else
-			{
-				Service.gI().useItem(0, (!inventorySelect_isbody) ? 1 : 0, index, -1);
-			}
+			Item[] arrItemBody2 = global::Char.myCharz().arrItemBody;
+			bool flag3 = this.selected < arrItemBody2.Length;
+			sbyte index = (sbyte)(flag3 ? this.selected : (this.selected - arrItemBody2.Length));
+			Service.gI().useItem(0, flag3 ? 0 : 1, index, -1);
 			if (item7.template.id == 193 || item7.template.id == 194)
 			{
 				GameCanvas.panel.hide();
@@ -9440,29 +9242,15 @@ public class Panel : IActionListener, IChatable
 		}
 		if (idAction == 2002)
 		{
-			if (this.isnewInventory)
-			{
-				Service.gI().getItem(Panel.BODY_BAG, (sbyte)this.sellectInventory);
-			}
-			else
-			{
-				Service.gI().getItem(Panel.BODY_BAG, (sbyte)this.GetInventorySelect_body(this.selected, this.newSelected));
-			}
+			Service.gI().getItem(Panel.BODY_BAG, (sbyte)this.selected);
 		}
 		if (idAction == 2003)
 		{
 			Res.outz("remove item");
-			bool inventorySelect_isbody2 = this.GetInventorySelect_isbody(this.selected, this.newSelected, global::Char.myCharz().arrItemBody);
-			sbyte index2;
-			if (!inventorySelect_isbody2)
-			{
-				index2 = (sbyte)this.GetInventorySelect_bag(this.selected, this.newSelected, global::Char.myCharz().arrItemBody);
-			}
-			else
-			{
-				index2 = (sbyte)this.GetInventorySelect_body(this.selected, this.newSelected);
-			}
-			Service.gI().useItem(1, (!inventorySelect_isbody2) ? 1 : 0, index2, -1);
+			Item[] arrItemBody3 = global::Char.myCharz().arrItemBody;
+			bool flag4 = this.selected < arrItemBody3.Length;
+			sbyte index2 = (sbyte)(flag4 ? this.selected : (this.selected - arrItemBody3.Length));
+			Service.gI().useItem(1, flag4 ? 0 : 1, index2, -1);
 		}
 		if (idAction == 2004)
 		{
@@ -9474,7 +9262,7 @@ public class Panel : IActionListener, IChatable
 		}
 		if (idAction == 2005)
 		{
-			sbyte id3 = (sbyte)this.GetInventorySelect_bag(this.selected, this.newSelected, global::Char.myCharz().arrItemBody);
+			sbyte id3 = (sbyte)(this.selected - global::Char.myCharz().arrItemBody.Length);
 			Service.gI().getItem(Panel.BAG_PET, id3);
 		}
 		if (idAction == 2006)
@@ -9513,17 +9301,10 @@ public class Panel : IActionListener, IChatable
 		if (idAction == 3002)
 		{
 			GameCanvas.endDlg();
-			bool inventorySelect_isbody3 = this.GetInventorySelect_isbody(this.selected, this.newSelected, global::Char.myCharz().arrItemBody);
-			sbyte id5;
-			if (!inventorySelect_isbody3)
-			{
-				id5 = (sbyte)this.GetInventorySelect_bag(this.selected, this.newSelected, global::Char.myCharz().arrItemBody);
-			}
-			else
-			{
-				id5 = (sbyte)this.GetInventorySelect_body(this.selected, this.newSelected);
-			}
-			Service.gI().saleItem(0, (!inventorySelect_isbody3) ? 1 : 0, (short)id5);
+			Item[] arrItemBody4 = global::Char.myCharz().arrItemBody;
+			bool flag5 = this.selected < arrItemBody4.Length;
+			short id5 = (short)(flag5 ? this.selected : (this.selected - arrItemBody4.Length));
+			Service.gI().saleItem(0, flag5 ? 0 : 1, id5);
 		}
 		if (idAction == 3003)
 		{
@@ -11200,44 +10981,6 @@ public class Panel : IActionListener, IChatable
 	// Token: 0x06000990 RID: 2448 RVA: 0x0009197C File Offset: 0x0008FB7C
 	private void updateKeyInvenTab()
 	{
-		if (this.selected >= 0)
-		{
-			if (GameCanvas.keyPressed[(!Main.isPC) ? 4 : 23])
-			{
-				this.newSelected--;
-				if (this.isnewInventory)
-				{
-					this.currentListLength = 5;
-				}
-				if (this.newSelected < 0)
-				{
-					this.newSelected = 0;
-					if (GameCanvas.isFocusPanel2)
-					{
-						GameCanvas.isFocusPanel2 = false;
-						GameCanvas.panel.selected = 0;
-						return;
-					}
-				}
-			}
-			else if (GameCanvas.keyPressed[(!Main.isPC) ? 6 : 24])
-			{
-				this.newSelected++;
-				if (this.isnewInventory)
-				{
-					this.currentListLength = 5;
-				}
-				if (this.newSelected > (int)(this.size_tab - 1))
-				{
-					this.newSelected = (int)(this.size_tab - 1);
-					if (GameCanvas.panel2 != null)
-					{
-						GameCanvas.isFocusPanel2 = true;
-						GameCanvas.panel2.selected = 0;
-					}
-				}
-			}
-		}
 	}
 
 	// Token: 0x06000991 RID: 2449 RVA: 0x0000846D File Offset: 0x0000666D
@@ -12317,15 +12060,6 @@ public class Panel : IActionListener, IChatable
 		16714764
 	};
 
-	// Token: 0x0400116B RID: 4459
-	private int sellectInventory;
-
-	// Token: 0x0400116C RID: 4460
-	private Item itemInvenNew;
-
-	// Token: 0x0400116D RID: 4461
-	private Effect eBanner;
-
 	// Token: 0x0400116E RID: 4462
 	private static FrameImage screenTab6;
 
@@ -12701,9 +12435,6 @@ public class Panel : IActionListener, IChatable
 
 	// Token: 0x040011D3 RID: 4563
 	public sbyte size_tab;
-
-	// Token: 0x040011D4 RID: 4564
-	private bool isnewInventory;
 
 	// Token: 0x020000BE RID: 190
 	public class PlayerChat

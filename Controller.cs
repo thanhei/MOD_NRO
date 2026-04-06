@@ -2932,7 +2932,6 @@ public class Controller : IMessageHandler
 				GameCanvas.endDlg();
 				TileMap.vGo.removeAllElements();
 				PopUp.vPopups.removeAllElements();
-				mSystem.gcc();
 				TileMap.mapID = (int)msg.reader().readUnsignedByte();
 				TileMap.planetID = msg.reader().readByte();
 				TileMap.tileID = (int)msg.reader().readByte();
@@ -2971,7 +2970,7 @@ public class Controller : IMessageHandler
 				GameScr.cmx = GameScr.cmtoX;
 				GameScr.cmy = GameScr.cmtoY;
 				GameCanvas.isRequestMapID = 2;
-				GameCanvas.waitingTimeChangeMap = mSystem.currentTimeMillis() + 1000L;
+				GameCanvas.waitingTimeChangeMap = mSystem.currentTimeMillis() + 100L;
 				goto IL_8E36;
 			case -22:
 				GameCanvas.debug("SA65", 2);
@@ -5045,7 +5044,7 @@ public class Controller : IMessageHandler
 		Hint.clickNpc();
 		GameCanvas.debug("SA75x9", 2);
 		GameCanvas.isRequestMapID = 2;
-		GameCanvas.waitingTimeChangeMap = mSystem.currentTimeMillis() + 1000L;
+		GameCanvas.waitingTimeChangeMap = mSystem.currentTimeMillis() + 100L;
 		Res.outz("[CONTROLLER] loadMap DONE!!!!!!!!!");
 	}
 
@@ -5672,7 +5671,6 @@ public class Controller : IMessageHandler
 					GameCanvas.isLoading = true;
 					TileMap.maps = null;
 					TileMap.types = null;
-					mSystem.gcc();
 					GameCanvas.debug("SA99", 2);
 					TileMap.tmw = (int)msg.reader().readByte();
 					TileMap.tmh = (int)msg.reader().readByte();

@@ -171,7 +171,7 @@ public class GameCanvas : IActionListener
 				SmallImage.vt_images_watingDowload.removeElementAt(0);
 			}
 		}
-		else if (GameCanvas.isRequestMapID == 2 && GameCanvas.waitingTimeChangeMap < mSystem.currentTimeMillis() && GameCanvas.gameTick % 2 == 0 && GameCanvas.currentScreen != null)
+		else if (GameCanvas.isRequestMapID == 2 && GameCanvas.waitingTimeChangeMap < mSystem.currentTimeMillis() && GameCanvas.currentScreen != null)
 		{
 			if (GameCanvas.currentScreen == GameScr.gI())
 			{

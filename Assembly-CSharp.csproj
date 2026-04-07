@@ -168,6 +168,7 @@
     <Compile Include="Mod\DungPham\KoiOctiiu957\AutoItem.cs" />
     <Compile Include="Mod\DungPham\KoiOctiiu957\AutoMap.cs" />
     <Compile Include="Mod\DungPham\KoiOctiiu957\AutoPean.cs" />
+    <Compile Include="Mod\DungPham\KoiOctiiu957\ModSkin.cs" />
     <Compile Include="Mod\DungPham\KoiOctiiu957\AutoPick.cs" />
     <Compile Include="Mod\DungPham\KoiOctiiu957\AutoPoint.cs" />
     <Compile Include="Mod\DungPham\KoiOctiiu957\AutoSkill.cs" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.NetworkInformation;
 using System.Threading;
 using UnityEngine;
@@ -22,6 +23,13 @@ public class Main : MonoBehaviour
 			Main.started = true;
 			if (Main.isPC)
 			{
+				int num;
+				int num2;
+				if (Main.tryLoadCustomResolution(out num, out num2))
+				{
+					Screen.SetResolution(num, num2, false);
+					return;
+				}
 				this.level = Rms.loadRMSInt("levelScreenKN");
 				if (this.level == 1)
 				{
@@ -31,6 +39,66 @@ public class Main : MonoBehaviour
 				Screen.SetResolution(1024, 600, false);
 			}
 		}
+	}
+
+	private static bool tryLoadCustomResolution(out int width, out int height)
+	{
+		width = 0;
+		height = 0;
+		try
+		{
+			string configPath = Main.getWindowSizeConfigPath();
+			if (!File.Exists(configPath))
+			{
+				return false;
+			}
+			string text = File.ReadAllText(configPath).Trim();
+			if (text == string.Empty)
+			{
+				return false;
+			}
+			string[] array = text.ToLower().Split(new char[]
+			{
+				'x',
+				',',
+				';',
+				' '
+			}, StringSplitOptions.RemoveEmptyEntries);
+			if (array.Length < 2)
+			{
+				return false;
+			}
+			int num;
+			int num2;
+			if (!int.TryParse(array[0], out num) || !int.TryParse(array[1], out num2))
+			{
+				return false;
+			}
+			if (num < 320 || num2 < 240)
+			{
+				return false;
+			}
+			width = num;
+			height = num2;
+			return true;
+		}
+		catch
+		{
+		}
+		return false;
+	}
+
+	private static string getWindowSizeConfigPath()
+	{
+		try
+		{
+			string text = Directory.GetParent(Application.dataPath).FullName;
+			return Path.Combine(text, "pc_window_size.txt");
+		}
+		catch
+		{
+		}
+		return Path.Combine(Environment.CurrentDirectory, "pc_window_size.txt");
 	}
 
 	// Token: 0x0600013C RID: 316 RVA: 0x00004BBE File Offset: 0x00002DBE

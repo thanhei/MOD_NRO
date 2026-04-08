@@ -975,6 +975,14 @@ public class ServerListScreen : mScreen, IActionListener
 				ServerListScreen.isAutoConect = true;
 			}
 		}
+		if (idAction == 17020)
+		{
+			if (GameCanvas.loginScr == null)
+			{
+				GameCanvas.loginScr = new LoginScr();
+			}
+			GameCanvas.loginScr.ShowAutoManager();
+		}
 	}
 
 	// Token: 0x06000A13 RID: 2579 RVA: 0x00098170 File Offset: 0x00096370
@@ -1224,7 +1232,7 @@ public class ServerListScreen : mScreen, IActionListener
 			return;
 		}
 		ServerListScreen.isNewUI = true;
-		this.cmd_New_Ui = new Command[2];
+		this.cmd_New_Ui = new Command[3];
 		int num = GameCanvas.hh - 15 * this.cmd_New_Ui.Length + 28;
 		for (int i = 0; i < this.cmd_New_Ui.Length; i++)
 		{
@@ -1233,6 +1241,10 @@ public class ServerListScreen : mScreen, IActionListener
 				if (i == 1)
 				{
 					this.cmd_New_Ui[1] = new Command(mResources.change_account, this, 7, null);
+				}
+				if (i == 2)
+				{
+					this.cmd_New_Ui[2] = new Command("Auto Manager", this, 17020, null);
 				}
 			}
 			else

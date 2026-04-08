@@ -120,6 +120,7 @@ public class LoginScr : mScreen, IActionListener
 		this.cmdFogetPass.y = this.cmdLogin.y;
 		this.center = this.cmdOK;
 		this.left = this.cmdFogetPass;
+		this.InitAutoManager();
 	}
 
 	// Token: 0x0600080B RID: 2059 RVA: 0x00073004 File Offset: 0x00071204
@@ -424,6 +425,10 @@ public class LoginScr : mScreen, IActionListener
 	// Token: 0x06000817 RID: 2071 RVA: 0x00073878 File Offset: 0x00071A78
 	public void savePass()
 	{
+		if (AutoManagerData.IsAutoSaveEnabled())
+		{
+			AutoManagerData.UpsertAccount(this.tfUser.getText().Trim(), this.tfPass.getText().Trim());
+		}
 		if (this.isCheck)
 		{
 			Rms.saveRMSInt("check", 1);
@@ -574,6 +579,432 @@ public class LoginScr : mScreen, IActionListener
 		this.updateTfWhenOpenKb();
 	}
 
+	private void InitAutoManager()
+	{
+		this.cmdAutoManager = new Command("Auto Manager", this, 17001, null);
+		this.cmdAutoManager.w = ((GameCanvas.w < 220) ? 92 : 102);
+		this.cmdAutoManager.h = 30;
+		this.cmdAutoManagerSave = new Command("Lưu TK", this, 17003, null);
+		this.cmdAutoManagerSave.w = 84;
+		this.cmdAutoManagerPrevPage = new Command("<", this, 17004, null);
+		this.cmdAutoManagerPrevPage.w = 34;
+		this.cmdAutoManagerNextPage = new Command(">", this, 17005, null);
+		this.cmdAutoManagerNextPage.w = 34;
+		this.cmdAutoManagerToggleAutoSave = new Command(string.Empty, this, 17006, null);
+		this.cmdAutoManagerToggleAutoSave.w = 94;
+		this.cmdAutoManagerToggleRemember = new Command(string.Empty, this, 17007, null);
+		this.cmdAutoManagerToggleRemember.w = 94;
+		this.autoManagerDelete = new Command[6];
+		for (int i = 0; i < this.autoManagerDelete.Length; i++)
+		{
+			this.autoManagerDelete[i] = new Command("Xóa", this, 17100 + i, null);
+			this.autoManagerDelete[i].w = 60;
+		}
+		this.RefreshAutoManager();
+	}
+
+	private void RefreshAutoManager()
+	{
+		this.autoManagerAccounts = AutoManagerData.LoadAccounts();
+		this.autoManagerAutoSave = AutoManagerData.IsAutoSaveEnabled();
+		this.autoManagerRememberLogin = this.isCheck;
+		this.ClampAutoManagerPage();
+	}
+
+	private void OpenAutoManager()
+	{
+		this.RefreshAutoManager();
+		this.isAutoManagerOpen = true;
+		this.tfUser.isFocus = false;
+		this.tfPass.isFocus = false;
+		GameCanvas.clearAllPointerEvent();
+	}
+
+	public void ShowAutoManager()
+	{
+		this.switchToMe();
+		this.OpenAutoManager();
+	}
+
+	private void CloseAutoManager(bool focusUserField)
+	{
+		this.isAutoManagerOpen = false;
+		this.focus = (focusUserField ? 0 : -1);
+		this.tfUser.isFocus = focusUserField;
+		this.tfPass.isFocus = false;
+		if (!focusUserField)
+		{
+			GameCanvas.closeKeyBoard();
+		}
+		GameCanvas.clearAllPointerEvent();
+	}
+
+	private void ClampAutoManagerPage()
+	{
+		int num = this.GetAutoManagerPageCount();
+		if (num <= 0)
+		{
+			this.autoManagerPage = 0;
+			return;
+		}
+		if (this.autoManagerPage >= num)
+		{
+			this.autoManagerPage = num - 1;
+		}
+		if (this.autoManagerPage < 0)
+		{
+			this.autoManagerPage = 0;
+		}
+	}
+
+	private int GetAutoManagerPageSize()
+	{
+		int num = (this.autoManagerPopupH - 88) / 48;
+		if (num < 2)
+		{
+			num = 2;
+		}
+		if (num > this.autoManagerDelete.Length)
+		{
+			num = this.autoManagerDelete.Length;
+		}
+		return num;
+	}
+
+	private int GetAutoManagerPageCount()
+	{
+		int num = this.GetAutoManagerPageSize();
+		if (num <= 0 || this.autoManagerAccounts == null || this.autoManagerAccounts.size() == 0)
+		{
+			return 1;
+		}
+		int num2 = this.autoManagerAccounts.size() / num;
+		if (this.autoManagerAccounts.size() % num != 0)
+		{
+			num2++;
+		}
+		return (num2 > 0) ? num2 : 1;
+	}
+
+	private void UpdateAutoManagerLayout()
+	{
+		this.cmdAutoManager.w = ((GameCanvas.w < 220) ? 84 : 102);
+		int num = 2;
+		if (this.cmdBack != null)
+		{
+			num = this.cmdBack.x;
+		}
+		this.cmdAutoManager.x = GameCanvas.w - this.cmdAutoManager.w - num;
+		if (this.cmdBack != null)
+		{
+			this.cmdAutoManager.y = this.cmdBack.y + 3;
+		}
+		else
+		{
+			this.cmdAutoManager.y = GameCanvas.h - this.cmdAutoManager.h - 2;
+		}
+		if (this.cmdAutoManager.y + this.cmdAutoManager.h > GameCanvas.h - 2)
+		{
+			this.cmdAutoManager.y = GameCanvas.h - this.cmdAutoManager.h - 2;
+		}
+		if (this.cmdAutoManager.y < 2)
+		{
+			this.cmdAutoManager.y = 2;
+		}
+		int num2 = GameCanvas.w - 18;
+		if (num2 > 330)
+		{
+			num2 = 330;
+		}
+		if (num2 < 220)
+		{
+			num2 = GameCanvas.w - 8;
+		}
+		int num3 = GameCanvas.h - 36;
+		if (num3 > 240)
+		{
+			num3 = 240;
+		}
+		if (num3 < 150)
+		{
+			num3 = GameCanvas.h - 10;
+		}
+		this.autoManagerPopupW = num2;
+		this.autoManagerPopupH = num3;
+		this.autoManagerPopupX = GameCanvas.hw - num2 / 2;
+		this.autoManagerPopupY = GameCanvas.hh - num3 / 2;
+		int num4 = this.autoManagerPopupX + 12;
+		this.cmdAutoManagerSave.x = num4;
+		this.cmdAutoManagerSave.y = this.autoManagerPopupY + this.autoManagerPopupH - this.cmdAutoManagerSave.h - 12;
+		this.cmdAutoManagerPrevPage.x = this.autoManagerPopupX + this.autoManagerPopupW - 86;
+		this.cmdAutoManagerPrevPage.y = this.cmdAutoManagerSave.y;
+		this.cmdAutoManagerNextPage.x = this.autoManagerPopupX + this.autoManagerPopupW - 44;
+		this.cmdAutoManagerNextPage.y = this.cmdAutoManagerSave.y;
+		this.cmdAutoManagerToggleAutoSave.caption = this.autoManagerAutoSave ? "Đang bật" : "Đang tắt";
+		this.cmdAutoManagerToggleAutoSave.w = 96;
+		this.cmdAutoManagerToggleAutoSave.x = this.autoManagerPopupX + this.autoManagerPopupW - this.cmdAutoManagerToggleAutoSave.w - 16;
+		this.cmdAutoManagerToggleAutoSave.y = this.autoManagerPopupY + 88;
+		this.cmdAutoManagerToggleRemember.caption = this.autoManagerRememberLogin ? "Đang bật" : "Đang tắt";
+		this.cmdAutoManagerToggleRemember.w = 96;
+		this.cmdAutoManagerToggleRemember.x = this.autoManagerPopupX + this.autoManagerPopupW - this.cmdAutoManagerToggleRemember.w - 16;
+		this.cmdAutoManagerToggleRemember.y = this.autoManagerPopupY + 134;
+	}
+
+	private void HandleAutoManagerPointer()
+	{
+		if (GameCanvas.isPointerJustRelease && !GameCanvas.isPointerHoldIn(this.autoManagerPopupX, this.autoManagerPopupY, this.autoManagerPopupW, this.autoManagerPopupH))
+		{
+			this.CloseAutoManager(true);
+			return;
+		}
+		int num = this.autoManagerPopupY + 44;
+		int num2 = this.autoManagerPopupW / 2 - 14;
+		if (GameCanvas.isPointerHoldIn(this.autoManagerPopupX + 10, num, num2, 26) && GameCanvas.isPointerJustRelease)
+		{
+			this.autoManagerTab = 0;
+			GameCanvas.clearAllPointerEvent();
+			return;
+		}
+		if (GameCanvas.isPointerHoldIn(this.autoManagerPopupX + this.autoManagerPopupW / 2 + 4, num, num2, 26) && GameCanvas.isPointerJustRelease)
+		{
+			this.autoManagerTab = 1;
+			GameCanvas.clearAllPointerEvent();
+			return;
+		}
+		if (this.autoManagerTab == 0)
+		{
+			if (this.cmdAutoManagerSave.isPointerPressInside())
+			{
+				this.cmdAutoManagerSave.performAction();
+				return;
+			}
+			if (this.GetAutoManagerPageCount() > 1)
+			{
+				if (this.cmdAutoManagerPrevPage.isPointerPressInside())
+				{
+					this.cmdAutoManagerPrevPage.performAction();
+					return;
+				}
+				if (this.cmdAutoManagerNextPage.isPointerPressInside())
+				{
+					this.cmdAutoManagerNextPage.performAction();
+					return;
+				}
+			}
+			int pageSize = this.GetAutoManagerPageSize();
+			int startIndex = this.autoManagerPage * pageSize;
+			int startY = this.autoManagerPopupY + 80;
+			int itemHeight = 30;
+			int itemWidth = this.autoManagerPopupW - 100;
+			int deleteW = 50;
+			int deleteH = itemHeight - 4;
+			for (int i = 0; i < pageSize; i++)
+			{
+				int index = startIndex + i;
+				if (index >= this.autoManagerAccounts.size())
+				{
+					break;
+				}
+				int y = startY + i * itemHeight;
+				this.autoManagerDelete[i].w = deleteW;
+				this.autoManagerDelete[i].h = deleteH;
+				this.autoManagerDelete[i].x = this.autoManagerPopupX + this.autoManagerPopupW - deleteW - 10;
+				this.autoManagerDelete[i].y = y + 2;
+				if (this.autoManagerDelete[i].isPointerPressInside())
+				{
+					this.autoManagerDelete[i].performAction();
+					return;
+				}
+				if (GameCanvas.isPointerHoldIn(this.autoManagerPopupX + 12, y, itemWidth, itemHeight) && GameCanvas.isPointerJustRelease)
+				{
+					this.SelectAutoManagerAccount(index);
+					return;
+				}
+			}
+		}
+		else
+		{
+			if (this.cmdAutoManagerToggleAutoSave.isPointerPressInside())
+			{
+				this.cmdAutoManagerToggleAutoSave.performAction();
+				return;
+			}
+			if (this.cmdAutoManagerToggleRemember.isPointerPressInside())
+			{
+				this.cmdAutoManagerToggleRemember.performAction();
+			}
+		}
+	}
+
+	private void SelectAutoManagerAccount(int index)
+	{
+		AutoManagerAccount autoManagerAccount = (AutoManagerAccount)this.autoManagerAccounts.elementAt(index);
+		if (autoManagerAccount == null)
+		{
+			return;
+		}
+		this.tfUser.setText(autoManagerAccount.Username);
+		this.tfPass.setText(autoManagerAccount.Password);
+		Rms.saveRMSString("acc", autoManagerAccount.Username);
+		Rms.saveRMSString("pass", autoManagerAccount.Password);
+		AutoManagerData.UpsertAccount(autoManagerAccount.Username, autoManagerAccount.Password);
+		this.CloseAutoManager(false);
+		this.isLogin2 = false;
+		if (GameCanvas.serverScreen == null)
+		{
+			GameCanvas.serverScreen = new ServerListScreen();
+		}
+		GameCanvas.serverScreen.Login_New();
+	}
+
+	private void SaveCurrentAccountToAutoManager()
+	{
+		string text = this.tfUser.getText().Trim();
+		string text2 = this.tfPass.getText().Trim();
+		if (text.Length == 0)
+		{
+			GameCanvas.startOKDlg(mResources.userBlank);
+			return;
+		}
+		if (text2.Length == 0)
+		{
+			GameCanvas.startOKDlg(mResources.passwordBlank);
+			return;
+		}
+		AutoManagerData.UpsertAccount(text, text2);
+		this.RefreshAutoManager();
+		GameCanvas.startOKDlg("Đã lưu tài khoản");
+	}
+
+	private void DeleteAutoManagerAccount(int index)
+	{
+		int num = this.autoManagerPage * this.GetAutoManagerPageSize() + index;
+		AutoManagerData.RemoveAt(num);
+		this.RefreshAutoManager();
+	}
+
+	private void ToggleRememberLogin()
+	{
+		this.isCheck = !this.isCheck;
+		this.autoManagerRememberLogin = this.isCheck;
+		Rms.saveRMSInt("check", this.isCheck ? 1 : 2);
+		if (this.isCheck)
+		{
+			Rms.saveRMSString("acc", this.tfUser.getText().Trim());
+			Rms.saveRMSString("pass", this.tfPass.getText().Trim());
+			return;
+		}
+		Rms.saveRMSString("acc", string.Empty);
+		Rms.saveRMSString("pass", string.Empty);
+	}
+
+	private string GetAutoManagerText(string text, int width)
+	{
+		if (text == null)
+		{
+			return string.Empty;
+		}
+		if (mFont.tahoma_7b_dark.getWidth(text) <= width)
+		{
+			return text;
+		}
+		string text2 = text;
+		while (text2.Length > 0 && mFont.tahoma_7b_dark.getWidth(text2 + "...") > width)
+		{
+			text2 = text2.Substring(0, text2.Length - 1);
+		}
+		return text2 + "...";
+	}
+
+	private void PaintAutoManagerTab(mGraphics g, string title, int x, int y, bool isActive)
+	{
+		int w = this.autoManagerPopupW / 2 - 14;
+		int h = 28;
+		int r = 20;
+		if (isActive)
+		{
+			g.setColor(16164410);
+			g.fillRoundRect(x, y, w, h, r, r);
+			g.setColor(14715422);
+			g.drawRoundRect(x, y, w, h, r, r);
+			g.setColor(16765567);
+			g.fillRect(x + 6, y + 3, w - 12, 3);
+			mFont.tahoma_7b_dark.drawString(g, title, x + w / 2, y + (h - 10) / 2, 2);
+			return;
+		}
+		g.setColor(13215610);
+		g.fillRoundRect(x, y, w, h, r, r);
+		g.setColor(10583637);
+		g.drawRoundRect(x, y, w, h, r, r);
+		mFont.tahoma_7b_dark.drawString(g, title, x + w / 2, y + (h - 10) / 2, 2);
+	}
+	private void PaintAutoManager(mGraphics g)
+	{
+		g.fillRect(0, 0, GameCanvas.w, GameCanvas.h, 0, 90);
+		PopUp.paintPopUp(g, this.autoManagerPopupX, this.autoManagerPopupY, this.autoManagerPopupW, this.autoManagerPopupH, -1, true);
+		g.setColor(11048653);
+		g.fillRect(this.autoManagerPopupX + 4, this.autoManagerPopupY + 4, this.autoManagerPopupW - 8, 30);
+		mFont.tahoma_7b_yellow.drawString(g, "Auto Manager", this.autoManagerPopupX + 12, this.autoManagerPopupY + 11, 0);
+		this.PaintAutoManagerTab(g, "Tài khoản", this.autoManagerPopupX + 10, this.autoManagerPopupY + 42, this.autoManagerTab == 0);
+		this.PaintAutoManagerTab(g, "Điều khiển", this.autoManagerPopupX + this.autoManagerPopupW / 2 + 4, this.autoManagerPopupY + 42, this.autoManagerTab == 1);
+		if (this.autoManagerTab == 0)
+		{
+			int pageSize = this.GetAutoManagerPageSize();
+			int startIndex = this.autoManagerPage * pageSize;
+			int startY = this.autoManagerPopupY + 80;
+			int itemHeight = 30;
+			if (this.autoManagerAccounts.size() == 0)
+			{
+				mFont.tahoma_7b_dark.drawString(g, "Chưa có tài khoản được lưu", this.autoManagerPopupX + this.autoManagerPopupW / 2, this.autoManagerPopupY + 110, 2);
+			}
+			for (int i = 0; i < pageSize; i++)
+			{
+				int index = startIndex + i;
+				if (index >= this.autoManagerAccounts.size())
+				{
+					break;
+				}
+				AutoManagerAccount acc = (AutoManagerAccount)this.autoManagerAccounts.elementAt(index);
+				int y = startY + i * itemHeight;
+				int itemWidth = this.autoManagerPopupW - 100;
+				Command.paintOngMau(Command.btn0left, Command.btn0mid, Command.btn0right, this.autoManagerPopupX + 12, y, itemWidth, g);
+				string text = index + 1 + ". " + acc.Username;
+				mFont.tahoma_7b_dark.drawString(g, this.GetAutoManagerText(text, itemWidth - 20), this.autoManagerPopupX + 20, y + 5, 0);
+				int deleteW = 50;
+				int deleteH = itemHeight - 4;
+				this.autoManagerDelete[i].w = deleteW;
+				this.autoManagerDelete[i].h = deleteH;
+				this.autoManagerDelete[i].x = this.autoManagerPopupX + this.autoManagerPopupW - deleteW - 10;
+				this.autoManagerDelete[i].y = y + 2;
+				this.autoManagerDelete[i].paint(g);
+			}
+			this.cmdAutoManagerSave.paint(g);
+			if (this.GetAutoManagerPageCount() > 1)
+			{
+				this.cmdAutoManagerPrevPage.paint(g);
+				this.cmdAutoManagerNextPage.paint(g);
+				mFont.tahoma_7b_dark.drawString(g, this.autoManagerPage + 1 + "/" + this.GetAutoManagerPageCount(), this.autoManagerPopupX + this.autoManagerPopupW - 128, this.cmdAutoManagerSave.y + 8, 0);
+				return;
+			}
+		}
+		else
+		{
+			mFont.tahoma_7b_dark.drawString(g, "Tự lưu sau đăng nhập", this.autoManagerPopupX + 16, this.autoManagerPopupY + 96, 0);
+			mFont.tahoma_7b_dark.drawString(g, "Ghi nhớ ở đăng nhập", this.autoManagerPopupX + 16, this.autoManagerPopupY + 142, 0);
+			this.cmdAutoManagerToggleAutoSave.paint(g);
+			this.cmdAutoManagerToggleRemember.paint(g);
+			mFont.tahoma_7_grey.drawString(g, "Bấm dòng tài khoản để nạp nhanh TK/MK.", this.autoManagerPopupX + 16, this.autoManagerPopupY + 194, 0);
+			mFont.tahoma_7_grey.drawString(g, "Nút Lưu TK sẽ thêm cặp đăng nhập hiện tại.", this.autoManagerPopupX + 16, this.autoManagerPopupY + 208, 0);
+		}
+	}
+
+	// Token: 0x06000839 RID: 2105 RVA: 0x00007EC5 File Offset: 0x000060C5
+	public void ShowAutoManager()
+	{
+		this.switchToMe();
+		this.OpenAutoManager();
+	}
+
 	// Token: 0x06000819 RID: 2073 RVA: 0x00073DF4 File Offset: 0x00071FF4
 	private void doChangeTip()
 	{
@@ -620,6 +1051,7 @@ public class LoginScr : mScreen, IActionListener
 	// Token: 0x0600081D RID: 2077 RVA: 0x00073EB0 File Offset: 0x000720B0
 	public override void paint(mGraphics g)
 	{
+		this.UpdateAutoManagerLayout();
 		GameCanvas.debug("PLG1", 1);
 		GameCanvas.paintBGGameScr(g);
 		GameCanvas.debug("PLG2", 2);
@@ -669,12 +1101,38 @@ public class LoginScr : mScreen, IActionListener
 			}
 		}
 		base.paint(g);
-		this.cmdBack.paint(g);
+		if (!this.isAutoManagerOpen)
+		{
+			this.cmdBack.paint(g);
+			if (GameCanvas.currentDialog == null)
+			{
+				this.cmdAutoManager.paint(g);
+			}
+			return;
+		}
+		this.PaintAutoManager(g);
 	}
 
 	// Token: 0x0600081E RID: 2078 RVA: 0x00074174 File Offset: 0x00072374
 	public override void updateKey()
 	{
+		this.UpdateAutoManagerLayout();
+		if (this.isAutoManagerOpen)
+		{
+			this.HandleAutoManagerPointer();
+			if (GameCanvas.keyPressed[12])
+			{
+				GameCanvas.keyPressed[12] = false;
+				this.CloseAutoManager(true);
+			}
+			GameCanvas.clearKeyPressed();
+			return;
+		}
+		if (this.cmdAutoManager.isPointerPressInside())
+		{
+			this.cmdAutoManager.performAction();
+			return;
+		}
 		if (GameCanvas.isTouch)
 		{
 			if (this.cmdCallHotline != null && this.cmdCallHotline.isPointerPressInside())
@@ -850,14 +1308,7 @@ public class LoginScr : mScreen, IActionListener
 			case 2000:
 				break;
 			case 2001:
-				if (this.isCheck)
-				{
-					this.isCheck = false;
-				}
-				else
-				{
-					this.isCheck = true;
-				}
+				this.ToggleRememberLogin();
 				break;
 			case 2002:
 				this.doRegister();
@@ -941,6 +1392,38 @@ public class LoginScr : mScreen, IActionListener
 				else
 				{
 					GameCanvas.serverScreen.show2();
+				}
+				break;
+			case 17001:
+				this.OpenAutoManager();
+				break;
+			case 17003:
+				this.SaveCurrentAccountToAutoManager();
+				break;
+			case 17004:
+				this.autoManagerPage--;
+				this.ClampAutoManagerPage();
+				GameCanvas.clearAllPointerEvent();
+				break;
+			case 17005:
+				this.autoManagerPage++;
+				this.ClampAutoManagerPage();
+				GameCanvas.clearAllPointerEvent();
+				break;
+			case 17006:
+				this.autoManagerAutoSave = !this.autoManagerAutoSave;
+				AutoManagerData.SetAutoSaveEnabled(this.autoManagerAutoSave);
+				GameCanvas.clearAllPointerEvent();
+				break;
+			case 17007:
+				this.ToggleRememberLogin();
+				GameCanvas.clearAllPointerEvent();
+				break;
+			default:
+				if (idAction >= 17100 && idAction < 17100 + this.autoManagerDelete.Length)
+				{
+					this.DeleteAutoManagerAccount(idAction - 17100);
+					GameCanvas.clearAllPointerEvent();
 				}
 				break;
 			}
@@ -1189,4 +1672,38 @@ public class LoginScr : mScreen, IActionListener
 
 	// Token: 0x04000F9E RID: 3998
 	public static bool isLoggingIn;
+
+	private Command cmdAutoManager;
+
+	private Command cmdAutoManagerSave;
+
+	private Command cmdAutoManagerPrevPage;
+
+	private Command cmdAutoManagerNextPage;
+
+	private Command cmdAutoManagerToggleAutoSave;
+
+	private Command cmdAutoManagerToggleRemember;
+
+	private Command[] autoManagerDelete;
+
+	private MyVector autoManagerAccounts = new MyVector();
+
+	private bool isAutoManagerOpen;
+
+	private bool autoManagerAutoSave;
+
+	private bool autoManagerRememberLogin;
+
+	private int autoManagerTab;
+
+	private int autoManagerPage;
+
+	private int autoManagerPopupX;
+
+	private int autoManagerPopupY;
+
+	private int autoManagerPopupW;
+
+	private int autoManagerPopupH;
 }

@@ -204,11 +204,11 @@ public class Info : IActionListener
 		InfoItem infoItem = new InfoItem(s);
 		if (this.type == 0)
 		{
-			infoItem.speed = s.Length;
+			infoItem.speed = s.Length * 2;
 		}
 		if (infoItem.speed < 70)
 		{
-			infoItem.speed = 70;
+			infoItem.speed = 140;
 		}
 		if (this.type == 1)
 		{
@@ -216,7 +216,7 @@ public class Info : IActionListener
 		}
 		if (this.type == 3)
 		{
-			infoItem.speed = 300;
+			infoItem.speed = 600;
 			infoItem.last = mSystem.currentTimeMillis();
 			infoItem.timeCount = s.Length;
 			if (infoItem.timeCount < 15)

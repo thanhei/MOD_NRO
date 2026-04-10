@@ -942,9 +942,9 @@ public class LoginScr : mScreen, IActionListener
 	{
 		g.fillRect(0, 0, GameCanvas.w, GameCanvas.h, 0, 90);
 		PopUp.paintPopUp(g, this.autoManagerPopupX, this.autoManagerPopupY, this.autoManagerPopupW, this.autoManagerPopupH, -1, true);
-		g.setColor(11048653);
+		g.setColor(13215610);
 		g.fillRect(this.autoManagerPopupX + 4, this.autoManagerPopupY + 4, this.autoManagerPopupW - 8, 30);
-		mFont.tahoma_7b_yellow.drawString(g, "Auto Manager", this.autoManagerPopupX + 12, this.autoManagerPopupY + 11, 0);
+		mFont.tahoma_7b_yellow.drawString(g, "Auto Manager", this.autoManagerPopupX + this.autoManagerPopupW / 2, this.autoManagerPopupY + 5 + (30 - mFont.tahoma_7b_yellow.getHeight()) / 2, 2);
 		this.PaintAutoManagerTab(g, "Tài khoản", this.autoManagerPopupX + 10, this.autoManagerPopupY + 42, this.autoManagerTab == 0);
 		this.PaintAutoManagerTab(g, "Điều khiển", this.autoManagerPopupX + this.autoManagerPopupW / 2 + 4, this.autoManagerPopupY + 42, this.autoManagerTab == 1);
 		if (this.autoManagerTab == 0)
@@ -969,7 +969,7 @@ public class LoginScr : mScreen, IActionListener
 				int itemWidth = this.autoManagerPopupW - 100;
 				Command.paintOngMau(Command.btn0left, Command.btn0mid, Command.btn0right, this.autoManagerPopupX + 12, y, itemWidth, g);
 				string text = index + 1 + ". " + acc.Username;
-				mFont.tahoma_7b_dark.drawString(g, this.GetAutoManagerText(text, itemWidth - 20), this.autoManagerPopupX + 20, y + 5, 0);
+				mFont.tahoma_7b_dark.drawString(g, this.GetAutoManagerText(text, itemWidth - 20), this.autoManagerPopupX + 20, y + 7, 0);
 				int deleteW = 50;
 				int deleteH = itemHeight - 4;
 				this.autoManagerDelete[i].w = deleteW;

@@ -491,7 +491,7 @@ public class TileMap
 	// Token: 0x06000A61 RID: 2657 RVA: 0x0009BE4C File Offset: 0x0009A04C
 	public static void paintOutTilemap(mGraphics g)
 	{
-		if (GameCanvas.lowGraphic)
+		if (GameCanvas.lowGraphic || global::Char.isLoadingMap)
 		{
 			return;
 		}

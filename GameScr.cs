@@ -4391,6 +4391,12 @@ public class GameScr : mScreen, IChatable
 	// Token: 0x0600077C RID: 1916 RVA: 0x0006A3A8 File Offset: 0x000685A8
 	public override void paint(mGraphics g)
 	{
+		if (global::Char.isLoadingMap)
+		{
+			g.setColor(0);
+			g.fillRect(0, 0, GameCanvas.w, GameCanvas.h);
+			return;
+		}
 		GameScr.countEff = 0;
 		if (GameScr.isPaint)
 		{
@@ -4681,7 +4687,6 @@ public class GameScr : mScreen, IChatable
 				this.paintInfoBar(g);
 			}
 			GameScr.resetTranslate(g);
-			this.paint_xp_bar(g);
 			if (!GameScr.isPaintOther)
 			{
 				MainMod.Paint(g);
@@ -6788,7 +6793,6 @@ public class GameScr : mScreen, IChatable
 			return;
 		}
 		g.setClip(0, GameCanvas.h - 13, GameCanvas.w, 15);
-		g.fillRect(0, GameCanvas.h - 13, GameCanvas.w, 15, 0, 90);
 		string st = (string)GameScr.vChatVip.elementAt(0);
 		mFont.tahoma_7b_yellow.drawString(g, st, this.xChatVip, GameCanvas.h - 13, 0, mFont.tahoma_7b_dark);
 	}
@@ -7112,17 +7116,7 @@ public class GameScr : mScreen, IChatable
 	// Token: 0x060007C7 RID: 1991 RVA: 0x0007030C File Offset: 0x0006E50C
 	private void paint_xp_bar(mGraphics g)
 	{
-		g.setColor(8421504);
-		g.fillRect(0, GameCanvas.h - 2, GameCanvas.w, 2);
-		int num = (int)(global::Char.myCharz().cLevelPercent * (long)GameCanvas.w / 10000L);
-		g.setColor(16777215);
-		g.fillRect(0, GameCanvas.h - 2, num, 2);
-		g.setColor(0);
-		num = GameCanvas.w / 10;
-		for (int i = 1; i < 10; i++)
-		{
-			g.fillRect(i * num, GameCanvas.h - 2, 1, 2);
-		}
+		return;
 	}
 
 	// Token: 0x060007C8 RID: 1992 RVA: 0x000703A4 File Offset: 0x0006E5A4

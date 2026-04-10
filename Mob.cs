@@ -1126,7 +1126,7 @@ public class Mob : IMapObject
 					this.p1 = 1;
 				}
 			}
-			if ((Mob.arrMobTemplate[this.templateId].type == 4 || Mob.arrMobTemplate[this.templateId].type == 5) && !this.isDontMove)
+			if ((Mob.arrMobTemplate[this.templateId].type == 4 || Mob.arrMobTemplate[this.templateId].type == 5) && !this.isDontMove && !AutoTrain.isAutoTrain)
 			{
 				this.y += (num2 - this.y) / 20;
 			}
@@ -1208,7 +1208,7 @@ public class Mob : IMapObject
 			num = 1;
 			if (!this.isIce)
 			{
-				if (this.isDontMove || this.isWind)
+				if (this.isDontMove || this.isWind || AutoTrain.isAutoTrain)
 				{
 					this.checkFrameTick(this.stand);
 				}

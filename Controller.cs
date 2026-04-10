@@ -2970,7 +2970,7 @@ public class Controller : IMessageHandler
 				GameScr.cmx = GameScr.cmtoX;
 				GameScr.cmy = GameScr.cmtoY;
 				GameCanvas.isRequestMapID = 2;
-				GameCanvas.waitingTimeChangeMap = mSystem.currentTimeMillis() + 100L;
+				GameCanvas.waitingTimeChangeMap = mSystem.currentTimeMillis() + 10L;
 				goto IL_8E36;
 			case -22:
 				GameCanvas.debug("SA65", 2);
@@ -5044,7 +5044,7 @@ public class Controller : IMessageHandler
 		Hint.clickNpc();
 		GameCanvas.debug("SA75x9", 2);
 		GameCanvas.isRequestMapID = 2;
-		GameCanvas.waitingTimeChangeMap = mSystem.currentTimeMillis() + 100L;
+		GameCanvas.waitingTimeChangeMap = mSystem.currentTimeMillis() + 10L;
 		Res.outz("[CONTROLLER] loadMap DONE!!!!!!!!!");
 	}
 

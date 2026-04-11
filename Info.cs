@@ -218,14 +218,14 @@ public class Info : IActionListener
 		{
 			infoItem.speed = 600;
 			infoItem.last = mSystem.currentTimeMillis();
-			infoItem.timeCount = s.Length;
-			if (infoItem.timeCount < 15)
+			infoItem.timeCount = s.Length / 3;
+			if (infoItem.timeCount < 5)
 			{
-				infoItem.timeCount = 15;
+				infoItem.timeCount = 5;
 			}
-			if (infoItem.timeCount > 100)
+			if (infoItem.timeCount > 33)
 			{
-				infoItem.timeCount = 100;
+				infoItem.timeCount = 33;
 			}
 			infoItem.maxTime = infoItem.timeCount;
 		}

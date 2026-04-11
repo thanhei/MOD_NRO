@@ -2559,7 +2559,7 @@ public class Char : IMapObject
 		{
 			return;
 		}
-		if ((this.me && !global::Char.isPaintAura2 && this.idAuraEff > -1) || (!this.me && this.idAuraEff > -1))
+		if (this.me && !global::Char.isPaintAura2)
 		{
 			return;
 		}
@@ -4637,10 +4637,6 @@ public class Char : IMapObject
 	private void paintSuperEffBehind(mGraphics g)
 	{
 		if (this.me && !global::Char.isPaintAura2)
-		{
-			return;
-		}
-		if (this.idAuraEff > -1)
 		{
 			return;
 		}
@@ -6744,7 +6740,7 @@ public class Char : IMapObject
 					GameCanvas.gI().startDust(1, this.cx - 8, this.cy);
 					this.addDustEff(1);
 				}
-				if (mSystem.currentTimeMillis() - this.timeBlue > 0L)
+				if (mSystem.currentTimeMillis() - this.timeBlue > 0L && !(mGraphics.zoomLevel == 1 && this.idAuraEff == 2))
 				{
 					string nameImg = this.strEffAura + this.idAuraEff + "_1";
 					FrameImage fraImage = mSystem.getFraImage(nameImg);

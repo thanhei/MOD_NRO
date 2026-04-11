@@ -984,6 +984,9 @@ public class Service
 		Message message = new Message(21);
 		try
 		{
+			global::Char.isLoadingMap = true;
+			GameCanvas.timeLoading = 15;
+			GameCanvas.TIMEOUT = mSystem.currentTimeMillis();
 			message.writer().writeByte(zoneId);
 			this.session.sendMessage(message);
 			message.cleanup();

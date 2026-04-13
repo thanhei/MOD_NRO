@@ -94,6 +94,171 @@ public class Item
 		}
 	}
 
+
+
+	// Token: 0x06000F41 RID: 3905
+	public void paintItemEffect(mGraphics g, int x, int y, int index)
+	{
+		if (index > 8)
+		{
+			index = 8;
+		}
+		if (index < 0)
+		{
+			index = 0;
+		}
+		int[] array = new int[]
+		{
+			0,
+			0,
+			1,
+			1,
+			2,
+			3,
+			4,
+			5
+		};
+		int[] array2 = new int[]
+		{
+			0,
+			0,
+			0,
+			0,
+			600841,
+			3346944,
+			3932211,
+			6684682,
+			39423
+		};
+		int[] array4 = new int[4];
+		array4[1] = 68;
+		array4[2] = 68;
+		int[] array3 = array4;
+		int baseW = 34;
+		int baseH = 23;
+		if (index >= 4)
+		{
+			g.setColor(array2[index]);
+			g.fillRect(x - baseW / 2, y - baseH / 2, baseW, baseH);
+		}
+		if (index < 4)
+		{
+			if (index == 1)
+			{
+				for (int i = 0; i < 2; i++)
+				{
+					for (int j = 0; j < this.size.Length; j++)
+					{
+						int t = GameCanvas.gameTick + array3[i] - j * 4;
+						int rawX = this.method_0(t) - baseW / 2;
+						int rawY = this.method_1(t) - baseH / 2;
+						int px = x + rawX;
+						int py = y + rawY;
+						g.setColor(this.colorBorder[array[index - 1]][j]);
+						g.fillRect(px - this.size[j] / 2, py - this.size[j] / 2, this.size[j], this.size[j]);
+					}
+				}
+				return;
+			}
+			if (index != 2)
+			{
+				for (int n2 = 0; n2 < 2; n2++)
+				{
+					for (int l2 = 0; l2 < this.size.Length; l2++)
+					{
+						int t2 = GameCanvas.gameTick + array3[n2] - l2 * 4;
+						int rawX2 = this.method_0(t2) - baseW / 2;
+						int rawY2 = this.method_1(t2) - baseH / 2;
+						int px2 = x + rawX2;
+						int py2 = y + rawY2;
+						g.setColor(this.colorBorder[0][l2]);
+						g.fillRect(px2 - this.size[l2] / 2, py2 - this.size[l2] / 2, this.size[l2], this.size[l2]);
+					}
+				}
+				for (int m2 = 2; m2 < 4; m2++)
+				{
+					for (int n3 = 0; n3 < this.size.Length; n3++)
+					{
+						int t3 = GameCanvas.gameTick + array3[m2] - n3 * 4;
+						int rawX3 = this.method_0(t3) - baseW / 2;
+						int rawY3 = this.method_1(t3) - baseH / 2;
+						int px3 = x + rawX3;
+						int py3 = y + rawY3;
+						g.setColor(this.colorBorder[1][n3]);
+						g.fillRect(px3 - this.size[n3] / 2, py3 - this.size[n3] / 2, this.size[n3], this.size[n3]);
+					}
+				}
+				return;
+			}
+		}
+		for (int k = 0; k < 4; k++)
+		{
+			for (int j2 = 0; j2 < this.size.Length; j2++)
+			{
+				int t4 = GameCanvas.gameTick + array3[k] - j2 * 4;
+				int rawX4 = this.method_0(t4) - baseW / 2;
+				int rawY4 = this.method_1(t4) - baseH / 2;
+				int px4 = x + rawX4;
+				int py4 = y + rawY4;
+				int color;
+				if (index == 8)
+				{
+					int c = 180 + (GameCanvas.gameTick / 2 + j2 * 10) % 50;
+					color = (c << 16 | c << 8 | c);
+				}
+				else
+				{
+					color = this.colorBorder[array[index - 1]][j2];
+				}
+				g.setColor(color);
+				g.fillRect(px4 - this.size[j2] / 2, py4 - this.size[j2] / 2, this.size[j2], this.size[j2]);
+			}
+		}
+	}
+
+	// Token: 0x06000C1F RID: 3103
+	private int method_0(int t)
+	{
+		int w = 34;
+		int max = w - 1;
+		int p = t % (w * 4);
+		if (p < w)
+		{
+			return p;
+		}
+		if (p < w * 2)
+		{
+			return max;
+		}
+		if (p < w * 3)
+		{
+			return max - p % w;
+		}
+		return 0;
+	}
+
+	// Token: 0x06000C20 RID: 3104
+	private int method_1(int t)
+	{
+		int h = 23;
+		int max = h - 1;
+		int p = t % (h * 4);
+		if (p < h)
+		{
+			return 0;
+		}
+		if (p < h * 2)
+		{
+			return p % h;
+		}
+		if (p < h * 3)
+		{
+			return max;
+		}
+		return max - p % h;
+	}
+
+
 	// Token: 0x06000388 RID: 904 RVA: 0x000230F4 File Offset: 0x000212F4
 	private int upgradeEffectY(int tick)
 	{

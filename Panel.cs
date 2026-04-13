@@ -3046,7 +3046,7 @@ public class Panel : IActionListener, IChatable
 	// Token: 0x06000901 RID: 2305 RVA: 0x0007FC88 File Offset: 0x0007DE88
 	private void setTabPetInventory()
 	{
-		this.ITEM_HEIGHT = 30;
+		this.ITEM_HEIGHT = 24;
 		Item[] arrItemBody = global::Char.myPetz().arrItemBody;
 		Skill[] arrPetSkill = global::Char.myPetz().arrPetSkill;
 		this.currentListLength = arrItemBody.Length + arrPetSkill.Length;
@@ -3970,6 +3970,20 @@ public class Panel : IActionListener, IChatable
 							if (item.itemOption[k].optionTemplate.id == 72)
 							{
 								str = " [+" + item.itemOption[k].param + "]";
+								item.paintItemEffect(g, num6 + num8 / 2, num7 + num9 / 2, item.itemOption[k].param);
+							}
+							if (item.itemOption[k].optionTemplate.id == 107)
+							{
+								mFont mFont2 = (!GameCanvas.lowGraphic) ? mFont.tahoma_7b_dark : mFont.tahoma_7;
+								string starStr = item.itemOption[k].param.ToString();
+								int starImgW = mGraphics.getImageWidth(Panel.imgStar);
+								int starImgH = mGraphics.getImageHeight(Panel.imgStar);
+								int fontH = mFont2.getHeight();
+								int starX = num3 + num5 - mFont2.getWidth(starStr) - starImgW - 4;
+								int starY = num4 + 1;
+								mFont2.drawString(g, starStr, starX, starY, 0);
+								int imgY = starY + (fontH - starImgH) / 2;
+								g.drawImage(Panel.imgStar, starX + mFont2.getWidth(starStr) + 2, imgY);
 							}
 							if (item.itemOption[k].optionTemplate.id == 41)
 							{
@@ -5390,12 +5404,20 @@ public class Panel : IActionListener, IChatable
 							if (item.itemOption[j].optionTemplate.id == 72)
 							{
 								str = " [+" + item.itemOption[j].param + "]";
+								item.paintItemEffect(g, num3 + num6 / 2, num10 + num5 / 2, item.itemOption[j].param);
 							}
 							if (item.itemOption[j].optionTemplate.id == 107)
 							{
 								mFont mFont2 = (!GameCanvas.lowGraphic) ? mFont.tahoma_7b_dark : mFont.tahoma_7;
-								mFont2.drawString(g, item.itemOption[j].param.ToString(), num2 + 159, num9, 0);
-								g.drawImage(Panel.imgStar, mFont2.getWidth("") + num2 + 164, num9);
+								string starStr = item.itemOption[j].param.ToString();
+								int starImgW = mGraphics.getImageWidth(Panel.imgStar);
+								int starImgH = mGraphics.getImageHeight(Panel.imgStar);
+								int fontH = mFont2.getHeight();
+								int starX = num2 + num4 - mFont2.getWidth(starStr) - starImgW - 4;
+								int starY = num9 + 1;
+								mFont2.drawString(g, starStr, starX, starY, 0);
+								int imgY = starY + (fontH - starImgH) / 2;
+								g.drawImage(Panel.imgStar, starX + mFont2.getWidth(starStr) + 2, imgY);
 							}
 							if (item.itemOption[j].optionTemplate.id == 41)
 							{
@@ -5435,7 +5457,7 @@ public class Panel : IActionListener, IChatable
 								}
 								if (!string.IsNullOrEmpty(text))
 								{
-									str2 = " [" + text + " ngày]";
+									str2 = " [HSD " + text + "D]";
 									mFont = mFont.tahoma_7b_dark;
 									break;
 								}
@@ -5448,27 +5470,38 @@ public class Panel : IActionListener, IChatable
 						}
 					}
 					mFont.drawString(g, item.template.name + str + str2, num2 + 5, num9 + 1, 0);
-					string text2 = string.Empty;
 					if (item.itemOption != null)
 					{
-						if (item.itemOption.Length != 0 && item.itemOption[0] != null && item.itemOption[0].optionTemplate.id != 102 && item.itemOption[0].optionTemplate.id != 107)
-						{
-							text2 += item.itemOption[0].getOptionString();
-						}
+						string text2 = string.Empty;
 						mFont mFont3 = mFont.tahoma_7_blue;
 						if (item.compare < 0 && item.template.type != 5)
 						{
 							mFont3 = mFont.tahoma_7_red;
 						}
-						if (item.itemOption.Length > 1)
+						bool isEquip = (int)item.template.type >= 0 && (int)item.template.type <= 5;
+						for (int l = 0; l < item.itemOption.Length; l++)
 						{
-							for (int l = 1; l < 2; l++)
+							if (item.itemOption[l] == null) continue;
+							int optId = item.itemOption[l].optionTemplate.id;
+							if (isEquip)
 							{
-								if (item.itemOption[l] != null && item.itemOption[l].optionTemplate.id != 102 && item.itemOption[l].optionTemplate.id != 107 && item.itemOption[l].optionTemplate.id != 21)
-								{
-									text2 = text2 + "," + item.itemOption[l].getOptionString();
-								}
+								if (optId != 0 && optId != 5 && optId != 6 && optId != 7 && optId != 14 && optId != 47
+									&& optId != 50 && optId != 95 && optId != 96
+									&& optId != 77 && optId != 103 && optId != 94 && optId != 97 && optId != 101)
+									continue;
 							}
+							else
+							{
+								if (optId == 72 || optId == 102 || optId == 107 || optId == 41 || optId == 21)
+									continue;
+								if (!item.itemOption[l].optionTemplate.name.Contains("#"))
+									continue;
+							}
+							if (text2.Length > 0)
+							{
+								text2 += ",";
+							}
+							text2 += item.itemOption[l].getOptionString();
 						}
 						mFont3.drawString(g, text2, num2 + 5, num9 + 11, mFont.LEFT);
 					}

@@ -168,12 +168,11 @@ public class TileMap
 		int num = tileId - 1;
 		try
 		{
+			int[] array = TileMap.getTileTypeCache(num);
 			for (int i = 0; i < TileMap.tmw * TileMap.tmh; i++)
 			{
-				for (int j = 0; j < TileMap.tileType[num].Length; j++)
-				{
-					TileMap.setTile(i, TileMap.tileIndex[num][j], TileMap.tileType[num][j]);
-				}
+				int num2 = TileMap.maps[i];
+				TileMap.types[i] = ((num2 >= 0 && num2 < array.Length) ? array[num2] : 0);
 			}
 		}
 		catch (Exception ex)
@@ -181,6 +180,34 @@ public class TileMap
 			Cout.println("Error Load Map");
 			GameMidlet.instance.exit();
 		}
+	}
+
+	private static int[] getTileTypeCache(int tileSetIndex)
+	{
+		if (TileMap.tileTypeCache == null || TileMap.tileTypeCache.Length != TileMap.tileType.Length)
+		{
+			TileMap.tileTypeCache = new int[TileMap.tileType.Length][];
+		}
+		if (TileMap.tileTypeCache[tileSetIndex] != null)
+		{
+			return TileMap.tileTypeCache[tileSetIndex];
+		}
+		int[] array = new int[256];
+		for (int i = 0; i < TileMap.tileType[tileSetIndex].Length; i++)
+		{
+			int num = TileMap.tileType[tileSetIndex][i];
+			int[] array2 = TileMap.tileIndex[tileSetIndex][i];
+			for (int j = 0; j < array2.Length; j++)
+			{
+				int num2 = array2[j];
+				if (num2 >= 0 && num2 < array.Length)
+				{
+					array[num2] |= num;
+				}
+			}
+		}
+		TileMap.tileTypeCache[tileSetIndex] = array;
+		return array;
 	}
 
 	// Token: 0x06000A59 RID: 2649 RVA: 0x00008AA2 File Offset: 0x00006CA2
@@ -962,36 +989,39 @@ public class TileMap
 	public static int[][][] tileIndex;
 
 	// Token: 0x040013A5 RID: 5029
-	public static Image imgLight = GameCanvas.loadImage("/bg/light.png");
+	public static int[][] tileTypeCache;
 
 	// Token: 0x040013A6 RID: 5030
-	public static int sizeMiniMap = 2;
+	public static Image imgLight = GameCanvas.loadImage("/bg/light.png");
 
 	// Token: 0x040013A7 RID: 5031
-	public static int gssx;
+	public static int sizeMiniMap = 2;
 
 	// Token: 0x040013A8 RID: 5032
-	public static int gssxe;
+	public static int gssx;
 
 	// Token: 0x040013A9 RID: 5033
-	public static int gssy;
+	public static int gssxe;
 
 	// Token: 0x040013AA RID: 5034
-	public static int gssye;
+	public static int gssy;
 
 	// Token: 0x040013AB RID: 5035
-	public static int countx;
+	public static int gssye;
 
 	// Token: 0x040013AC RID: 5036
-	public static int county;
+	public static int countx;
 
 	// Token: 0x040013AD RID: 5037
+	public static int county;
+
+	// Token: 0x040013AE RID: 5038
 	private static int[] colorMini = new int[]
 	{
 		5257738,
 		8807192
 	};
 
-	// Token: 0x040013AE RID: 5038
+	// Token: 0x040013AF RID: 5039
 	public static int yWater = 0;
 }

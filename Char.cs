@@ -4102,7 +4102,6 @@ public class Char : IMapObject
 		}
 		if (skillPaint.id >= 128 && skillPaint.id <= 134)
 		{
-			skillPaint = GameScr.sks[skillPaint.id - 65];
 			if (this.charFocus != null)
 			{
 				this.cx = this.charFocus.cx;
@@ -4117,6 +4116,27 @@ public class Char : IMapObject
 			}
 			ServerEffect.addServerEffect(60, this.cx, this.cy, 1);
 			this.telePortSkill = true;
+			if (this.me && !this.hasSendAttack)
+			{
+				MyVector myVector = new MyVector();
+				MyVector myVector2 = new MyVector();
+				int type = 0;
+				if (this.mobFocus != null)
+				{
+					myVector.addElement(this.mobFocus);
+					type = 1;
+				}
+				else if (this.charFocus != null)
+				{
+					myVector2.addElement(this.charFocus);
+					type = 2;
+				}
+				Service.gI().sendPlayerAttack(myVector, myVector2, type);
+				this.hasSendAttack = true;
+			}
+			this.skillPaint = null;
+			this.skillPaintRandomPaint = null;
+			return;
 		}
 		if (skillPaint.id >= 107 && skillPaint.id <= 113)
 		{

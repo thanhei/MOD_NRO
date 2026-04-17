@@ -1063,6 +1063,7 @@ public class Controller : IMessageHandler
 				sbyte b14 = msg.reader().readByte();
 				TileMap.tileIndex = new int[(int)b14][][];
 				TileMap.tileType = new int[(int)b14][];
+				TileMap.tileTypeCache = null;
 				for (int num43 = 0; num43 < (int)b14; num43++)
 				{
 					sbyte b15 = msg.reader().readByte();

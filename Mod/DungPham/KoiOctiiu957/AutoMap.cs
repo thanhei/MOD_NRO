@@ -20,9 +20,10 @@ namespace Mod.DungPham.KoiOctiiu957
 		// Token: 0x06000AEB RID: 2795 RVA: 0x000A21EC File Offset: 0x000A03EC
 		public static void Update()
 		{
+			long num = mSystem.currentTimeMillis();
 			if (global::Char.myCharz().meDead)
 			{
-				AutoMap.lastWaitTime = mSystem.currentTimeMillis() + 1000L;
+				AutoMap.lastWaitTime = num + 1000L;
 			}
 			if (TileMap.mapID == AutoMap.IdMapEnd)
 			{
@@ -41,23 +42,23 @@ namespace Mod.DungPham.KoiOctiiu957
 						{
 							flag = true;
 							global::Char.myCharz().itemFocus = itemMap;
-							if (mSystem.currentTimeMillis() - AutoMap.lastWaitTime > 600L)
+							if (num - AutoMap.lastWaitTime > 600L)
 							{
-								AutoMap.lastWaitTime = mSystem.currentTimeMillis();
+								AutoMap.lastWaitTime = num;
 								Service.gI().pickItem(global::Char.myCharz().itemFocus.itemMapID);
 								return;
 							}
 						}
 					}
 				}
-				if (AutoMap.isXmaping && AutoMap.isHarvestPean && GameScr.hpPotion < 10 && GameScr.gI().magicTree.currPeas > 0 && mSystem.currentTimeMillis() - AutoMap.lastWaitTime > 500L)
+				if (AutoMap.isXmaping && AutoMap.isHarvestPean && GameScr.hpPotion < 10 && GameScr.gI().magicTree.currPeas > 0 && num - AutoMap.lastWaitTime > 500L)
 				{
-					AutoMap.lastWaitTime = mSystem.currentTimeMillis();
+					AutoMap.lastWaitTime = num;
 					Service.gI().openMenu(4);
 					Service.gI().menu(4, 0, 0);
 				}
 			}
-			if (AutoMap.isXmaping && !flag && mSystem.currentTimeMillis() - AutoMap.lastWaitTime > 1000L && GameCanvas.gameTick % 20 == 0)
+			if (AutoMap.isXmaping && !flag && !global::Char.isLoadingMap && num - AutoMap.lastWaitTime > 250L && GameCanvas.gameTick % 4 == 0)
 			{
 				bool flag2 = true;
 				if (AutoMap.isFutureMap(AutoMap.IdMapEnd))
@@ -230,6 +231,7 @@ namespace Mod.DungPham.KoiOctiiu957
 							AutoMap.isUsingCapsule = true;
 							AutoMap.isOpeningPanel = false;
 							AutoMap.lastTimeOpenedPanel = mSystem.currentTimeMillis();
+							AutoMap.MarkActionSent();
 							GameCanvas.panel.mapNames = null;
 							Service.gI().useItem(0, 1, -1, item.template.id);
 							return;
@@ -249,6 +251,7 @@ namespace Mod.DungPham.KoiOctiiu957
 							if (GameCanvas.panel.mapNames[k].Contains(TileMap.mapNames[array[j]]))
 							{
 								AutoMap.isOpeningPanel = true;
+								AutoMap.MarkActionSent();
 								Service.gI().requestMapSelect(k);
 								return;
 							}
@@ -259,8 +262,14 @@ namespace Mod.DungPham.KoiOctiiu957
 			}
 			if (TileMap.mapID == array[0] && !global::Char.ischangingMap && !Controller.isStopReadMessage)
 			{
+				AutoMap.MarkActionSent();
 				AutoMap.Goto(array[1]);
 			}
+		}
+
+		private static void MarkActionSent()
+		{
+			AutoMap.lastWaitTime = mSystem.currentTimeMillis();
 		}
 
 		// Token: 0x06000AF3 RID: 2803 RVA: 0x0000916F File Offset: 0x0000736F
@@ -1161,6 +1170,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				}
 				else if (this.Npc != -1 && this.Index != -1)
 				{
+					AutoMap.MarkActionSent();
 					Service.gI().openMenu(this.Npc);
 					Service.gI().confirmMenu(0, (sbyte)this.Index);
 				}
@@ -1199,9 +1209,11 @@ namespace Mod.DungPham.KoiOctiiu957
 				this.TeleportTo(num, maxY);
 				if (waypoint.isOffline)
 				{
+					AutoMap.MarkActionSent();
 					Service.gI().getMapOffline();
 					return;
 				}
+				AutoMap.MarkActionSent();
 				Service.gI().requestChangeMap();
 			}
 

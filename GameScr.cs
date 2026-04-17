@@ -268,10 +268,13 @@ public class GameScr : mScreen, IChatable
 	{
 		Cout.println("GET onScreenSkill!");
 		GameScr.onScreenSkill = new Skill[10];
-		sbyte[] savedSkillIDs = this.loadSkillShortcutFromRMS(StaticObj.SAVE_OSKILL);
-		if (savedSkillIDs != null)
+		if (AutoSkill.isSaveData)
 		{
-			oSkillID = savedSkillIDs;
+			sbyte[] savedSkillIDs = this.loadSkillShortcutFromRMS(StaticObj.SAVE_OSKILL);
+			if (savedSkillIDs != null)
+			{
+				oSkillID = savedSkillIDs;
+			}
 		}
 		if (oSkillID == null)
 		{
@@ -291,7 +294,6 @@ public class GameScr : mScreen, IChatable
 					}
 				}
 			}
-			this.saveonScreenSkillToRMS();
 		}
 	}
 
@@ -300,10 +302,13 @@ public class GameScr : mScreen, IChatable
 	{
 		Cout.println("GET KEYSKILL!");
 		GameScr.keySkill = new Skill[10];
-		sbyte[] savedSkillIDs = this.loadSkillShortcutFromRMS(StaticObj.SAVE_KEYKILL);
-		if (savedSkillIDs != null)
+		if (AutoSkill.isSaveData)
 		{
-			kSkillID = savedSkillIDs;
+			sbyte[] savedSkillIDs = this.loadSkillShortcutFromRMS(StaticObj.SAVE_KEYKILL);
+			if (savedSkillIDs != null)
+			{
+				kSkillID = savedSkillIDs;
+			}
 		}
 		if (kSkillID == null)
 		{
@@ -323,7 +328,6 @@ public class GameScr : mScreen, IChatable
 				}
 			}
 		}
-		this.saveKeySkillToRMS();
 	}
 
 	// Token: 0x06000728 RID: 1832 RVA: 0x00061CE4 File Offset: 0x0005FEE4
@@ -4559,10 +4563,14 @@ public class GameScr : mScreen, IChatable
 				{
 					Cout.LogError("Loi ham paint char gamescr: " + ex2.ToString());
 				}
-				if (char4 != null && (!GameCanvas.panel.isShow || !GameCanvas.panel.isTypeShop()) && char4.skillPaint != null && char4.skillInfoPaint() != null && char4.indexSkill < char4.skillInfoPaint().Length)
+				if (char4 != null && (!GameCanvas.panel.isShow || !GameCanvas.panel.isTypeShop()))
 				{
-					char4.paintCharWithSkill(g);
-					char4.paintMount2(g);
+					if (char4.skillPaint != null && char4.skillInfoPaint() != null && char4.indexSkill < char4.skillInfoPaint().Length)
+					{
+						char4.paintCharWithSkill(g);
+						char4.paintMount2(g);
+					}
+					char4.paintEffect(g);
 				}
 			}
 			for (int num6 = 0; num6 < GameScr.vItemMap.size(); num6++)
@@ -6595,7 +6603,6 @@ public class GameScr : mScreen, IChatable
 					}
 				}
 				GameScr.onScreenSkill[num] = skill3;
-				this.saveonScreenSkillToRMS();
 				break;
 			}
 			case 11121:
@@ -6611,7 +6618,6 @@ public class GameScr : mScreen, IChatable
 					}
 				}
 				GameScr.keySkill[num2] = skill4;
-				this.saveKeySkillToRMS();
 				break;
 			}
 			}

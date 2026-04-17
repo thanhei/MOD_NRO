@@ -29,12 +29,35 @@ namespace Mod.DungPham.KoiOctiiu957
 			}
 			if (!global::Char.myCharz().meDead)
 			{
+				int priorityIndex = -1;
+				int maxCoolDown = -1;
 				for (int i = 0; i < GameScr.keySkill.Length; i++)
 				{
-					if (AutoSkill.isAutoUseSkills[i])
+					if (AutoSkill.isAutoUseSkills[i] && GameScr.keySkill[i] != null && GameScr.keySkill[i].coolDown > maxCoolDown)
 					{
-						AutoSkill.AutoUseSkill(i);
+						maxCoolDown = GameScr.keySkill[i].coolDown;
+						priorityIndex = i;
 					}
+				}
+				if (priorityIndex >= 0)
+				{
+					AutoSkill.AutoUseSkill(priorityIndex);
+				}
+				long now = mSystem.currentTimeMillis();
+				long heavyRemain = (priorityIndex >= 0 && GameScr.keySkill[priorityIndex] != null)
+					? (long)GameScr.keySkill[priorityIndex].coolDown - (now - GameScr.keySkill[priorityIndex].lastTimeUseThisSkill)
+					: long.MaxValue;
+				for (int i = 0; i < GameScr.keySkill.Length; i++)
+				{
+					if (i == priorityIndex || !AutoSkill.isAutoUseSkills[i] || GameScr.keySkill[i] == null)
+					{
+						continue;
+					}
+					if (heavyRemain <= (long)GameScr.keySkill[i].coolDown)
+					{
+						continue;
+					}
+					AutoSkill.AutoUseSkill(i);
 				}
 			}
 			if (AutoSkill.isLoadKeySkill && GameCanvas.gameTick % 20 == 0)
@@ -193,9 +216,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			case 13:
 			{
 				int num2 = (int)p;
-				GameScr.keySkill[num2].coolDown = 0;
-				GameScr.keySkill[num2].manaUse = 0;
-				GameScr.info1.addInfo("Đóng Băng " + GameScr.keySkill[num2].template.name, 0);
+				AutoSkill.ToggleFreezeSkill(GameScr.keySkill[num2]);
 				return;
 			}
 			default:
@@ -366,11 +387,9 @@ namespace Mod.DungPham.KoiOctiiu957
 					}
 					if (AutoSkill.isMeHasEnoughMP(GameScr.keySkill[skillIndex]) && !GameScr.gI().isCharging() && mSystem.currentTimeMillis() - AutoSkill.lastTimeAutoUseSkill > 150L)
 					{
-						if (AutoSkill.timeAutoSkills[skillIndex] == -1L && GameCanvas.gameTick % 20 == 0)
+						if (AutoSkill.timeAutoSkills[skillIndex] == -1L)
 						{
-							AutoSkill.lastTimeUseSkill[skillIndex] = mSystem.currentTimeMillis();
-							AutoSkill.lastTimeAutoUseSkill = mSystem.currentTimeMillis();
-							GameScr.gI().doSelectSkill(GameScr.keySkill[skillIndex], true);
+							AutoSkill.timeAutoSkills[skillIndex] = (long)(GameScr.keySkill[skillIndex].coolDown + 100);
 						}
 						if (mSystem.currentTimeMillis() - AutoSkill.lastTimeUseSkill[skillIndex] > AutoSkill.timeAutoSkills[skillIndex])
 						{
@@ -537,9 +556,31 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static void FreezeSelectedSkill()
 		{
 			int mySkillIndex = AutoSkill.GetMySkillIndex();
-			GameScr.keySkill[mySkillIndex].coolDown = 0;
-			GameScr.keySkill[mySkillIndex].manaUse = 0;
-			GameScr.info1.addInfo("Đóng Băng\n" + GameScr.keySkill[mySkillIndex].template.name, 0);
+			AutoSkill.ToggleFreezeSkill(GameScr.keySkill[mySkillIndex]);
+		}
+
+		private static void ToggleFreezeSkill(Skill skill)
+		{
+			if (skill == null)
+			{
+				return;
+			}
+			sbyte id = skill.template.id;
+			if (AutoSkill.frozenOriginal.ContainsKey(id))
+			{
+				int[] original = AutoSkill.frozenOriginal[id];
+				skill.coolDown = original[0];
+				skill.manaUse = original[1];
+				AutoSkill.frozenOriginal.Remove(id);
+				GameScr.info1.addInfo("Hủy Đóng Băng\n" + skill.template.name, 0);
+			}
+			else
+			{
+				AutoSkill.frozenOriginal[id] = new int[] { skill.coolDown, skill.manaUse };
+				skill.coolDown = 0;
+				skill.manaUse = 0;
+				GameScr.info1.addInfo("Đóng Băng\n" + skill.template.name, 0);
+			}
 		}
 
 		// Token: 0x040015BF RID: 5567
@@ -602,5 +643,7 @@ namespace Mod.DungPham.KoiOctiiu957
 
 		// Token: 0x040015D1 RID: 5585
 		private static long lastTimeAutoUseSkill;
+
+		private static Dictionary<sbyte, int[]> frozenOriginal = new Dictionary<sbyte, int[]>();
 	}
 }

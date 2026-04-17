@@ -8142,7 +8142,7 @@ public class Panel : IActionListener, IChatable
 		this.currInfoItem = this.selected;
 		myVector.addElement(new Command(mResources.REVENGE, this, 10000, (InfoItem)this.vEnemy.elementAt(this.currInfoItem)));
 		myVector.addElement(new Command(mResources.DELETE, this, 10001, (InfoItem)this.vEnemy.elementAt(this.currInfoItem)));
-		myVector.addElement(new Command(mResources.den, this, 8004, (InfoItem)this.vFriend.elementAt(this.currInfoItem)));
+		myVector.addElement(new Command(mResources.den, this, 8004, (InfoItem)this.vEnemy.elementAt(this.currInfoItem)));
 		GameCanvas.menu.startAt(myVector, this.X, (this.selected + 1) * this.ITEM_HEIGHT - this.cmy + this.yScroll);
 		this.addFriend((InfoItem)this.vEnemy.elementAt(this.selected));
 	}

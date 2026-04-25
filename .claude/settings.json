@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls Session_ME*.cs)",
+      "Bash(xargs file:*)",
+      "Bash(awk -F'==' '{print $2}')"
+    ]
+  }
+}

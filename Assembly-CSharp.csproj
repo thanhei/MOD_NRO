@@ -51,6 +51,7 @@
     <Compile Include="ArrayCast.cs" />
     <Compile Include="Arrow.cs" />
     <Compile Include="Arrowpaint.cs" />
+    <Compile Include="AutoManagerData.cs" />
     <Compile Include="Assets\src\e\ChatVip.cs" />
     <Compile Include="Assets\src\e\Small.cs" />
     <Compile Include="Assets\src\e\SmallSave.cs" />

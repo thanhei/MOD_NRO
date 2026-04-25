@@ -29,35 +29,12 @@ namespace Mod.DungPham.KoiOctiiu957
 			}
 			if (!global::Char.myCharz().meDead)
 			{
-				int priorityIndex = -1;
-				int maxCoolDown = -1;
 				for (int i = 0; i < GameScr.keySkill.Length; i++)
 				{
-					if (AutoSkill.isAutoUseSkills[i] && GameScr.keySkill[i] != null && GameScr.keySkill[i].coolDown > maxCoolDown)
+					if (AutoSkill.isAutoUseSkills[i])
 					{
-						maxCoolDown = GameScr.keySkill[i].coolDown;
-						priorityIndex = i;
+						AutoSkill.AutoUseSkill(i);
 					}
-				}
-				if (priorityIndex >= 0)
-				{
-					AutoSkill.AutoUseSkill(priorityIndex);
-				}
-				long now = mSystem.currentTimeMillis();
-				long heavyRemain = (priorityIndex >= 0 && GameScr.keySkill[priorityIndex] != null)
-					? (long)GameScr.keySkill[priorityIndex].coolDown - (now - GameScr.keySkill[priorityIndex].lastTimeUseThisSkill)
-					: long.MaxValue;
-				for (int i = 0; i < GameScr.keySkill.Length; i++)
-				{
-					if (i == priorityIndex || !AutoSkill.isAutoUseSkills[i] || GameScr.keySkill[i] == null)
-					{
-						continue;
-					}
-					if (heavyRemain <= (long)GameScr.keySkill[i].coolDown)
-					{
-						continue;
-					}
-					AutoSkill.AutoUseSkill(i);
 				}
 			}
 			if (AutoSkill.isLoadKeySkill && GameCanvas.gameTick % 20 == 0)
@@ -366,7 +343,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		}
 
 		// Token: 0x06000B23 RID: 2851 RVA: 0x000A4508 File Offset: 0x000A2708
-		private static void AutoUseSkill(int skillIndex)
+				private static void AutoUseSkill(int skillIndex)
 		{
 			if (TileMap.mapID != 21 && TileMap.mapID != 22 && TileMap.mapID != 23)
 			{
@@ -383,19 +360,26 @@ namespace Mod.DungPham.KoiOctiiu957
 					if (GameScr.keySkill[skillIndex].coolDown == 0)
 					{
 						AutoSkill.timeAutoSkills[skillIndex] = 500L;
-						return;
 					}
 					if (AutoSkill.isMeHasEnoughMP(GameScr.keySkill[skillIndex]) && !GameScr.gI().isCharging() && mSystem.currentTimeMillis() - AutoSkill.lastTimeAutoUseSkill > 150L)
 					{
 						if (AutoSkill.timeAutoSkills[skillIndex] == -1L)
 						{
-							AutoSkill.timeAutoSkills[skillIndex] = (long)(GameScr.keySkill[skillIndex].coolDown + 100);
+							AutoSkill.timeAutoSkills[skillIndex] = ((GameScr.keySkill[skillIndex].coolDown > 0) ? ((long)(GameScr.keySkill[skillIndex].coolDown + 100)) : 500L);
 						}
 						if (mSystem.currentTimeMillis() - AutoSkill.lastTimeUseSkill[skillIndex] > AutoSkill.timeAutoSkills[skillIndex])
 						{
-							AutoSkill.lastTimeUseSkill[skillIndex] = mSystem.currentTimeMillis();
-							AutoSkill.lastTimeAutoUseSkill = mSystem.currentTimeMillis();
-							GameScr.gI().doSelectSkill(GameScr.keySkill[skillIndex], true);
+							long num = mSystem.currentTimeMillis();
+							AutoSkill.lastTimeUseSkill[skillIndex] = num;
+							AutoSkill.lastTimeAutoUseSkill = num;
+							if (GameScr.keySkill[skillIndex].template.isSkillSpec())
+							{
+								GameScr.gI().doSelectSkill(GameScr.keySkill[skillIndex], true);
+							}
+							else
+							{
+								GameScr.gI().doUseSkill(GameScr.keySkill[skillIndex], true);
+							}
 						}
 					}
 				}

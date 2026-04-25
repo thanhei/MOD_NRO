@@ -659,11 +659,7 @@ public class LoginScr : mScreen, IActionListener
 
 	private int GetAutoManagerPageSize()
 	{
-		int num = (this.autoManagerPopupH - 88) / 48;
-		if (num < 2)
-		{
-			num = 2;
-		}
+		int num = 4;
 		if (num > this.autoManagerDelete.Length)
 		{
 			num = this.autoManagerDelete.Length;
@@ -684,6 +680,31 @@ public class LoginScr : mScreen, IActionListener
 			num2++;
 		}
 		return (num2 > 0) ? num2 : 1;
+	}
+
+	private int GetAutoManagerListStartY()
+	{
+		return this.autoManagerPopupY + 80;
+	}
+
+	private int GetAutoManagerItemHeight()
+	{
+		int num = this.GetAutoManagerPageSize();
+		if (num <= 0)
+		{
+			return 30;
+		}
+		int num2 = this.cmdAutoManagerSave.y - 8 - this.GetAutoManagerListStartY();
+		int num3 = num2 / num;
+		if (num3 < 24)
+		{
+			num3 = 24;
+		}
+		if (num3 > 30)
+		{
+			num3 = 30;
+		}
+		return num3;
 	}
 
 	private void UpdateAutoManagerLayout()
@@ -793,8 +814,8 @@ public class LoginScr : mScreen, IActionListener
 			}
 			int pageSize = this.GetAutoManagerPageSize();
 			int startIndex = this.autoManagerPage * pageSize;
-			int startY = this.autoManagerPopupY + 80;
-			int itemHeight = 30;
+			int startY = this.GetAutoManagerListStartY();
+			int itemHeight = this.GetAutoManagerItemHeight();
 			int itemWidth = this.autoManagerPopupW - 100;
 			int deleteW = 50;
 			int deleteH = itemHeight - 4;
@@ -951,8 +972,8 @@ public class LoginScr : mScreen, IActionListener
 		{
 			int pageSize = this.GetAutoManagerPageSize();
 			int startIndex = this.autoManagerPage * pageSize;
-			int startY = this.autoManagerPopupY + 80;
-			int itemHeight = 30;
+			int startY = this.GetAutoManagerListStartY();
+			int itemHeight = this.GetAutoManagerItemHeight();
 			if (this.autoManagerAccounts.size() == 0)
 			{
 				mFont.tahoma_7b_dark.drawString(g, "Chưa có tài khoản được lưu", this.autoManagerPopupX + this.autoManagerPopupW / 2, this.autoManagerPopupY + 110, 2);
@@ -969,7 +990,7 @@ public class LoginScr : mScreen, IActionListener
 				int itemWidth = this.autoManagerPopupW - 100;
 				Command.paintOngMau(Command.btn0left, Command.btn0mid, Command.btn0right, this.autoManagerPopupX + 12, y, itemWidth, g);
 				string text = index + 1 + ". " + acc.Username;
-				mFont.tahoma_7b_dark.drawString(g, this.GetAutoManagerText(text, itemWidth - 20), this.autoManagerPopupX + 20, y + 7, 0);
+				mFont.tahoma_7b_dark.drawString(g, this.GetAutoManagerText(text, itemWidth - 20), this.autoManagerPopupX + 20, y + (itemHeight - mFont.tahoma_7b_dark.getHeight()) / 2, 0);
 				int deleteW = 50;
 				int deleteH = itemHeight - 4;
 				this.autoManagerDelete[i].w = deleteW;

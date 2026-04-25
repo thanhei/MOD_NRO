@@ -131,8 +131,8 @@ public class Item
 			39423
 		};
 		int[] array4 = new int[4];
-		array4[1] = 68;
-		array4[2] = 68;
+		array4[1] = 57;
+		array4[2] = 57;
 		int[] array3 = array4;
 		int baseW = 34;
 		int baseH = 23;
@@ -220,42 +220,28 @@ public class Item
 	private int method_0(int t)
 	{
 		int w = 34;
-		int max = w - 1;
-		int p = t % (w * 4);
-		if (p < w)
-		{
-			return p;
-		}
-		if (p < w * 2)
-		{
-			return max;
-		}
-		if (p < w * 3)
-		{
-			return max - p % w;
-		}
+		int h = 23;
+		int perim = 2 * w + 2 * h;
+		int p = t % perim;
+		if (p < 0) p += perim;
+		if (p < w) return p;
+		if (p < w + h) return w - 1;
+		if (p < 2 * w + h) return (w - 1) - (p - (w + h));
 		return 0;
 	}
 
 	// Token: 0x06000C20 RID: 3104
 	private int method_1(int t)
 	{
+		int w = 34;
 		int h = 23;
-		int max = h - 1;
-		int p = t % (h * 4);
-		if (p < h)
-		{
-			return 0;
-		}
-		if (p < h * 2)
-		{
-			return p % h;
-		}
-		if (p < h * 3)
-		{
-			return max;
-		}
-		return max - p % h;
+		int perim = 2 * w + 2 * h;
+		int p = t % perim;
+		if (p < 0) p += perim;
+		if (p < w) return 0;
+		if (p < w + h) return p - w;
+		if (p < 2 * w + h) return h - 1;
+		return (h - 1) - (p - (2 * w + h));
 	}
 
 

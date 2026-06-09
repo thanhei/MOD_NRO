@@ -570,7 +570,11 @@ public class GameScr : mScreen, IChatable
 		MyVector myVector = new MyVector();
 		for (int i = 0; i < menu.Length; i++)
 		{
-			myVector.addElement(new Command(menu[i], 11057, npc));
+			if (TileMap.mapID == 84 && npc != null && npc.template != null && npc.template.npcTemplateId == 21 && menu[i] != null && menu[i].Trim().Equals(mResources.UPGRADE))
+			{
+				continue;
+			}
+			myVector.addElement(new Command(menu[i], 11057, new object[] { npc, i }));
 		}
 		GameCanvas.menu.startAt(myVector, 2);
 	}
@@ -6488,12 +6492,14 @@ public class GameScr : mScreen, IChatable
 								{
 									Effect2.vEffect2Outside.removeAllElements();
 									Effect2.vEffect2.removeAllElements();
-									Npc npc = (Npc)p;
+									object[] menuData = (object[])p;
+									Npc npc = (Npc)menuData[0];
+									int originalIndex = (int)menuData[1];
 									if (npc.idItem == 0)
 									{
-										Service.gI().confirmMenu((short)npc.template.npcTemplateId, (sbyte)GameCanvas.menu.menuSelectedItem);
+										Service.gI().confirmMenu((short)npc.template.npcTemplateId, (sbyte)originalIndex);
 									}
-									else if (GameCanvas.menu.menuSelectedItem == 0)
+									else if (originalIndex == 0)
 									{
 										Service.gI().pickItem(npc.idItem);
 									}

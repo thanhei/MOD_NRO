@@ -483,16 +483,12 @@ public class GameScr : mScreen, IChatable
 
 	private string getSkillShortcutRmsKey(string baseKey)
 	{
-		if (global::Char.myCharz() == null)
+		global::Char c = global::Char.myCharz();
+		if (c == null || c.charID <= 0)
 		{
 			return baseKey;
 		}
-		return string.Concat(new object[]
-		{
-			baseKey,
-			"_",
-			global::Char.myCharz().cgender
-		});
+		return baseKey + "_" + c.charID.ToString();
 	}
 
 	private sbyte[] loadSkillShortcutFromRMS(string baseKey)

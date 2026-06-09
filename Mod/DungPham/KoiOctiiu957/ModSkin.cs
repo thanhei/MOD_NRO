@@ -26,6 +26,10 @@ namespace Mod.DungPham.KoiOctiiu957
 			{
 				return;
 			}
+			if (@char.charID > 0 && @char.charID != ModSkin.lastLoadedCharId)
+			{
+				ModSkin.ReloadForAccount(@char.charID);
+			}
 			ModSkin.EnsureSkinModsResolved();
 			if (ModSkin.modHeadPart != -1)
 			{
@@ -43,6 +47,28 @@ namespace Mod.DungPham.KoiOctiiu957
 			{
 				@char.bag = ModSkin.modBackPart;
 			}
+		}
+
+		private static void ReloadForAccount(int charId)
+		{
+			ModSkin.lastLoadedCharId = charId;
+			ModSkin.modHeadItemId = 0;
+			ModSkin.modBodyItemId = 0;
+			ModSkin.modLegItemId = 0;
+			ModSkin.modBackItemId = 0;
+			ModSkin.modBoardItemId = 0;
+			ModSkin.modHeadPart = -1;
+			ModSkin.modBodyPart = -1;
+			ModSkin.modLegPart = -1;
+			ModSkin.modBackPart = -1;
+			ModSkin.modBoardMountId = -1;
+			ModSkin.modBoardFallbackImageIndex = -1;
+			ModSkin.originalHeadPart = -1;
+			ModSkin.originalBodyPart = -1;
+			ModSkin.originalLegPart = -1;
+			ModSkin.originalBackPart = -1;
+			ModSkin.LoadSkinMods();
+			ModSkin.LoadAnimationSetting();
 		}
 
 		public void onChatFromMe(string text, string to)
@@ -421,19 +447,29 @@ namespace Mod.DungPham.KoiOctiiu957
 			}
 		}
 
+		private static string GetAccountPrefix()
+		{
+			global::Char c = global::Char.myCharz();
+			if (c != null && c.charID > 0)
+			{
+				return "koi_skin_" + c.charID.ToString() + "_";
+			}
+			return "koi_skin_";
+		}
+
 		private static void SaveSkinMod(string key, int itemId)
 		{
-			Rms.saveRMSString("koi_skin_" + key, itemId.ToString());
+			Rms.saveRMSString(ModSkin.GetAccountPrefix() + key, itemId.ToString());
 		}
 
 		private static void SaveAnimationSetting()
 		{
-			Rms.saveRMSString("koi_skin_item_animation", ModSkin.isItemAnimationEnabled ? "1" : "0");
+			Rms.saveRMSString(ModSkin.GetAccountPrefix() + "item_animation", ModSkin.isItemAnimationEnabled ? "1" : "0");
 		}
 
 		private static int LoadSkinMod(string key)
 		{
-			string text = Rms.loadRMSString("koi_skin_" + key);
+			string text = Rms.loadRMSString(ModSkin.GetAccountPrefix() + key);
 			int result;
 			if (string.IsNullOrEmpty(text) || !int.TryParse(text, out result))
 			{
@@ -444,7 +480,7 @@ namespace Mod.DungPham.KoiOctiiu957
 
 		private static void LoadAnimationSetting()
 		{
-			ModSkin.isItemAnimationEnabled = Rms.loadRMSString("koi_skin_item_animation") != "0";
+			ModSkin.isItemAnimationEnabled = Rms.loadRMSString(ModSkin.GetAccountPrefix() + "item_animation") != "0";
 		}
 
 		private static void LoadSkinMods()
@@ -647,6 +683,8 @@ namespace Mod.DungPham.KoiOctiiu957
 		private static int originalBackPart = -1;
 
 		private static bool isItemAnimationEnabled = true;
+
+		private static int lastLoadedCharId = -1;
 
 	}
 }

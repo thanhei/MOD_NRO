@@ -707,13 +707,12 @@ public class CrackBallScr : mScreen
 			while (CrackBallScr.isAutoCrackBall && GameCanvas.currentScreen == CrackBallScr.instance)
 			{
 				this.indexSkillSelect = 2;
-				while (num < 7 && this.step != 5)
+				for (num = 0; num < listBall.Length && step != 5; num++)
 				{
 					this.doClickBall(num);
-					num++;
-					Thread.Sleep(300);
 				}
-				if (num == 7)
+				num = listBall.Length;
+				if (num == listBall.Length)
 				{
 					Thread.Sleep(800);
 					CrackBallScr.gI().useSkillCrackBall();

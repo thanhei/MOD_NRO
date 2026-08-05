@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
@@ -952,6 +953,25 @@ namespace Mod.DungPham.KoiOctiiu957
 			if (text.Equals(""))
 			{
 				result = false;
+			}
+			else if (text.Equals("copy"))
+			{
+				global::Char focus = global::Char.myCharz().charFocus;
+				if (focus == null)
+				{
+					GameScr.info1.addInfo("Vui lòng chọn mục tiêu!", 0);
+					return true;
+				}
+				if (focus.isPet || focus.isMiniPet || string.IsNullOrEmpty(focus.cName) || focus.cName.StartsWith("#") || focus.cName.StartsWith("$") || focus.cName == "Trọng tài")
+				{
+					GameScr.info1.addInfo("Chỉ copy người, không copy NPC/Pet!", 0);
+					return true;
+				}
+				// Copy raw parts (head, body, leg, back) from the focus char and persist
+				Mod.DungPham.KoiOctiiu957.ModSkin.ApplySkinParts(focus.head, focus.body, focus.leg);
+				Mod.DungPham.KoiOctiiu957.ModSkin.Update();
+				GameScr.info1.addInfo("Đã copy ngoại hình.", 0);
+				return true;
 			}
 			else if (text.StartsWith("k_"))
 			{

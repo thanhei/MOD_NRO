@@ -478,6 +478,22 @@ namespace Mod.DungPham.KoiOctiiu957
 			return result;
 		}
 
+		private static void SaveSkinPart(string key, int part)
+		{
+			Rms.saveRMSString(ModSkin.GetAccountPrefix() + key + "_part", part.ToString());
+		}
+
+		private static int LoadSkinPart(string key)
+		{
+			string text = Rms.loadRMSString(ModSkin.GetAccountPrefix() + key + "_part");
+			int result;
+			if (string.IsNullOrEmpty(text) || !int.TryParse(text, out result))
+			{
+				return -1;
+			}
+			return result;
+		}
+
 		private static void LoadAnimationSetting()
 		{
 			ModSkin.isItemAnimationEnabled = Rms.loadRMSString(ModSkin.GetAccountPrefix() + "item_animation") != "0";
@@ -490,6 +506,27 @@ namespace Mod.DungPham.KoiOctiiu957
 			ModSkin.modLegItemId = ModSkin.LoadSkinMod("leg");
 			ModSkin.modBackItemId = ModSkin.LoadSkinMod("back");
 			ModSkin.modBoardItemId = ModSkin.LoadSkinMod("board");
+			// If no item IDs saved, try load raw part numbers (copied directly)
+			if (ModSkin.modHeadItemId <= 0)
+			{
+				int p = ModSkin.LoadSkinPart("head");
+				if (p >= 0) ModSkin.modHeadPart = p;
+			}
+			if (ModSkin.modBodyItemId <= 0)
+			{
+				int p2 = ModSkin.LoadSkinPart("body");
+				if (p2 >= 0) ModSkin.modBodyPart = p2;
+			}
+			if (ModSkin.modLegItemId <= 0)
+			{
+				int p3 = ModSkin.LoadSkinPart("leg");
+				if (p3 >= 0) ModSkin.modLegPart = p3;
+			}
+			if (ModSkin.modBackItemId <= 0)
+			{
+				int p4 = ModSkin.LoadSkinPart("back");
+				if (p4 >= 0) ModSkin.modBackPart = p4;
+			}
 			ModSkin.EnsureSkinModsResolved();
 		}
 
@@ -561,6 +598,70 @@ namespace Mod.DungPham.KoiOctiiu957
 			default:
 				return;
 			}
+		}
+
+		// Public helper to apply skin item IDs programmatically (copy from another char)
+		public static void ApplySkinItemIds(int headItemId, int bodyItemId, int legItemId, int backItemId)
+		{
+			if (headItemId > 0)
+			{
+				ModSkin.SetSkinSlot(0, headItemId);
+			}
+			else
+			{
+				ModSkin.ClearSkinSlot(0);
+			}
+			if (bodyItemId > 0)
+			{
+				ModSkin.SetSkinSlot(1, bodyItemId);
+			}
+			else
+			{
+				ModSkin.ClearSkinSlot(1);
+			}
+			if (legItemId > 0)
+			{
+				ModSkin.SetSkinSlot(2, legItemId);
+			}
+			else
+			{
+				ModSkin.ClearSkinSlot(2);
+			}
+			if (backItemId > 0)
+			{
+				ModSkin.SetSkinSlot(3, backItemId);
+			}
+			else
+			{
+				ModSkin.ClearSkinSlot(3);
+			}
+			GameScr.info1.addInfo("Đã áp dụng ngoại hình từ mục tiêu.", 0);
+		}
+
+		// Public helper to apply raw part numbers (head/body/leg/back)
+		public static void ApplySkinParts(int headPart, int bodyPart, int legPart)
+		{
+			if (headPart >= 0)
+			{
+				ModSkin.modHeadPart = headPart;
+				ModSkin.modHeadItemId = 0;
+				ModSkin.SaveSkinPart("head", headPart);
+			}
+			if (bodyPart >= 0)
+			{
+				ModSkin.modBodyPart = bodyPart;
+				ModSkin.modBodyItemId = 0;
+				ModSkin.SaveSkinPart("body", bodyPart);
+			}
+			if (legPart >= 0)
+			{
+				ModSkin.modLegPart = legPart;
+				ModSkin.modLegItemId = 0;
+				ModSkin.SaveSkinPart("leg", legPart);
+			}
+			
+			ModSkin.EnsureSkinModsResolved();
+			GameScr.info1.addInfo("Đã áp dụng ngoại hình (parts).", 0);
 		}
 
 		private static bool TryResolveBoardMountId(ItemTemplate itemTemplate, out short mountId)

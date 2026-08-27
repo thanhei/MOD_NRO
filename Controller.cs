@@ -5104,7 +5104,6 @@ public class Controller : IMessageHandler
 				}
 			}
 			Resources.UnloadUnusedAssets();
-			GC.Collect();
 			GameCanvas.debug("SA75x5", 2);
 			num = (int)msg.reader().readByte();
 			Mob.newMob.removeAllElements();
@@ -5218,7 +5217,10 @@ public class Controller : IMessageHandler
 			num = (int)msg.reader().readByte();
 			string text = string.Empty;
 			Res.outz("item size = " + num);
-			text = text + "item: " + num;
+			if (mSystem.isTest)
+			{
+				text = text + "item: " + num;
+			}
 			for (int k = 0; k < num; k++)
 			{
 				short itemMapID = msg.reader().readShort();
@@ -5246,7 +5248,10 @@ public class Controller : IMessageHandler
 				{
 					GameScr.vItemMap.addElement(itemMap);
 				}
-				text = text + num4 + ",";
+				if (mSystem.isTest)
+				{
+					text = text + num4 + ",";
+				}
 			}
 			Res.err("sl item on map " + text + "\n");
 			TileMap.vCurrItem.removeAllElements();
@@ -5258,7 +5263,7 @@ public class Controller : IMessageHandler
 			if (!GameCanvas.lowGraphic || (GameCanvas.lowGraphic && TileMap.isVoDaiMap()) || TileMap.mapID == 45 || TileMap.mapID == 46 || TileMap.mapID == 47 || TileMap.mapID == 48 || TileMap.mapID == 120 || TileMap.mapID == 128 || TileMap.mapID == 170 || TileMap.mapID == 49)
 			{
 				short num6 = msg.reader().readShort();
-				text = "item high graphic: ";
+				text = (mSystem.isTest ? "item high graphic: " : string.Empty);
 				for (int m = 0; m < (int)num6; m++)
 				{
 					short num7 = msg.reader().readShort();
@@ -5352,7 +5357,10 @@ public class Controller : IMessageHandler
 						bgItem.changeColor();
 						TileMap.vCurrItem.addElement(bgItem);
 					}
-					text = text + num7 + ",";
+					if (mSystem.isTest)
+					{
+						text = text + num7 + ",";
+					}
 				}
 				Res.err("item High Graphics: " + text);
 				for (int n = 0; n < BgItem.vKeysLast.size(); n++)

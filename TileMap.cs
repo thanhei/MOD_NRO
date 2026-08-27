@@ -262,7 +262,7 @@ public class TileMap
 							TileMap.imgTile[j] = null;
 						}
 					}
-					mSystem.gcc();
+					UnityEngine.Resources.UnloadUnusedAssets();
 				}
 				TileMap.imgTile = new Image[100];
 				string path = string.Empty;

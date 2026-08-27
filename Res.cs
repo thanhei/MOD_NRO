@@ -7,6 +7,10 @@ public class Res
 	// Token: 0x060009C9 RID: 2505 RVA: 0x00095280 File Offset: 0x00093480
 	public static void init()
 	{
+		if (Res.cosz != null)
+		{
+			return;
+		}
 		Res.cosz = new short[91];
 		Res.tanz = new int[91];
 		for (int i = 0; i <= 90; i++)

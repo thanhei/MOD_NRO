@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 
 // Token: 0x0200001C RID: 28
@@ -276,6 +276,28 @@ public class TField : IActionListener
 		{
 			return;
 		}
+		if (this.inputType == TField.INPUT_TYPE_ANY && Mod.DungPham.KoiOctiiu957.VietnameseTelex.isEnabled)
+		{
+			string strBefore = this.text.Substring(0, this.caretPos);
+			string strAfter = this.text.Substring(this.caretPos);
+			string newBefore;
+			if (Mod.DungPham.KoiOctiiu957.VietnameseTelex.ProcessKey(strBefore, (char)keyCode, out newBefore))
+			{
+				string fullText = newBefore + strAfter;
+				if (fullText.Length <= this.maxTextLenght)
+				{
+					this.text = fullText;
+					this.caretPos = newBefore.Length;
+					this.setPasswordTest();
+					this.setOffset(0);
+					if (TField.kb != null)
+					{
+						TField.kb.text = this.text;
+					}
+					return;
+				}
+			}
+		}
 		if (this.text.Length < this.maxTextLenght)
 		{
 			string str = this.text.Substring(0, this.caretPos) + (char)keyCode;
@@ -355,6 +377,15 @@ public class TField : IActionListener
 		{
 			this.clear();
 			return true;
+		}
+		if (keyCode == 22) // Ctrl + V
+		{
+			string clip = UnityEngine.GUIUtility.systemCopyBuffer;
+			if (!string.IsNullOrEmpty(clip))
+			{
+				this.insertText(clip);
+				return true;
+			}
 		}
 		if (TField.isQwerty && keyCode >= 32)
 		{

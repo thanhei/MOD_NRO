@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Assets.src.e;
 using Assets.src.f;
 using Assets.src.g;
@@ -5269,9 +5269,9 @@ public class Controller : IMessageHandler
 					short num7 = msg.reader().readShort();
 					short num8 = msg.reader().readShort();
 					short num9 = msg.reader().readShort();
-					if (TileMap.getBIById((int)num7) != null)
+					BgItem bibyId = TileMap.getBIById((int)num7);
+					if (bibyId != null)
 					{
-						BgItem bibyId = TileMap.getBIById((int)num7);
 						BgItem bgItem = new BgItem();
 						bgItem.id = (int)num7;
 						bgItem.idImage = bibyId.idImage;
@@ -5288,7 +5288,8 @@ public class Controller : IMessageHandler
 								bgItem.trans = 0;
 							}
 						}
-						if (!BgItem.imgNew.containsKey(bgItem.idImage + string.Empty))
+						string strIdImage = bgItem.idImage.ToString();
+						if (!BgItem.imgNew.containsKey(strIdImage))
 						{
 							if (mGraphics.zoomLevel == 1)
 							{
@@ -5298,7 +5299,7 @@ public class Controller : IMessageHandler
 									image = Image.createRGBImage(new int[1], 1, 1, true);
 									Service.gI().getBgTemplate(bgItem.idImage);
 								}
-								BgItem.imgNew.put(bgItem.idImage + string.Empty, image);
+								BgItem.imgNew.put(strIdImage, image);
 							}
 							else
 							{
@@ -5325,7 +5326,7 @@ public class Controller : IMessageHandler
 										Image image = Image.createImage(array, 0, array.Length);
 										if (image != null)
 										{
-											BgItem.imgNew.put(bgItem.idImage + string.Empty, image);
+											BgItem.imgNew.put(strIdImage, image);
 										}
 										else
 										{
@@ -5345,14 +5346,14 @@ public class Controller : IMessageHandler
 										image = Image.createRGBImage(new int[1], 1, 1, true);
 										Service.gI().getBgTemplate(bgItem.idImage);
 									}
-									BgItem.imgNew.put(bgItem.idImage + string.Empty, image);
+									BgItem.imgNew.put(strIdImage, image);
 								}
 							}
-							BgItem.vKeysLast.addElement(bgItem.idImage + string.Empty);
+							BgItem.vKeysLast.addElement(strIdImage);
 						}
-						if (!BgItem.isExistKeyNews(bgItem.idImage + string.Empty))
+						if (!BgItem.isExistKeyNews(strIdImage))
 						{
-							BgItem.vKeysNew.addElement(bgItem.idImage + string.Empty);
+							BgItem.vKeysNew.addElement(strIdImage);
 						}
 						bgItem.changeColor();
 						TileMap.vCurrItem.addElement(bgItem);

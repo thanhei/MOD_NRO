@@ -1,4 +1,4 @@
-﻿using Assets.src.g;
+using Assets.src.g;
 
 namespace Mod.DungPham.KoiOctiiu957
 {
@@ -31,21 +31,40 @@ namespace Mod.DungPham.KoiOctiiu957
 				ModSkin.ReloadForAccount(@char.charID);
 			}
 			ModSkin.EnsureSkinModsResolved();
-			if (ModSkin.modHeadPart != -1)
+			if (ModSkin.modHeadPart != -1 && @char.headTemp == -1)
 			{
 				@char.head = ModSkin.modHeadPart;
 			}
-			if (ModSkin.modBodyPart != -1)
+			if (ModSkin.modBodyPart != -1 && @char.bodyTemp == -1)
 			{
 				@char.body = ModSkin.modBodyPart;
 			}
-			if (ModSkin.modLegPart != -1)
+			if (ModSkin.modLegPart != -1 && @char.legTemp == -1)
 			{
 				@char.leg = ModSkin.modLegPart;
 			}
-			if (ModSkin.modBackPart != -1)
+			if (ModSkin.modBackPart != -1 && @char.bagTemp == -1)
 			{
 				@char.bag = ModSkin.modBackPart;
+			}
+			
+			if (ModSkin.modPetHeadPart != -1 || ModSkin.modPetBodyPart != -1 || ModSkin.modPetLegPart != -1)
+			{
+				for (int i = 0; i < GameScr.vCharInMap.size(); i++)
+				{
+					global::Char c = (global::Char)GameScr.vCharInMap.elementAt(i);
+					if (c.isMiniPet && c.cName == @char.cName)
+					{
+						if (ModSkin.originalPetHeadPart == -1) ModSkin.originalPetHeadPart = c.head;
+						if (ModSkin.originalPetBodyPart == -1) ModSkin.originalPetBodyPart = c.body;
+						if (ModSkin.originalPetLegPart == -1) ModSkin.originalPetLegPart = c.leg;
+						
+						if (ModSkin.modPetHeadPart != -1) c.head = ModSkin.modPetHeadPart;
+						if (ModSkin.modPetBodyPart != -1) c.body = ModSkin.modPetBodyPart;
+						if (ModSkin.modPetLegPart != -1) c.leg = ModSkin.modPetLegPart;
+						break;
+					}
+				}
 			}
 		}
 
@@ -148,18 +167,6 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static string GetMenuSummary()
 		{
 			int num = 0;
-			if (ModSkin.modHeadItemId > 0)
-			{
-				num++;
-			}
-			if (ModSkin.modBodyItemId > 0)
-			{
-				num++;
-			}
-			if (ModSkin.modLegItemId > 0)
-			{
-				num++;
-			}
 			if (ModSkin.modBackItemId > 0)
 			{
 				num++;
@@ -168,7 +175,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			{
 				num++;
 			}
-			return (num != 0) ? ("ON " + num.ToString() + "/5") : "OFF";
+			return (num != 0) ? ("ON " + num.ToString() + "/2") : "OFF";
 		}
 
 		public static bool ShouldAnimateBoard()
@@ -214,12 +221,8 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static void ShowMenu()
 		{
 			MyVector myVector = new MyVector();
-			myVector.addElement(new Command("Đầu\n" + ModSkin.GetSkinLabel(ModSkin.modHeadItemId), ModSkin.getInstance(), 38, null));
-			myVector.addElement(new Command("Thân\n" + ModSkin.GetSkinLabel(ModSkin.modBodyItemId), ModSkin.getInstance(), 39, null));
-			myVector.addElement(new Command("Chân\n" + ModSkin.GetSkinLabel(ModSkin.modLegItemId), ModSkin.getInstance(), 40, null));
 			myVector.addElement(new Command("Đeo Lưng\n" + ModSkin.GetSkinLabel(ModSkin.modBackItemId), ModSkin.getInstance(), 41, null));
 			myVector.addElement(new Command("Ván Bay\n" + ModSkin.GetSkinLabel(ModSkin.modBoardItemId), ModSkin.getInstance(), 42, null));
-			myVector.addElement(new Command("Animation\n" + ModSkin.GetAnimationLabel(), ModSkin.getInstance(), 43, null));
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -527,6 +530,13 @@ namespace Mod.DungPham.KoiOctiiu957
 				int p4 = ModSkin.LoadSkinPart("back");
 				if (p4 >= 0) ModSkin.modBackPart = p4;
 			}
+			
+			int pPetHead = ModSkin.LoadSkinPart("pet_head");
+			if (pPetHead >= 0) ModSkin.modPetHeadPart = pPetHead;
+			int pPetBody = ModSkin.LoadSkinPart("pet_body");
+			if (pPetBody >= 0) ModSkin.modPetBodyPart = pPetBody;
+			int pPetLeg = ModSkin.LoadSkinPart("pet_leg");
+			if (pPetLeg >= 0) ModSkin.modPetLegPart = pPetLeg;
 			ModSkin.EnsureSkinModsResolved();
 		}
 
@@ -594,6 +604,8 @@ namespace Mod.DungPham.KoiOctiiu957
 				ModSkin.modBoardItemId = itemId;
 				ModSkin.modBoardFallbackImageIndex = itemId;
 				ModSkin.EnsureBoardMountAssetsLoaded(ModSkin.modBoardMountId);
+				ItemTemplate temp = ItemTemplates.get((short)itemId);
+				GameScr.info1.addInfo("Đã lưu ID ván bay: " + itemId, 0);
 				return;
 			default:
 				return;
@@ -639,6 +651,45 @@ namespace Mod.DungPham.KoiOctiiu957
 		}
 
 		// Public helper to apply raw part numbers (head/body/leg/back)
+		public static void ApplyPetSkinParts(int head, int body, int leg)
+		{
+			if (head >= 0) { ModSkin.modPetHeadPart = head; ModSkin.SaveSkinPart("pet_head", head); }
+			if (body >= 0) { ModSkin.modPetBodyPart = body; ModSkin.SaveSkinPart("pet_body", body); }
+			if (leg >= 0) { ModSkin.modPetLegPart = leg; ModSkin.SaveSkinPart("pet_leg", leg); }
+		}
+
+				public static void ClearCharSkinParts()
+		{
+			ModSkin.modHeadPart = -1; ModSkin.modBodyPart = -1; ModSkin.modLegPart = -1; ModSkin.modBackPart = -1;
+			ModSkin.SaveSkinPart("head", -1); ModSkin.SaveSkinPart("body", -1); ModSkin.SaveSkinPart("leg", -1); ModSkin.SaveSkinPart("back", -1);
+			
+			if (ModSkin.originalHeadPart != -1 && global::Char.myCharz() != null) global::Char.myCharz().head = ModSkin.originalHeadPart;
+			if (ModSkin.originalBodyPart != -1 && global::Char.myCharz() != null) global::Char.myCharz().body = ModSkin.originalBodyPart;
+			if (ModSkin.originalLegPart != -1 && global::Char.myCharz() != null) global::Char.myCharz().leg = ModSkin.originalLegPart;
+			if (ModSkin.originalBackPart != -1 && global::Char.myCharz() != null) global::Char.myCharz().bag = ModSkin.originalBackPart;
+		}
+
+		public static void ClearPetSkinParts()
+		{
+			ModSkin.modPetHeadPart = -1; ModSkin.modPetBodyPart = -1; ModSkin.modPetLegPart = -1;
+			ModSkin.SaveSkinPart("pet_head", -1); ModSkin.SaveSkinPart("pet_body", -1); ModSkin.SaveSkinPart("pet_leg", -1);
+			
+			if (global::Char.myCharz() != null)
+			{
+				for (int i = 0; i < GameScr.vCharInMap.size(); i++)
+				{
+					global::Char c = (global::Char)GameScr.vCharInMap.elementAt(i);
+					if (c.isMiniPet && c.cName == global::Char.myCharz().cName)
+					{
+						if (ModSkin.originalPetHeadPart != -1) c.head = ModSkin.originalPetHeadPart;
+						if (ModSkin.originalPetBodyPart != -1) c.body = ModSkin.originalPetBodyPart;
+						if (ModSkin.originalPetLegPart != -1) c.leg = ModSkin.originalPetLegPart;
+						break;
+					}
+				}
+			}
+		}
+
 		public static void ApplySkinParts(int headPart, int bodyPart, int legPart)
 		{
 			if (headPart >= 0)
@@ -676,11 +727,11 @@ namespace Mod.DungPham.KoiOctiiu957
 				mountId = itemTemplate.id;
 				return true;
 			}
-			if ((int)itemTemplate.type != 23 && (int)itemTemplate.type != 24 && itemTemplate.part < 0)
+			if ((int)itemTemplate.type != 23 && (int)itemTemplate.type != 24)
 			{
 				return false;
 			}
-			mountId = (short)((itemTemplate.part >= 0) ? ((int)global::Char.ID_NEW_MOUNT + (int)itemTemplate.part) : itemTemplate.id);
+			mountId = (short)((itemTemplate.part >= 0) ? ((int)global::Char.ID_NEW_MOUNT + (int)itemTemplate.part) : ((int)global::Char.ID_NEW_MOUNT + itemTemplate.id));
 			return true;
 		}
 
@@ -786,6 +837,13 @@ namespace Mod.DungPham.KoiOctiiu957
 		private static bool isItemAnimationEnabled = true;
 
 		private static int lastLoadedCharId = -1;
+
+		public static int modPetHeadPart = -1;
+		public static int modPetBodyPart = -1;
+		public static int modPetLegPart = -1;
+		public static int originalPetHeadPart = -1;
+		public static int originalPetBodyPart = -1;
+		public static int originalPetLegPart = -1;
 
 	}
 }

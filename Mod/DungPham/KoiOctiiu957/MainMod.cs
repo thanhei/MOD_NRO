@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -954,7 +954,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			{
 				result = false;
 			}
-			else if (text.Equals("copy"))
+						else if (text.Equals("copy"))
 			{
 				global::Char focus = global::Char.myCharz().charFocus;
 				if (focus == null)
@@ -968,9 +968,54 @@ namespace Mod.DungPham.KoiOctiiu957
 					return true;
 				}
 				// Copy raw parts (head, body, leg, back) from the focus char and persist
-				Mod.DungPham.KoiOctiiu957.ModSkin.ApplySkinParts(focus.head, focus.body, focus.leg);
+				Mod.DungPham.KoiOctiiu957.ModSkin.ApplySkinParts(focus.headTemp >= 0 ? focus.headTemp : focus.head, focus.bodyTemp >= 0 ? focus.bodyTemp : focus.body, focus.legTemp >= 0 ? focus.legTemp : focus.leg);
 				Mod.DungPham.KoiOctiiu957.ModSkin.Update();
 				GameScr.info1.addInfo("Đã copy ngoại hình.", 0);
+				return true;
+			}
+			else if (text.Equals("copy_pet"))
+			{
+				global::Char focus = global::Char.myCharz().charFocus;
+				if (focus == null)
+				{
+					GameScr.info1.addInfo("Vui lòng chọn mục tiêu!", 0);
+					return true;
+				}
+				if (focus.isPet || focus.isMiniPet || string.IsNullOrEmpty(focus.cName) || focus.cName.StartsWith("#") || focus.cName.StartsWith("$"))
+				{
+					GameScr.info1.addInfo("Vui lòng focus vào NGƯỜI CHƠI (chủ nhân của thú cưng)!", 0);
+					return true;
+				}
+				global::Char targetPet = null;
+				for (int i = 0; i < GameScr.vCharInMap.size(); i++)
+				{
+					global::Char c = (global::Char)GameScr.vCharInMap.elementAt(i);
+					if (c.isMiniPet && c.cName == focus.cName)
+					{
+						targetPet = c;
+						break;
+					}
+				}
+				if (targetPet == null)
+				{
+					GameScr.info1.addInfo("Người này không có thú cưng!", 0);
+					return true;
+				}
+				Mod.DungPham.KoiOctiiu957.ModSkin.ApplyPetSkinParts(targetPet.head, targetPet.body, targetPet.leg);
+				Mod.DungPham.KoiOctiiu957.ModSkin.Update();
+				GameScr.info1.addInfo("Đã copy ngoại hình thú cưng.", 0);
+				return true;
+			}
+						else if (text.Equals("uncopy"))
+			{
+				Mod.DungPham.KoiOctiiu957.ModSkin.ClearCharSkinParts();
+				GameScr.info1.addInfo("Đã khôi phục ngoại hình nhân vật.", 0);
+				return true;
+			}
+			else if (text.Equals("uncopy_pet"))
+			{
+				Mod.DungPham.KoiOctiiu957.ModSkin.ClearPetSkinParts();
+				GameScr.info1.addInfo("Đã khôi phục ngoại hình thú cưng.", 0);
 				return true;
 			}
 			else if (text.StartsWith("k_"))

@@ -16,9 +16,87 @@ namespace Mod.DungPham.KoiOctiiu957
 			return AutoPick._Instance;
 		}
 
+		private static int lastLoadedCharId = -1;
+
+		private static string GetAccountPrefix()
+		{
+			global::Char c = global::Char.myCharz();
+			if (c != null && c.charID > 0)
+			{
+				return "koi_pick_" + c.charID.ToString() + "_";
+			}
+			return "koi_pick_";
+		}
+
+		private static void SaveSettings()
+		{
+			string pickStr = "";
+			for (int i = 0; i < AutoPick.listItemAutoPick.Count; i++)
+			{
+				pickStr += AutoPick.listItemAutoPick[i].ToString();
+				if (i < AutoPick.listItemAutoPick.Count - 1)
+				{
+					pickStr += " ";
+				}
+			}
+			Rms.saveRMSString(AutoPick.GetAccountPrefix() + "auto_pick_list", pickStr);
+
+			string ignoreStr = "";
+			for (int j = 0; j < AutoPick.listItemIgnorePick.Count; j++)
+			{
+				ignoreStr += AutoPick.listItemIgnorePick[j].ToString();
+				if (j < AutoPick.listItemIgnorePick.Count - 1)
+				{
+					ignoreStr += " ";
+				}
+			}
+			Rms.saveRMSString(AutoPick.GetAccountPrefix() + "ignore_pick_list", ignoreStr);
+		}
+
+		private static void LoadSettings()
+		{
+			AutoPick.listItemAutoPick.Clear();
+			string pickStr = Rms.loadRMSString(AutoPick.GetAccountPrefix() + "auto_pick_list");
+			if (!string.IsNullOrEmpty(pickStr))
+			{
+				string[] array = pickStr.Split(' ');
+				foreach (string s in array)
+				{
+					if (int.TryParse(s, out int item))
+					{
+						AutoPick.listItemAutoPick.Add(item);
+					}
+				}
+			}
+
+			AutoPick.listItemIgnorePick.Clear();
+			string ignoreStr = Rms.loadRMSString(AutoPick.GetAccountPrefix() + "ignore_pick_list");
+			if (!string.IsNullOrEmpty(ignoreStr))
+			{
+				string[] array2 = ignoreStr.Split(' ');
+				foreach (string s in array2)
+				{
+					if (int.TryParse(s, out int item))
+					{
+						AutoPick.listItemIgnorePick.Add(item);
+					}
+				}
+			}
+		}
+
 		// Token: 0x06000B42 RID: 2882 RVA: 0x000A5CC8 File Offset: 0x000A3EC8
 		public static void Update()
 		{
+			global::Char @char = global::Char.myCharz();
+			if (@char == null)
+			{
+				return;
+			}
+			if (@char.charID > 0 && @char.charID != AutoPick.lastLoadedCharId)
+			{
+				AutoPick.lastLoadedCharId = @char.charID;
+				AutoPick.LoadSettings();
+			}
 			if ((!GameScr.isAutoPlay || (!GameScr.canAutoPlay && !AutoTrain.isAutoTrain)) && AutoPick.isAutoPick)
 			{
 				if (AutoPick.isNRDMap(TileMap.mapID))
@@ -31,6 +109,10 @@ namespace Mod.DungPham.KoiOctiiu957
 							int num = global::Math.abs(global::Char.myCharz().cx - itemMap.x);
 							if ((itemMap.playerId == global::Char.myCharz().charID || itemMap.playerId == -1) && num <= 60 && itemMap != null && mSystem.currentTimeMillis() - AutoPick.lastTimePickedItem > 550L && AutoPick.isNRD(itemMap))
 							{
+								if (AutoPick.listItemIgnorePick.Contains((int)itemMap.template.id))
+								{
+									continue;
+								}
 								Service.gI().pickItem(itemMap.itemMapID);
 								AutoPick.lastTimePickedItem = mSystem.currentTimeMillis();
 								break;
@@ -77,7 +159,24 @@ namespace Mod.DungPham.KoiOctiiu957
 					{
 						int item = int.Parse(ChatTextField.gI().tfChat.getText());
 						AutoPick.listItemAutoPick.Add(item);
+						AutoPick.SaveSettings();
 						GameScr.info1.addInfo("Đã Thêm Item " + item.ToString(), 0);
+					}
+					catch
+					{
+						GameScr.info1.addInfo("Số Không Hợp Lệ, Vui Lòng Nhập Lại!", 0);
+					}
+					AutoPick.ResetChatTextField();
+					return;
+				}
+				if (ChatTextField.gI().strChat.Equals(AutoPick.inputItemIDIgnore[0]))
+				{
+					try
+					{
+						int item = int.Parse(ChatTextField.gI().tfChat.getText());
+						AutoPick.listItemIgnorePick.Add(item);
+						AutoPick.SaveSettings();
+						GameScr.info1.addInfo("Đã Thêm Vào DS Ko Nhặt " + item.ToString(), 0);
 					}
 					catch
 					{
@@ -149,6 +248,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				return;
 			case 7:
 				AutoPick.listItemAutoPick.Clear();
+				AutoPick.SaveSettings();
 				GameScr.info1.addInfo("Đã Clear Danh Sách Nhặt!", 0);
 				return;
 			case 8:
@@ -158,6 +258,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				return;
 			case 9:
 				AutoPick.listItemAutoPick.Add((int)global::Char.myCharz().itemFocus.template.id);
+				AutoPick.SaveSettings();
 				GameScr.info1.addInfo(string.Concat(new string[]
 				{
 					"Đã thêm ",
@@ -166,6 +267,50 @@ namespace Mod.DungPham.KoiOctiiu957
 					global::Char.myCharz().itemFocus.template.id.ToString(),
 					"]"
 				}), 0);
+				return;
+			case 10:
+				if (AutoPick.listItemIgnorePick.Count == 0)
+				{
+					GameScr.info1.addInfo("Danh Sách Trống!", 0);
+				}
+				if (AutoPick.listItemIgnorePick.Count > 0)
+				{
+					string text = "";
+					for (int i = 0; i < AutoPick.listItemIgnorePick.Count; i++)
+					{
+						text = text + AutoPick.listItemIgnorePick[i].ToString() + " ";
+					}
+					GameScr.info1.addInfo(text, 0);
+					return;
+				}
+				return;
+			case 11:
+				AutoPick.listItemIgnorePick.Clear();
+				AutoPick.SaveSettings();
+				GameScr.info1.addInfo("Đã Clear Danh Sách Ko Nhặt!", 0);
+				return;
+			case 12:
+				ChatTextField.gI().strChat = AutoPick.inputItemIDIgnore[0];
+				ChatTextField.gI().tfChat.name = AutoPick.inputItemIDIgnore[1];
+				ChatTextField.gI().startChat2(AutoPick.getInstance(), string.Empty);
+				return;
+			case 13:
+				AutoPick.listItemIgnorePick.Add((int)global::Char.myCharz().itemFocus.template.id);
+				AutoPick.SaveSettings();
+				GameScr.info1.addInfo(string.Concat(new string[]
+				{
+					"Đã thêm ko nhặt ",
+					global::Char.myCharz().itemFocus.template.name,
+					" [",
+					global::Char.myCharz().itemFocus.template.id.ToString(),
+					"]"
+				}), 0);
+				return;
+			case 14:
+				AutoPick.ShowMenuPickConfig();
+				return;
+			case 15:
+				AutoPick.ShowMenuIgnoreConfig();
 				return;
 			default:
 				return;
@@ -181,8 +326,16 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Nhặt Theo Danh Sách\n" + ((!AutoPick.isAutoPick || AutoPick.pickByList != 1) ? "[STATUS: OFF]" : "[STATUS: ON]"), AutoPick.getInstance(), 3, null));
 			myVector.addElement(new Command("Dịch Đến Item\n" + (AutoPick.isTeleportToItem ? "[STATUS: ON]" : "[STATUS: OFF]"), AutoPick.getInstance(), 4, null));
 			myVector.addElement(new Command("Khoảng Cách Nhặt\n[" + AutoPick.maximumPickDistance.ToString() + "]", AutoPick.getInstance(), 5, null));
-			myVector.addElement(new Command("Xem Danh Sách Nhặt", AutoPick.getInstance(), 6, null));
-			myVector.addElement(new Command("Clear Danh Sách Nhặt", AutoPick.getInstance(), 7, null));
+			myVector.addElement(new Command("Cấu Hình Nhặt", AutoPick.getInstance(), 14, null));
+			myVector.addElement(new Command("Cấu Hình Ko Nhặt", AutoPick.getInstance(), 15, null));
+			GameCanvas.menu.startAt(myVector, 3);
+		}
+
+		public static void ShowMenuPickConfig()
+		{
+			MyVector myVector = new MyVector();
+			myVector.addElement(new Command("Xem Danh Sách", AutoPick.getInstance(), 6, null));
+			myVector.addElement(new Command("Clear Danh Sách", AutoPick.getInstance(), 7, null));
 			myVector.addElement(new Command("Thêm ItemID", AutoPick.getInstance(), 8, null));
 			if (global::Char.myCharz().itemFocus != null)
 			{
@@ -194,6 +347,26 @@ namespace Mod.DungPham.KoiOctiiu957
 					global::Char.myCharz().itemFocus.template.id.ToString(),
 					"] "
 				}), AutoPick.getInstance(), 9, null));
+			}
+			GameCanvas.menu.startAt(myVector, 3);
+		}
+
+		public static void ShowMenuIgnoreConfig()
+		{
+			MyVector myVector = new MyVector();
+			myVector.addElement(new Command("Xem Danh Sách", AutoPick.getInstance(), 10, null));
+			myVector.addElement(new Command("Clear Danh Sách", AutoPick.getInstance(), 11, null));
+			myVector.addElement(new Command("Thêm ItemID", AutoPick.getInstance(), 12, null));
+			if (global::Char.myCharz().itemFocus != null)
+			{
+				myVector.addElement(new Command(string.Concat(new string[]
+				{
+					"Thêm: ",
+					global::Char.myCharz().itemFocus.template.name,
+					" [",
+					global::Char.myCharz().itemFocus.template.id.ToString(),
+					"] "
+				}), AutoPick.getInstance(), 13, null));
 			}
 			GameCanvas.menu.startAt(myVector, 3);
 		}
@@ -240,6 +413,11 @@ namespace Mod.DungPham.KoiOctiiu957
 		{
 			if (mSystem.currentTimeMillis() - AutoPick.lastTimePickedItem >= 550L && global::Char.myCharz().itemFocus != null)
 			{
+				if (AutoPick.listItemIgnorePick.Contains((int)global::Char.myCharz().itemFocus.template.id))
+				{
+					global::Char.myCharz().itemFocus = null;
+					return;
+				}
 				if (AutoPick.isTeleportToItem && !global::Char.isLockKey)
 				{
 					AutoPick.TeleportTo(global::Char.myCharz().itemFocus.x, global::Char.myCharz().itemFocus.y);
@@ -303,6 +481,10 @@ namespace Mod.DungPham.KoiOctiiu957
 		// Token: 0x06000B4D RID: 2893 RVA: 0x000A6618 File Offset: 0x000A4818
 		private static bool isPickIt(ItemMap item)
 		{
+			if (AutoPick.listItemIgnorePick.Contains((int)item.template.id))
+			{
+				return false;
+			}
 			bool result;
 			if (AutoPick.isPickAll)
 			{
@@ -355,6 +537,8 @@ namespace Mod.DungPham.KoiOctiiu957
 		// Token: 0x040015E7 RID: 5607
 		private static List<int> listItemAutoPick = new List<int>();
 
+		private static List<int> listItemIgnorePick = new List<int>();
+
 		// Token: 0x040015E8 RID: 5608
 		private static string[] inputMaximumPickDistance = new string[]
 		{
@@ -366,6 +550,12 @@ namespace Mod.DungPham.KoiOctiiu957
 		private static string[] inputItemID = new string[]
 		{
 			"Nhập ID của item",
+			"ID"
+		};
+
+		private static string[] inputItemIDIgnore = new string[]
+		{
+			"Nhập ID vật phẩm không nhặt",
 			"ID"
 		};
 	}

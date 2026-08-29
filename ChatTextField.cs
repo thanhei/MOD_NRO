@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 // Token: 0x020000A3 RID: 163
 public class ChatTextField : IActionListener
@@ -106,6 +106,24 @@ public class ChatTextField : IActionListener
 	{
 		if (this.isShow)
 		{
+			if (keyCode == 10 || keyCode == 13 || keyCode == -5)
+			{
+				if (this.left != null && !string.IsNullOrEmpty(this.tfChat.getText()))
+				{
+					this.left.performAction();
+					return;
+				}
+				else
+				{
+					this.close();
+					return;
+				}
+			}
+			if (keyCode == -21 || keyCode == -22)
+			{
+				this.close();
+				return;
+			}
 			this.tfChat.keyPressed(keyCode);
 		}
 		if (this.tfChat.getText().Equals(string.Empty))
@@ -129,6 +147,8 @@ public class ChatTextField : IActionListener
 	{
 		this.right.caption = mResources.CLOSE;
 		this.to = to;
+		this.parentScreen = parentScreen;
+		this.strChat = "chat";
 		if (Main.isWindowsPhone)
 		{
 			this.tfChat.showSubTextField = false;
@@ -140,7 +160,6 @@ public class ChatTextField : IActionListener
 		this.tfChat.keyPressed(firstCharacter);
 		if (!this.tfChat.getText().Equals(string.Empty) && GameCanvas.currentDialog == null)
 		{
-			this.parentScreen = parentScreen;
 			this.isShow = true;
 		}
 	}
@@ -150,6 +169,8 @@ public class ChatTextField : IActionListener
 	{
 		this.right.caption = mResources.CLOSE;
 		this.to = to;
+		this.parentScreen = parentScreen;
+		this.strChat = "chat";
 		if (Main.isWindowsPhone)
 		{
 			this.tfChat.showSubTextField = false;
@@ -251,7 +272,12 @@ public class ChatTextField : IActionListener
 	public void close()
 	{
 		this.tfChat.setText(string.Empty);
+		this.tfChat.clearKb();
 		this.isShow = false;
+		if (this.parentScreen != null)
+		{
+			this.parentScreen.onCancelChat();
+		}
 	}
 
 	// Token: 0x060006DD RID: 1757 RVA: 0x0005CCA0 File Offset: 0x0005AEA0
@@ -284,18 +310,14 @@ public class ChatTextField : IActionListener
 		{
 		case 8000:
 			Cout.LogError("perform chat 8000");
+			this.isShow = false;
 			if (this.parentScreen != null)
 			{
-				long num = mSystem.currentTimeMillis();
-				if (num - this.lastChatTime < 1000L)
-				{
-					return;
-				}
-				this.lastChatTime = num;
-				this.parentScreen.onChatFromMe(this.tfChat.getText(), this.to);
+				string textToSend = this.tfChat.getText();
 				this.tfChat.setText(string.Empty);
 				this.right.caption = mResources.CLOSE;
 				this.tfChat.clearKb();
+				this.parentScreen.onChatFromMe(textToSend, this.to);
 			}
 			break;
 		case 8001:
@@ -303,7 +325,10 @@ public class ChatTextField : IActionListener
 			if (this.tfChat.getText().Equals(string.Empty))
 			{
 				this.isShow = false;
-				this.parentScreen.onCancelChat();
+				if (this.parentScreen != null)
+				{
+					this.parentScreen.onCancelChat();
+				}
 			}
 			this.tfChat.clear();
 			break;

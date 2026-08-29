@@ -411,11 +411,24 @@ namespace Mod.DungPham.KoiOctiiu957
 					try
 					{
 						int delay = int.Parse(ChatTextField.gI().tfChat.getText());
-						if (delay < 100) delay = 100;
+						if (delay < 50) delay = 50;
 						MainMod.delayAutoJump = delay;
 						GameScr.info1.addInfo("Delay Nhảy: " + delay + "ms", 0);
 					}
 					catch { GameScr.info1.addInfo("Delay không hợp lệ!", 0); }
+					MainMod.ResetChatTextField();
+					return;
+				}
+				if (ChatTextField.gI().strChat.Equals(MainMod.inputDistanceJump[0]))
+				{
+					try
+					{
+						int dist = int.Parse(ChatTextField.gI().tfChat.getText());
+						if (dist < 5) dist = 5;
+						MainMod.distanceAutoJump = dist;
+						GameScr.info1.addInfo("Khoảng Cách Nhảy: " + dist + "px", 0);
+					}
+					catch { GameScr.info1.addInfo("Khoảng cách không hợp lệ!", 0); }
 					MainMod.ResetChatTextField();
 					return;
 				}
@@ -424,11 +437,24 @@ namespace Mod.DungPham.KoiOctiiu957
 					try
 					{
 						int delay = int.Parse(ChatTextField.gI().tfChat.getText());
-						if (delay < 100) delay = 100;
+						if (delay < 50) delay = 50;
 						MainMod.delayAutoMove = delay;
-						GameScr.info1.addInfo("Delay Di chuyển: " + delay + "ms", 0);
+						GameScr.info1.addInfo("Delay Di Chuyển: " + delay + "ms", 0);
 					}
 					catch { GameScr.info1.addInfo("Delay không hợp lệ!", 0); }
+					MainMod.ResetChatTextField();
+					return;
+				}
+				if (ChatTextField.gI().strChat.Equals(MainMod.inputDistanceMove[0]))
+				{
+					try
+					{
+						int dist = int.Parse(ChatTextField.gI().tfChat.getText());
+						if (dist < 5) dist = 5;
+						MainMod.distanceAutoMove = dist;
+						GameScr.info1.addInfo("Khoảng Cách Di Chuyển: " + dist + "px", 0);
+					}
+					catch { GameScr.info1.addInfo("Khoảng cách không hợp lệ!", 0); }
 					MainMod.ResetChatTextField();
 					return;
 				}
@@ -605,21 +631,22 @@ namespace Mod.DungPham.KoiOctiiu957
 				MainMod.ShowMenuDisplaySettings();
 				return;
 			case 35:
-				MyVector myVector2 = new MyVector();
-				myVector2.addElement(new Command("Auto Nhảy (Y)\n" + (MainMod.isAutoJump ? "[STATUS: ON]" : "[STATUS: OFF]"), MainMod.getInstance(), 351, null));
-				myVector2.addElement(new Command("Delay Nhảy\n[" + MainMod.delayAutoJump + "ms]", MainMod.getInstance(), 352, null));
-				myVector2.addElement(new Command("Auto Di Chuyển (X)\n" + (MainMod.isupkok ? "[STATUS: ON]" : "[STATUS: OFF]"), MainMod.getInstance(), 361, null));
-				myVector2.addElement(new Command("Delay Di Chuyển\n[" + MainMod.delayAutoMove + "ms]", MainMod.getInstance(), 362, null));
-				GameCanvas.menu.startAt(myVector2, 3);
+				MainMod.ShowMenuPositionSettings();
+				return;
+			case 350:
+				MainMod.ShowMenuAutoJump();
+				return;
+			case 360:
+				MainMod.ShowMenuAutoMove();
 				return;
 			case 351:
 				MainMod.isAutoJump = !MainMod.isAutoJump;
 				GameScr.info1.addInfo("Đã " + (MainMod.isAutoJump ? "bật" : "tắt") + " auto nhảy.", 0);
-				if (MainMod.isAutoJump)
+				if (MainMod.isAutoJump && global::Char.myCharz() != null)
 				{
-					MainMod.xkok = global::Char.myCharz().cx;
-					MainMod.ykok = global::Char.myCharz().cy;
-					new Thread(new ThreadStart(MainMod.autojump)).Start();
+					MainMod.originJumpX = global::Char.myCharz().cx;
+					MainMod.originJumpY = global::Char.myCharz().cy;
+					new Thread(new ThreadStart(MainMod.AutoJumpThread)).Start();
 				}
 				return;
 			case 352:
@@ -627,19 +654,29 @@ namespace Mod.DungPham.KoiOctiiu957
 				ChatTextField.gI().tfChat.name = MainMod.inputDelayJump[1];
 				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
 				return;
+			case 353:
+				ChatTextField.gI().strChat = MainMod.inputDistanceJump[0];
+				ChatTextField.gI().tfChat.name = MainMod.inputDistanceJump[1];
+				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
+				return;
 			case 361:
-				MainMod.isupkok = !MainMod.isupkok;
-				GameScr.info1.addInfo("Đã " + (MainMod.isupkok ? "bật" : "tắt") + " auto di chuyển.", 0);
-				if (MainMod.isupkok)
+				MainMod.isAutoMove = !MainMod.isAutoMove;
+				GameScr.info1.addInfo("Đã " + (MainMod.isAutoMove ? "bật" : "tắt") + " auto di chuyển.", 0);
+				if (MainMod.isAutoMove && global::Char.myCharz() != null)
 				{
-					MainMod.xkok = global::Char.myCharz().cx;
-					MainMod.ykok = global::Char.myCharz().cy;
-					new Thread(new ThreadStart(MainMod.autokok)).Start();
+					MainMod.originMoveX = global::Char.myCharz().cx;
+					MainMod.originMoveY = global::Char.myCharz().cy;
+					new Thread(new ThreadStart(MainMod.AutoMoveThread)).Start();
 				}
 				return;
 			case 362:
 				ChatTextField.gI().strChat = MainMod.inputDelayMove[0];
 				ChatTextField.gI().tfChat.name = MainMod.inputDelayMove[1];
+				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
+				return;
+			case 363:
+				ChatTextField.gI().strChat = MainMod.inputDistanceMove[0];
+				ChatTextField.gI().tfChat.name = MainMod.inputDistanceMove[1];
 				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
 				return;
 			default:
@@ -872,7 +909,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Auto Pean", MainMod.getInstance(), 3, null));
 			myVector.addElement(new Command("Auto Pick", MainMod.getInstance(), 4, null));
 			myVector.addElement(new Command("Auto Train", MainMod.getInstance(), 5, null));
-			myVector.addElement(new Command("Auto Di Chuyển", MainMod.getInstance(), 35, null));
+			myVector.addElement(new Command("Auto Vị Trí", MainMod.getInstance(), 35, null));
 			myVector.addElement(new Command("More", MainMod.getInstance(), 8, null));
 			GameCanvas.menu.startAt(myVector, 3);
 		}
@@ -888,6 +925,14 @@ namespace Mod.DungPham.KoiOctiiu957
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
+		public static void ShowMenuPositionSettings()
+		{
+			MyVector myVector = new MyVector();
+			myVector.addElement(new Command("Cài Đặt\nAuto Nhảy (Y)", MainMod.getInstance(), 350, null));
+			myVector.addElement(new Command("Cài Đặt\nAuto Di Chuyển (X)", MainMod.getInstance(), 360, null));
+			GameCanvas.menu.startAt(myVector, 3);
+		}
+
 		public static void ShowMenuDisplaySettings()
 		{
 			MyVector myVector = new MyVector();
@@ -896,6 +941,24 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Danh Sách\nNgười Trong Map\n" + (MainMod.isShowCharsInMap ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 30, null));
 			myVector.addElement(new Command("Ẩn\nThông Tin Map\n" + (MainMod.isReduceGraphics ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 31, null));
 			myVector.addElement(new Command("Ẩn\nServer Chat\n" + (MainMod.hideServerChat ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 34, null));
+			GameCanvas.menu.startAt(myVector, 3);
+		}
+
+		public static void ShowMenuAutoJump()
+		{
+			MyVector myVector = new MyVector();
+			myVector.addElement(new Command("Auto Nhảy (Y)\n" + (MainMod.isAutoJump ? "[STATUS: ON]" : "[STATUS: OFF]"), MainMod.getInstance(), 351, null));
+			myVector.addElement(new Command("Delay Nhảy\n[" + MainMod.delayAutoJump + "ms]", MainMod.getInstance(), 352, null));
+			myVector.addElement(new Command("Bước Nhảy\n[" + MainMod.distanceAutoJump + "px]", MainMod.getInstance(), 353, null));
+			GameCanvas.menu.startAt(myVector, 3);
+		}
+
+		public static void ShowMenuAutoMove()
+		{
+			MyVector myVector = new MyVector();
+			myVector.addElement(new Command("Auto Di Chuyển (X)\n" + (MainMod.isAutoMove ? "[STATUS: ON]" : "[STATUS: OFF]"), MainMod.getInstance(), 361, null));
+			myVector.addElement(new Command("Delay Di Chuyển\n[" + MainMod.delayAutoMove + "ms]", MainMod.getInstance(), 362, null));
+			myVector.addElement(new Command("Bước Di Chuyển\n[" + MainMod.distanceAutoMove + "px]", MainMod.getInstance(), 363, null));
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -925,6 +988,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			ChatTextField.gI().strChat = "Chat";
 			ChatTextField.gI().tfChat.name = "chat";
 			ChatTextField.gI().isShow = false;
+			ChatTextField.gI().parentScreen = GameScr.gI();
 		}
 
 
@@ -1760,36 +1824,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			}
 		}
 
-		// Token: 0x06000BCE RID: 3022 RVA: 0x000AAE8C File Offset: 0x000A908C
-		public static void autokok()
-		{
-			while (MainMod.isupkok)
-			{
-				try
-				{
-					if (global::Char.myCharz() != null)
-					{
-						global::Char.myCharz().currentMovePoint = new MovePoint(global::Char.myCharz().cx + 50, global::Char.myCharz().cy);
-					}
-					Thread.Sleep(MainMod.delayAutoMove);
-					if (!MainMod.isupkok)
-					{
-						break;
-					}
-					if (global::Char.myCharz() != null)
-					{
-						global::Char.myCharz().currentMovePoint = new MovePoint(global::Char.myCharz().cx - 50, global::Char.myCharz().cy);
-					}
-					Thread.Sleep(MainMod.delayAutoMove);
-				}
-				catch
-				{
-				}
-			}
-		}
-
-		// Token: 0x06000BCF RID: 3023 RVA: 0x000AAEF0 File Offset: 0x000A90F0
-		public static void autojump()
+		public static void AutoJumpThread()
 		{
 			while (MainMod.isAutoJump)
 			{
@@ -1797,18 +1832,47 @@ namespace Mod.DungPham.KoiOctiiu957
 				{
 					if (global::Char.myCharz() != null)
 					{
-						global::Char.myCharz().currentMovePoint = new MovePoint(global::Char.myCharz().cx, global::Char.myCharz().cy - 50);
+						// 1. Nhảy lên khoảng cách distanceAutoJump
+						global::Char.myCharz().currentMovePoint = new MovePoint(MainMod.originJumpX, MainMod.originJumpY - MainMod.distanceAutoJump);
+						Thread.Sleep(MainMod.delayAutoJump);
+						if (!MainMod.isAutoJump) break;
+
+						// 2. Rơi về lại đúng tọa độ gốc ban đầu
+						global::Char.myCharz().currentMovePoint = new MovePoint(MainMod.originJumpX, MainMod.originJumpY);
+						Thread.Sleep(MainMod.delayAutoJump);
 					}
-					Thread.Sleep(MainMod.delayAutoJump);
-					if (!MainMod.isAutoJump)
+					else
 					{
-						break;
+						Thread.Sleep(500);
 					}
+				}
+				catch
+				{
+				}
+			}
+		}
+
+		public static void AutoMoveThread()
+		{
+			while (MainMod.isAutoMove)
+			{
+				try
+				{
 					if (global::Char.myCharz() != null)
 					{
-						global::Char.myCharz().currentMovePoint = new MovePoint(global::Char.myCharz().cx, global::Char.myCharz().cy + 50);
+						// 1. Di chuyển sang phải khoảng cách distanceAutoMove
+						global::Char.myCharz().currentMovePoint = new MovePoint(MainMod.originMoveX + MainMod.distanceAutoMove, MainMod.originMoveY);
+						Thread.Sleep(MainMod.delayAutoMove);
+						if (!MainMod.isAutoMove) break;
+
+						// 2. Quay về lại đúng tọa độ gốc ban đầu
+						global::Char.myCharz().currentMovePoint = new MovePoint(MainMod.originMoveX, MainMod.originMoveY);
+						Thread.Sleep(MainMod.delayAutoMove);
 					}
-					Thread.Sleep(MainMod.delayAutoJump);
+					else
+					{
+						Thread.Sleep(500);
+					}
 				}
 				catch
 				{
@@ -2081,16 +2145,23 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static bool isgmtmob;
 
 		// Token: 0x04001699 RID: 5785
-		public static bool isupkok = false;
-
-		// Token: 0x0400169A RID: 5786
-		public static int xkok;
-
-		// Token: 0x0400169B RID: 5787
-		public static int ykok;
-
-		// Token: 0x0400169C RID: 5788
+		// Auto Nhảy (Y)
 		public static bool isAutoJump = false;
+		public static int originJumpX;
+		public static int originJumpY;
+		public static int distanceAutoJump = 50;
+		public static int delayAutoJump = 1000;
+		public static string[] inputDelayJump = new string[] { "Nhập Delay Nhảy (ms)", "Delay" };
+		public static string[] inputDistanceJump = new string[] { "Nhập Khoảng Cách Nhảy (px)", "Khoảng cách" };
+
+		// Auto Di Chuyển (X)
+		public static bool isAutoMove = false;
+		public static int originMoveX;
+		public static int originMoveY;
+		public static int distanceAutoMove = 50;
+		public static int delayAutoMove = 3000;
+		public static string[] inputDelayMove = new string[] { "Nhập Delay Di Chuyển (ms)", "Delay" };
+		public static string[] inputDistanceMove = new string[] { "Nhập Khoảng Cách Di Chuyển (px)", "Khoảng cách" };
 
 		// Token: 0x0400169D RID: 5789
 		public static bool hideServerChat = false;
@@ -2102,11 +2173,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static Dictionary<int, long> dictTimeSleep = new Dictionary<int, long>();
 		public static Dictionary<int, long> dictTimeMonkey = new Dictionary<int, long>();
 		public static Dictionary<int, long> dictTimeWhistle = new Dictionary<int, long>();
-				public static int delayAutoJump = 1000;
-		public static int delayAutoMove = 3000;
-		public static string[] inputDelayJump = new string[] { "Nhập Delay Nhảy (ms)", "Delay" };
-		public static string[] inputDelayMove = new string[] { "Nhập Delay Di Chuyển (ms)", "Delay" };
-public static Dictionary<int, long> dictTimeStone = new Dictionary<int, long>();
+		public static Dictionary<int, long> dictTimeStone = new Dictionary<int, long>();
 		public static int infoStartX = 0;
 
 	}

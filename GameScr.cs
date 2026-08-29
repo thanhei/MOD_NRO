@@ -6115,10 +6115,7 @@ public class GameScr : mScreen, IChatable
 	public void onChatFromMe(string text, string to)
 	{
 		Res.outz("CHAT");
-		if (!GameScr.isPaintMessage || GameCanvas.isTouch)
-		{
-			ChatTextField.gI().isShow = false;
-		}
+		ChatTextField.gI().isShow = false;
 		if (Mod.DungPham.KoiOctiiu957.MainMod.Chat(text))
 		{
 			return;

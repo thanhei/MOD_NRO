@@ -210,6 +210,14 @@ public class Char : IMapObject
 	// Token: 0x06000622 RID: 1570 RVA: 0x0004D730 File Offset: 0x0004B930
 	public void addInfo(string info)
 	{
+		if (info != null && this.charID == -global::Char.myCharz().charID)
+		{
+			string lower = info.ToLower();
+			if (lower.Contains("đánh") || lower.Contains("giúp") || lower.Contains("cứu") || lower.Contains("sư phụ") || lower.Contains("tiếp đi"))
+			{
+				Mod.DungPham.KoiOctiiu957.AutoSkill.isPetAskedForUseSkill = true;
+			}
+		}
 		if (this.chatInfo == null)
 		{
 			this.chatInfo = new Info();

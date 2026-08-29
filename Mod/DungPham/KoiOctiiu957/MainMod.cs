@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -70,6 +70,56 @@ namespace Mod.DungPham.KoiOctiiu957
 				AutoMap.Update();
 				AutoPoint.Update();
 				ModSkin.Update();
+
+				try
+				{
+					List<global::Char> listChar = new List<global::Char>();
+					if (global::Char.myCharz() != null) listChar.Add(global::Char.myCharz());
+					for (int i = 0; i < GameScr.vCharInMap.size(); i++)
+					{
+						global::Char c = (global::Char)GameScr.vCharInMap.elementAt(i);
+						if (c != null) listChar.Add(c);
+					}
+					foreach (global::Char c in listChar)
+					{
+						if (c.protectEff)
+						{
+							if (!dictTimeShield.ContainsKey(c.charID)) dictTimeShield[c.charID] = mSystem.currentTimeMillis();
+						}
+						else if (dictTimeShield.ContainsKey(c.charID)) dictTimeShield.Remove(c.charID);
+
+						if (c.holdEffID != 0)
+						{
+							if (!dictTimeTie.ContainsKey(c.charID)) dictTimeTie[c.charID] = mSystem.currentTimeMillis();
+						}
+						else if (dictTimeTie.ContainsKey(c.charID)) dictTimeTie.Remove(c.charID);
+
+						if (c.sleepEff)
+						{
+							if (!dictTimeSleep.ContainsKey(c.charID)) dictTimeSleep[c.charID] = mSystem.currentTimeMillis();
+						}
+						else if (dictTimeSleep.ContainsKey(c.charID)) dictTimeSleep.Remove(c.charID);
+
+						if ((int)c.isMonkey == 1)
+						{
+							if (!dictTimeMonkey.ContainsKey(c.charID)) dictTimeMonkey[c.charID] = mSystem.currentTimeMillis();
+						}
+						else if (dictTimeMonkey.ContainsKey(c.charID)) dictTimeMonkey.Remove(c.charID);
+						
+						if (c.huytSao)
+						{
+							if (!dictTimeWhistle.ContainsKey(c.charID)) dictTimeWhistle[c.charID] = mSystem.currentTimeMillis();
+						}
+						else if (dictTimeWhistle.ContainsKey(c.charID)) dictTimeWhistle.Remove(c.charID);
+
+						if (c.stone)
+						{
+							if (!dictTimeStone.ContainsKey(c.charID)) dictTimeStone[c.charID] = mSystem.currentTimeMillis();
+						}
+						else if (dictTimeStone.ContainsKey(c.charID)) dictTimeStone.Remove(c.charID);
+					}
+				}
+				catch { }
 				global::Char.myCharz().cspeed = MainMod.runSpeed;
 			}
 		}
@@ -157,19 +207,85 @@ namespace Mod.DungPham.KoiOctiiu957
 				"/",
 				NinjaUtil.getMoneys(ch.cHPFull),
 				"]"
-			}), GameCanvas.w / 2, 62, 2);
+			}), MainMod.infoStartX, 62, 2);
 			int num = 72;
 			int num2 = 10;
 			if (ch.isNRD)
 			{
-				mFont.tahoma_7b_yellow.drawString(g, "NRD: Còn " + ch.timeNRD + " giây", GameCanvas.w / 2, num, 2);
+				mFont.tahoma_7b_yellow.drawString(g, "NRD: Còn " + ch.timeNRD + " giây", MainMod.infoStartX, num, 2);
 				num += num2;
 			}
 			if (ch.isFreez)
 			{
-				mFont.tahoma_7b_red.drawString(g, "Bị TDHS: " + ch.freezSeconds + " giây", GameCanvas.w / 2, num, 2);
+				mFont.tahoma_7b_red.drawString(g, "Bị TDHS: " + ch.freezSeconds + "s", MainMod.infoStartX, num, 2);
 				num += num2;
 			}
+			if (ch.protectEff)
+			{
+				long startTime = 0L;
+				if (dictTimeShield.TryGetValue(ch.charID, out startTime))
+				{
+					int seconds = 46 - (int)((mSystem.currentTimeMillis() - startTime) / 1000L);
+					if (seconds < 0) seconds = 0;
+					mFont.tahoma_7b_blue.drawString(g, "Khiên: " + seconds + "s", MainMod.infoStartX, num, 2);
+					num += num2;
+				}
+			}
+			if (ch.holdEffID != 0)
+			{
+				long startTime = 0L;
+				if (dictTimeTie.TryGetValue(ch.charID, out startTime))
+				{
+					int seconds = 46 - (int)((mSystem.currentTimeMillis() - startTime) / 1000L);
+					if (seconds < 0) seconds = 0;
+					mFont.tahoma_7b_red.drawString(g, "Trói: " + seconds + "s", MainMod.infoStartX, num, 2);
+					num += num2;
+				}
+			}
+			if (ch.sleepEff)
+			{
+				long startTime = 0L;
+				if (dictTimeSleep.TryGetValue(ch.charID, out startTime))
+				{
+					int seconds = 12 - (int)((mSystem.currentTimeMillis() - startTime) / 1000L);
+					if (seconds < 0) seconds = 0;
+					mFont.tahoma_7b_yellow.drawString(g, "Thôi miên: " + seconds + "s", MainMod.infoStartX, num, 2);
+					num += num2;
+				}
+			}
+			if ((int)ch.isMonkey == 1)
+			{
+				long startTime = 0L;
+				if (dictTimeMonkey.TryGetValue(ch.charID, out startTime))
+				{
+					int seconds = 121 - (int)((mSystem.currentTimeMillis() - startTime) / 1000L);
+					if (seconds < 0) seconds = 0;
+					mFont.tahoma_7b_red.drawString(g, "Khỉ: " + seconds + "s", MainMod.infoStartX, num, 2);
+					num += num2;
+				}
+			}
+			if (ch.huytSao)
+			{
+				long startTime = 0L;
+				if (dictTimeWhistle.TryGetValue(ch.charID, out startTime))
+				{
+					int seconds = 31 - (int)((mSystem.currentTimeMillis() - startTime) / 1000L);
+					if (seconds < 0) seconds = 0;
+					mFont.tahoma_7b_blue.drawString(g, "Huýt sáo: " + seconds + "s", MainMod.infoStartX, num, 2);
+					num += num2;
+				}
+			}
+			if (ch.stone)
+			{
+				long startTime = 0L;
+				if (dictTimeStone.TryGetValue(ch.charID, out startTime))
+				{
+					int seconds = (int)((mSystem.currentTimeMillis() - startTime) / 1000L);
+					mFont.tahoma_7b_yellow.drawString(g, "Hóa đá: " + seconds + "s", MainMod.infoStartX, num, 2);
+					num += num2;
+				}
+			}
+			MainMod.infoStartX += 100;
 		}
 
 		// Token: 0x06000B98 RID: 2968 RVA: 0x000045ED File Offset: 0x000027ED
@@ -286,6 +402,32 @@ namespace Mod.DungPham.KoiOctiiu957
 					{
 						GameScr.info1.addInfo("%HP Không Hợp Lệ, Vui Lòng Nhập Lại!", 0);
 					}
+					MainMod.ResetChatTextField();
+					return;
+				}
+				if (ChatTextField.gI().strChat.Equals(MainMod.inputDelayJump[0]))
+				{
+					try
+					{
+						int delay = int.Parse(ChatTextField.gI().tfChat.getText());
+						if (delay < 100) delay = 100;
+						MainMod.delayAutoJump = delay;
+						GameScr.info1.addInfo("Delay Nhảy: " + delay + "ms", 0);
+					}
+					catch { GameScr.info1.addInfo("Delay không hợp lệ!", 0); }
+					MainMod.ResetChatTextField();
+					return;
+				}
+				if (ChatTextField.gI().strChat.Equals(MainMod.inputDelayMove[0]))
+				{
+					try
+					{
+						int delay = int.Parse(ChatTextField.gI().tfChat.getText());
+						if (delay < 100) delay = 100;
+						MainMod.delayAutoMove = delay;
+						GameScr.info1.addInfo("Delay Di chuyển: " + delay + "ms", 0);
+					}
+					catch { GameScr.info1.addInfo("Delay không hợp lệ!", 0); }
 					MainMod.ResetChatTextField();
 					return;
 				}
@@ -459,24 +601,42 @@ namespace Mod.DungPham.KoiOctiiu957
 				GameScr.info1.addInfo("Hide\n Server Chat" + (MainMod.hideServerChat ? "[STATUS: ON] " : "[STATUS: OFF]"), 0);
 				return;
 			case 35:
+				MyVector myVector2 = new MyVector();
+				myVector2.addElement(new Command("Auto Nhảy (Y)\n" + (MainMod.isAutoJump ? "[STATUS: ON]" : "[STATUS: OFF]"), MainMod.getInstance(), 351, null));
+				myVector2.addElement(new Command("Delay Nhảy\n[" + MainMod.delayAutoJump + "ms]", MainMod.getInstance(), 352, null));
+				myVector2.addElement(new Command("Auto Di Chuyển (X)\n" + (MainMod.isupkok ? "[STATUS: ON]" : "[STATUS: OFF]"), MainMod.getInstance(), 361, null));
+				myVector2.addElement(new Command("Delay Di Chuyển\n[" + MainMod.delayAutoMove + "ms]", MainMod.getInstance(), 362, null));
+				GameCanvas.menu.startAt(myVector2, 3);
+				return;
+			case 351:
 				MainMod.isAutoJump = !MainMod.isAutoJump;
 				GameScr.info1.addInfo("Đã " + (MainMod.isAutoJump ? "bật" : "tắt") + " auto nhảy.", 0);
 				if (MainMod.isAutoJump)
 				{
 					MainMod.xkok = global::Char.myCharz().cx;
 					MainMod.ykok = global::Char.myCharz().cy;
+					new Thread(new ThreadStart(MainMod.autojump)).Start();
 				}
-				new Thread(new ThreadStart(MainMod.autojump)).Start();
 				return;
-			case 36:
+			case 352:
+				ChatTextField.gI().strChat = MainMod.inputDelayJump[0];
+				ChatTextField.gI().tfChat.name = MainMod.inputDelayJump[1];
+				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
+				return;
+			case 361:
 				MainMod.isupkok = !MainMod.isupkok;
 				GameScr.info1.addInfo("Đã " + (MainMod.isupkok ? "bật" : "tắt") + " auto di chuyển.", 0);
 				if (MainMod.isupkok)
 				{
 					MainMod.xkok = global::Char.myCharz().cx;
 					MainMod.ykok = global::Char.myCharz().cy;
+					new Thread(new ThreadStart(MainMod.autokok)).Start();
 				}
-				new Thread(new ThreadStart(MainMod.autokok)).Start();
+				return;
+			case 362:
+				ChatTextField.gI().strChat = MainMod.inputDelayMove[0];
+				ChatTextField.gI().tfChat.name = MainMod.inputDelayMove[1];
+				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
 				return;
 			default:
 				switch (idAction)
@@ -710,6 +870,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Auto Train", MainMod.getInstance(), 5, null));
 			myVector.addElement(new Command("Auto Chat", MainMod.getInstance(), 6, null));
 			myVector.addElement(new Command("Auto Point", MainMod.getInstance(), 7, null));
+			myVector.addElement(new Command("Auto Di Chuyển", MainMod.getInstance(), 35, null));
 			myVector.addElement(new Command("More", MainMod.getInstance(), 8, null));
 			GameCanvas.menu.startAt(myVector, 3);
 		}
@@ -723,8 +884,6 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Danh Sách\nNgười Trong Map\n" + (MainMod.isShowCharsInMap ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 30, null));
 			myVector.addElement(new Command("Ẩn\nThông Tin Map\n" + (MainMod.isReduceGraphics ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 31, null));
 			myVector.addElement(new Command("Ẩn\nServer Chat\n" + (MainMod.hideServerChat ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 34, null));
-			myVector.addElement(new Command("Auto Nhảy\n" + (MainMod.isAutoJump ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 35, null));
-			myVector.addElement(new Command("Auto Di Chuyển\n" + (MainMod.isupkok ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 36, null));
 			myVector.addElement(new Command("Mod Skin\n" + ModSkin.GetMenuSummary(), ModSkin.getInstance(), 37, null));
 			GameCanvas.menu.startAt(myVector, 3);
 		}
@@ -1304,7 +1463,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			}
 			Thread.Sleep(500);
 			Service.gI().requestMapSelect(0);
-			Thread.Sleep(1000);
+			Thread.Sleep(MainMod.delayAutoJump);
 			MainMod.isUsingCapsule = false;
 		}
 
@@ -1336,7 +1495,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static void SolveCapcha()
 		{
 			MainMod.isSlovingCapcha = true;
-			Thread.Sleep(1000);
+			Thread.Sleep(MainMod.delayAutoJump);
 			try
 			{
 				WebClient webClient = new WebClient();
@@ -1366,18 +1525,18 @@ namespace Mod.DungPham.KoiOctiiu957
 							Service.gI().mobCapcha(text[i]);
 							Thread.Sleep(Res.random(500, 700));
 						}
-						Thread.Sleep(3000);
+						Thread.Sleep(MainMod.delayAutoMove);
 					}
 				}
 			}
 			catch
 			{
-				Thread.Sleep(3000);
+				Thread.Sleep(MainMod.delayAutoMove);
 			}
-			Thread.Sleep(1000);
+			Thread.Sleep(MainMod.delayAutoJump);
 			if (GameScr.gI().mobCapcha != null)
 			{
-				Thread.Sleep(3000);
+				Thread.Sleep(MainMod.delayAutoMove);
 			}
 			MainMod.isSlovingCapcha = false;
 		}
@@ -1445,6 +1604,20 @@ namespace Mod.DungPham.KoiOctiiu957
 			global::Char @char = global::Char.myCharz();
 			global::Char charFocus = @char.charFocus;
 			int num2 = GameCanvas.w - MainMod.widthRect;
+			int countTargets = 0;
+			for (int i = 0; i < MainMod.listCharsInMap.Count; i++)
+			{
+				global::Char char2 = MainMod.listCharsInMap[i];
+				if (!string.IsNullOrEmpty(char2.cName) && !char2.isPet && !char2.isMiniPet && !char2.cName.StartsWith("#") && !char2.cName.StartsWith("$") && char2.cName != "Trọng tài")
+				{
+					if (char2.isNRD || (charFocus != null && charFocus == char2))
+					{
+						countTargets++;
+					}
+				}
+			}
+			MainMod.infoStartX = GameCanvas.w / 2 - (countTargets - 1) * 100 / 2;
+			
 			for (int i = 0; i < MainMod.listCharsInMap.Count; i++)
 			{
 				global::Char char2 = MainMod.listCharsInMap[i];
@@ -1462,15 +1635,7 @@ namespace Mod.DungPham.KoiOctiiu957
 						MainMod.paintCharInfo(g, charFocus);
 					}
 					bool flag = MainMod.isBoss(char2);
-					string arg = flag ? (char2.cName + " [" + NinjaUtil.getMoneys(char2.cHP) + "]") : string.Concat(new string[]
-					{
-						char2.cName,
-						" [",
-						NinjaUtil.getMoneys(char2.cHP),
-						" - ",
-						char2.getGender(),
-						"]"
-					});
+					string arg = flag ? ("B: " + char2.cName + " [" + NinjaUtil.getMoneys(char2.cHP) + "]") : (char2.getGender() + ": " + char2.cName + " [" + NinjaUtil.getMoneys(char2.cHP) + "]");
 					int x = num2 + 2;
 					if (charFocus != null && charFocus == char2)
 					{
@@ -1485,6 +1650,10 @@ namespace Mod.DungPham.KoiOctiiu957
 						mFont.tahoma_7_red.drawString(g, i + 1 + ". " + arg, x, num, 0);
 					}
 					else if (char2.cHPFull > 100000000L && char2.cHP > 0L && MainMod.isMeInNRDMap() && !char2.isNRD)
+					{
+						mFont.tahoma_7b_red.drawString(g, i + 1 + ". " + arg, x, num, 0);
+					}
+					else if (char2.isNRD)
 					{
 						mFont.tahoma_7b_red.drawString(g, i + 1 + ". " + arg, x, num, 0);
 					}
@@ -1586,9 +1755,9 @@ namespace Mod.DungPham.KoiOctiiu957
 			while (MainMod.isupkok)
 			{
 				global::Char.myCharz().currentMovePoint = new MovePoint(MainMod.xkok + 50, MainMod.ykok);
-				Thread.Sleep(3000);
+				Thread.Sleep(MainMod.delayAutoMove);
 				global::Char.myCharz().currentMovePoint = new MovePoint(MainMod.xkok - 50, MainMod.ykok);
-				Thread.Sleep(3000);
+				Thread.Sleep(MainMod.delayAutoMove);
 			}
 		}
 
@@ -1598,9 +1767,9 @@ namespace Mod.DungPham.KoiOctiiu957
 			while (MainMod.isAutoJump)
 			{
 				global::Char.myCharz().currentMovePoint = new MovePoint(MainMod.xkok, MainMod.ykok + 50);
-				Thread.Sleep(1000);
+				Thread.Sleep(MainMod.delayAutoJump);
 				global::Char.myCharz().currentMovePoint = new MovePoint(MainMod.xkok, MainMod.ykok - 50);
-				Thread.Sleep(1000);
+				Thread.Sleep(MainMod.delayAutoJump);
 			}
 		}
 
@@ -1885,5 +2054,17 @@ namespace Mod.DungPham.KoiOctiiu957
 
 		// Token: 0x0400169E RID: 5790
 		public static bool isLockMap = false;
+		public static Dictionary<int, long> dictTimeShield = new Dictionary<int, long>();
+		public static Dictionary<int, long> dictTimeTie = new Dictionary<int, long>();
+		public static Dictionary<int, long> dictTimeSleep = new Dictionary<int, long>();
+		public static Dictionary<int, long> dictTimeMonkey = new Dictionary<int, long>();
+		public static Dictionary<int, long> dictTimeWhistle = new Dictionary<int, long>();
+				public static int delayAutoJump = 1000;
+		public static int delayAutoMove = 3000;
+		public static string[] inputDelayJump = new string[] { "Nhập Delay Nhảy (ms)", "Delay" };
+		public static string[] inputDelayMove = new string[] { "Nhập Delay Di Chuyển (ms)", "Delay" };
+public static Dictionary<int, long> dictTimeStone = new Dictionary<int, long>();
+		public static int infoStartX = 0;
+
 	}
 }

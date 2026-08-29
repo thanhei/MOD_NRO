@@ -7389,13 +7389,31 @@ public class GameScr : mScreen, IChatable
 		}
 	}
 
+	public static bool isItemYardrat(Item item)
+	{
+		if (item == null || item.template == null)
+		{
+			return false;
+		}
+		if (item.template.id == 591 || item.template.id == 911)
+		{
+			return true;
+		}
+		if (item.template.name != null && (item.template.name.Contains("Yardrat") || item.template.name.Contains("yardrat")))
+		{
+			return true;
+		}
+		return false;
+	}
+
 	// Token: 0x060007CE RID: 1998 RVA: 0x00071064 File Offset: 0x0006F264
 	public static int findYardrat()
 	{
 		Item[] arrItemBag = global::Char.myCharz().arrItemBag;
+		if (arrItemBag == null) return -1;
 		for (int i = 0; i < arrItemBag.Length; i++)
 		{
-			if (arrItemBag[i] != null && arrItemBag[i].template != null && arrItemBag[i].template.name != null && arrItemBag[i].template.name.Contains("Yardrat"))
+			if (GameScr.isItemYardrat(arrItemBag[i]))
 			{
 				return i;
 			}
@@ -7407,27 +7425,27 @@ public class GameScr : mScreen, IChatable
 	public static void myTele(int CharID)
 	{
 		Item[] arrItemBody = global::Char.myCharz().arrItemBody;
+		if (arrItemBody != null && arrItemBody.Length > 5 && GameScr.isItemYardrat(arrItemBody[5]))
+		{
+			GameScr.info1.addInfo("Đang mặc Yardrat", 0);
+			Service.gI().gotoPlayer(CharID);
+			return;
+		}
 		int num = GameScr.findYardrat();
 		if (num == -1)
 		{
-			GameScr.info1.addInfo("No Yardrat item!", 0);
+			GameScr.info1.addInfo("Không có cải trang Yardrat!", 0);
 			return;
 		}
-		if (arrItemBody[5] == null)
+		if (arrItemBody == null || arrItemBody.Length <= 5 || arrItemBody[5] == null)
 		{
-			GameScr.info1.addInfo("Equip Yardrat", 0);
+			GameScr.info1.addInfo("Mặc Yardrat", 0);
 			Service.gI().getItem(4, (sbyte)num);
 			Service.gI().gotoPlayer(CharID);
 			Service.gI().getItem(5, 5);
 			return;
 		}
-		if (arrItemBody[5].template != null && arrItemBody[5].template.name.Contains("Yardrat"))
-		{
-			GameScr.info1.addInfo("Already wearing Yardrat", 0);
-			Service.gI().gotoPlayer(CharID);
-			return;
-		}
-		GameScr.info1.addInfo("Switch to Yardrat", 0);
+		GameScr.info1.addInfo("Đổi Yardrat", 0);
 		Service.gI().getItem(4, (sbyte)num);
 		Service.gI().gotoPlayer(CharID);
 		Service.gI().getItem(4, (sbyte)num);

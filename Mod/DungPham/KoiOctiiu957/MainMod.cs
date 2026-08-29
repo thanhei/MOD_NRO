@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -1025,7 +1025,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		// Token: 0x06000BA9 RID: 2985 RVA: 0x000A9E40 File Offset: 0x000A8040
 		public static void Revive()
 		{
-			if (global::Char.myCharz().luong + global::Char.myCharz().luongKhoa > 0 && global::Char.myCharz().meDead && global::Char.myCharz().cHP <= 0L && GameCanvas.gameTick % 20 == 0)
+			if (global::Char.myCharz() != null && global::Char.myCharz().luong + global::Char.myCharz().luongKhoa > 0 && (global::Char.myCharz().meDead || global::Char.myCharz().statusMe == 14 || global::Char.myCharz().cHP <= 0L) && GameCanvas.gameTick % 20 == 0)
 			{
 				Service.gI().wakeUpFromDead();
 				global::Char.myCharz().meDead = false;
@@ -1754,10 +1754,26 @@ namespace Mod.DungPham.KoiOctiiu957
 		{
 			while (MainMod.isupkok)
 			{
-				global::Char.myCharz().currentMovePoint = new MovePoint(MainMod.xkok + 50, MainMod.ykok);
-				Thread.Sleep(MainMod.delayAutoMove);
-				global::Char.myCharz().currentMovePoint = new MovePoint(MainMod.xkok - 50, MainMod.ykok);
-				Thread.Sleep(MainMod.delayAutoMove);
+				try
+				{
+					if (global::Char.myCharz() != null)
+					{
+						global::Char.myCharz().currentMovePoint = new MovePoint(global::Char.myCharz().cx + 50, global::Char.myCharz().cy);
+					}
+					Thread.Sleep(MainMod.delayAutoMove);
+					if (!MainMod.isupkok)
+					{
+						break;
+					}
+					if (global::Char.myCharz() != null)
+					{
+						global::Char.myCharz().currentMovePoint = new MovePoint(global::Char.myCharz().cx - 50, global::Char.myCharz().cy);
+					}
+					Thread.Sleep(MainMod.delayAutoMove);
+				}
+				catch
+				{
+				}
 			}
 		}
 
@@ -1766,10 +1782,26 @@ namespace Mod.DungPham.KoiOctiiu957
 		{
 			while (MainMod.isAutoJump)
 			{
-				global::Char.myCharz().currentMovePoint = new MovePoint(MainMod.xkok, MainMod.ykok + 50);
-				Thread.Sleep(MainMod.delayAutoJump);
-				global::Char.myCharz().currentMovePoint = new MovePoint(MainMod.xkok, MainMod.ykok - 50);
-				Thread.Sleep(MainMod.delayAutoJump);
+				try
+				{
+					if (global::Char.myCharz() != null)
+					{
+						global::Char.myCharz().currentMovePoint = new MovePoint(global::Char.myCharz().cx, global::Char.myCharz().cy - 50);
+					}
+					Thread.Sleep(MainMod.delayAutoJump);
+					if (!MainMod.isAutoJump)
+					{
+						break;
+					}
+					if (global::Char.myCharz() != null)
+					{
+						global::Char.myCharz().currentMovePoint = new MovePoint(global::Char.myCharz().cx, global::Char.myCharz().cy + 50);
+					}
+					Thread.Sleep(MainMod.delayAutoJump);
+				}
+				catch
+				{
+				}
 			}
 		}
 

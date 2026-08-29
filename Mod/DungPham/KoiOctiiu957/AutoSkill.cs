@@ -299,17 +299,26 @@ namespace Mod.DungPham.KoiOctiiu957
 		
 		public static void AutoReviveSelf()
 		{
+			if (global::Char.myCharz() == null) return;
 			if (global::Char.myCharz().cgender != 1) return;
-			
-			Skill skillRevive = global::Char.myCharz().getSkill(new SkillTemplate { id = 11 });
+			if (global::Char.myCharz().meDead || global::Char.myCharz().statusMe == 14 || global::Char.myCharz().statusMe == 5 || global::Char.myCharz().cHP <= 0L) return;
+
+			Skill skillRevive = global::Char.myCharz().getSkill(new SkillTemplate { id = 7 });
 			if (skillRevive != null)
 			{
 				if (mSystem.currentTimeMillis() - skillRevive.lastTimeUseThisSkill > (long)(skillRevive.coolDown + 100))
 				{
-					Service.gI().selectSkill(11);
-					Service.gI().sendPlayerAttack(new MyVector(), MainMod.GetMyVectorMe(), -1);
-					Service.gI().selectSkill((int)global::Char.myCharz().myskill.template.id);
-					skillRevive.lastTimeUseThisSkill = mSystem.currentTimeMillis();
+					if (global::Char.myCharz().cMP >= (long)skillRevive.manaUse)
+					{
+						int currentSkillId = (global::Char.myCharz().myskill != null) ? (int)global::Char.myCharz().myskill.template.id : -1;
+						Service.gI().selectSkill(7);
+						Service.gI().sendPlayerAttack(new MyVector(), MainMod.GetMyVectorMe(), -1);
+						if (currentSkillId != -1)
+						{
+							Service.gI().selectSkill(currentSkillId);
+						}
+						skillRevive.lastTimeUseThisSkill = mSystem.currentTimeMillis();
+					}
 				}
 			}
 		}

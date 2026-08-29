@@ -19,6 +19,10 @@ namespace Mod.DungPham.KoiOctiiu957
 		// Token: 0x06000B17 RID: 2839 RVA: 0x000A3A1C File Offset: 0x000A1C1C
 		public static void Update()
 		{
+			if (AutoSkill.isAutoReviveSelf)
+			{
+				AutoSkill.AutoReviveSelf();
+			}
 			if (AutoSkill.isAutoSendAttack)
 			{
 				AutoSkill.AutoSendAttack();
@@ -196,6 +200,10 @@ namespace Mod.DungPham.KoiOctiiu957
 				AutoSkill.ToggleFreezeSkill(GameScr.keySkill[num2]);
 				return;
 			}
+			case 14:
+				AutoSkill.isAutoReviveSelf = !AutoSkill.isAutoReviveSelf;
+				GameScr.info1.addInfo("Auto Hồi Sinh Bản Thân\n" + (AutoSkill.isAutoReviveSelf ? "[STATUS: ON]" : "[STATUS: OFF]"), 0);
+				return;
 			default:
 				return;
 			}
@@ -206,6 +214,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		{
 			AutoSkill.LoadData();
 			MyVector myVector = new MyVector();
+			myVector.addElement(new Command("Auto Hồi Sinh\nBản Thân\n" + (AutoSkill.isAutoReviveSelf ? "[STATUS: ON]" : "[STATUS: OFF]"), AutoSkill.getInstance(), 14, null));
 			myVector.addElement(new Command("Tự Đánh\n" + (AutoSkill.isAutoSendAttack ? "[STATUS: ON]" : "[STATUS: OFF]"), AutoSkill.getInstance(), 1, null));
 			myVector.addElement(new Command("Đánh Khi Đệ Cần\n" + (AutoSkill.isTrainPet ? "[STATUS: ON]" : "[STATUS: OFF]"), AutoSkill.getInstance(), 2, null));
 			myVector.addElement(new Command(GameScr.keySkill.Length.ToString() + " Ô Kỹ Năng", AutoSkill.getInstance(), 3, null));
@@ -287,6 +296,24 @@ namespace Mod.DungPham.KoiOctiiu957
 		}
 
 		// Token: 0x06000B21 RID: 2849 RVA: 0x000A4250 File Offset: 0x000A2450
+		
+		public static void AutoReviveSelf()
+		{
+			if (global::Char.myCharz().cgender != 1) return;
+			
+			Skill skillRevive = global::Char.myCharz().getSkill(new SkillTemplate { id = 11 });
+			if (skillRevive != null)
+			{
+				if (mSystem.currentTimeMillis() - skillRevive.lastTimeUseThisSkill > (long)(skillRevive.coolDown + 100))
+				{
+					Service.gI().selectSkill(11);
+					Service.gI().sendPlayerAttack(new MyVector(), MainMod.GetMyVectorMe(), -1);
+					Service.gI().selectSkill((int)global::Char.myCharz().myskill.template.id);
+					skillRevive.lastTimeUseThisSkill = mSystem.currentTimeMillis();
+				}
+			}
+		}
+
 		public static void AutoSendAttack()
 		{
 			if (!global::Char.myCharz().meDead && global::Char.myCharz().cHP > 0L && global::Char.myCharz().statusMe != 14 && global::Char.myCharz().statusMe != 5 && global::Char.myCharz().myskill.template.type != 3 && global::Char.myCharz().myskill.template.id != 10 && global::Char.myCharz().myskill.template.id != 11 && (!global::Char.myCharz().myskill.paintCanNotUseSkill || GameCanvas.panel.isShow))
@@ -575,6 +602,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static bool isLoadKeySkill = true;
 
 		// Token: 0x040015C1 RID: 5569
+		public static bool isAutoReviveSelf;
 		public static bool isAutoSendAttack;
 
 		// Token: 0x040015C2 RID: 5570

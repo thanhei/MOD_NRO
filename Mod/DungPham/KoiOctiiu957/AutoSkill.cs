@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Mod.DungPham.KoiOctiiu957
@@ -563,6 +563,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				AutoSkill.frozenOriginal[id] = new int[] { skill.coolDown, skill.manaUse };
 				skill.coolDown = 0;
 				skill.manaUse = 0;
+				skill.lastTimeUseThisSkill = 0L;
 				GameScr.info1.addInfo("Đóng Băng\n" + skill.template.name, 0);
 			}
 		}

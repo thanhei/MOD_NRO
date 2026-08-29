@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Assets.src.g;
 using Mod.DungPham.KoiOctiiu957;
 
@@ -6118,6 +6118,10 @@ public class GameScr : mScreen, IChatable
 		if (!GameScr.isPaintMessage || GameCanvas.isTouch)
 		{
 			ChatTextField.gI().isShow = false;
+		}
+		if (Mod.DungPham.KoiOctiiu957.MainMod.Chat(text))
+		{
+			return;
 		}
 		if (to.Equals(mResources.chat_player))
 		{

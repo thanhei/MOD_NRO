@@ -69,6 +69,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				AutoPick.Update();
 				AutoMap.Update();
 				AutoPoint.Update();
+				AutoChat.Update();
 				ModSkin.Update();
 
 				try
@@ -465,7 +466,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				AutoTrain.ShowMenu();
 				return;
 			case 6:
-				AutoTrain.ShowMenu();
+				AutoChat.ShowMenu();
 				return;
 			case 7:
 				AutoPoint.ShowMenu();
@@ -599,6 +600,9 @@ namespace Mod.DungPham.KoiOctiiu957
 			case 34:
 				MainMod.hideServerChat = !MainMod.hideServerChat;
 				GameScr.info1.addInfo("Hide\n Server Chat" + (MainMod.hideServerChat ? "[STATUS: ON] " : "[STATUS: OFF]"), 0);
+				return;
+			case 36:
+				MainMod.ShowMenuDisplaySettings();
 				return;
 			case 35:
 				MyVector myVector2 = new MyVector();
@@ -868,8 +872,6 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Auto Pean", MainMod.getInstance(), 3, null));
 			myVector.addElement(new Command("Auto Pick", MainMod.getInstance(), 4, null));
 			myVector.addElement(new Command("Auto Train", MainMod.getInstance(), 5, null));
-			myVector.addElement(new Command("Auto Chat", MainMod.getInstance(), 6, null));
-			myVector.addElement(new Command("Auto Point", MainMod.getInstance(), 7, null));
 			myVector.addElement(new Command("Auto Di Chuyển", MainMod.getInstance(), 35, null));
 			myVector.addElement(new Command("More", MainMod.getInstance(), 8, null));
 			GameCanvas.menu.startAt(myVector, 3);
@@ -879,12 +881,21 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static void ShowMenuMore()
 		{
 			MyVector myVector = new MyVector();
-			myVector.addElement(new Command("Background\n" + (GameCanvas.paintBG ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 28, null));
+			myVector.addElement(new Command("Auto Chat", MainMod.getInstance(), 6, null));
+			myVector.addElement(new Command("Auto Point", MainMod.getInstance(), 7, null));
+			myVector.addElement(new Command("Cài Đặt\nHiển Thị", MainMod.getInstance(), 36, null));
+			myVector.addElement(new Command("Mod Skin\n" + ModSkin.GetMenuSummary(), ModSkin.getInstance(), 37, null));
+			GameCanvas.menu.startAt(myVector, 3);
+		}
+
+		public static void ShowMenuDisplaySettings()
+		{
+			MyVector myVector = new MyVector();
 			myVector.addElement(new Command("Thông Báo\nBoss\n" + (MainMod.isHuntingBoss ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 29, null));
+			myVector.addElement(new Command("Background\n" + (GameCanvas.paintBG ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 28, null));
 			myVector.addElement(new Command("Danh Sách\nNgười Trong Map\n" + (MainMod.isShowCharsInMap ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 30, null));
 			myVector.addElement(new Command("Ẩn\nThông Tin Map\n" + (MainMod.isReduceGraphics ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 31, null));
 			myVector.addElement(new Command("Ẩn\nServer Chat\n" + (MainMod.hideServerChat ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 34, null));
-			myVector.addElement(new Command("Mod Skin\n" + ModSkin.GetMenuSummary(), ModSkin.getInstance(), 37, null));
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 

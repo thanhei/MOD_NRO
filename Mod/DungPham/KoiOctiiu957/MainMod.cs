@@ -1904,11 +1904,30 @@ namespace Mod.DungPham.KoiOctiiu957
 			{
 				return;
 			}
-			int w = GameCanvas.w;
-			int num = MainMod.widthRect;
-			int num2 = MainMod.heightRect;
+			int num = GameCanvas.w - MainMod.widthRect - 8;
+			int num2 = rowTopY + 2 + (MainMod.heightRect - 7 >> 1);
+			MainMod.drawFlagSquare(g, (int)ch.cFlag, num, num2);
 		}
 
+			public static void drawFlagSquare(mGraphics g, int cFlag, int x, int y)
+		{
+			if (cFlag != 0)
+			{
+				if (cFlag < 1 || cFlag > MainMod.listFlagColor.Count)
+				{
+					Cout.println("Invalid cFlag value: " + cFlag.ToString() + ", using default color");
+					cFlag = 1;
+				}
+				Color color = MainMod.listFlagColor[cFlag];
+				int num = (int)(color.r * 255f);
+				int num2 = (int)(color.g * 255f);
+				int num3 = (int)(color.b * 255f);
+				int num4 = (num << 16) | (num2 << 8) | num3;
+				float num5 = 0.7f;
+				g.setColor(num4, num5);
+				g.fillRect(x, y, 7, 7);
+			}
+		}
 		// Token: 0x04001645 RID: 5701
 		public static MainMod _Instance;
 

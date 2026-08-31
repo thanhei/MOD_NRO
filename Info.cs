@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Mod.DungPham.KoiOctiiu957;
 
 // Token: 0x02000060 RID: 96
@@ -14,7 +14,11 @@ public class Info : IActionListener
 	// Token: 0x06000377 RID: 887 RVA: 0x000221D4 File Offset: 0x000203D4
 	public void paint(mGraphics g, int x, int y, int dir)
 	{
-		if (this.infoWaitToShow.size() == 0 || MainMod.hideServerChat)
+		if (this.infoWaitToShow.size() == 0)
+		{
+			return;
+		}
+		if (this.info != null && this.info.charInfo != null && !MainMod.serverChat)
 		{
 			return;
 		}
@@ -234,12 +238,12 @@ public class Info : IActionListener
 			infoItem.charInfo = cInfo;
 			infoItem.isChatServer = isChatServer;
 			GameCanvas.panel.addChatMessage(infoItem);
-			if (GameCanvas.isTouch && GameCanvas.panel.isViewChatServer)
+			if (GameCanvas.isTouch && GameCanvas.panel.isViewChatServer && MainMod.serverChat)
 			{
 				GameScr.info2.cmdChat = new Command(mResources.CHAT, this, 1000, infoItem);
 			}
 		}
-		if ((cInfo != null && GameCanvas.panel.isViewChatServer) || cInfo == null)
+		if ((cInfo != null && GameCanvas.panel.isViewChatServer && MainMod.serverChat) || cInfo == null)
 		{
 			this.infoWaitToShow.addElement(infoItem);
 		}

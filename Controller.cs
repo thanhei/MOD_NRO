@@ -3756,6 +3756,10 @@ public class Controller : IMessageHandler
 				sbyte id4 = msg.reader().readSByte();
 				string text10 = msg.reader().readUTF();
 				short num167 = msg.reader().readShort();
+				if (!string.IsNullOrEmpty(text10))
+				{
+					GameScr.info1.addInfo(text10, 0);
+				}
 				if (!ItemTime.isExistMessage((int)id4))
 				{
 					ItemTime itemTime = new ItemTime();

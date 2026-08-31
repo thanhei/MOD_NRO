@@ -4848,7 +4848,11 @@ public class GameScr : mScreen, IChatable
 				}
 				for (int num27 = 0; num27 < GameScr.textTime.size(); num27++)
 				{
-					((ItemTime)GameScr.textTime.elementAt(num27)).paintText(g, this.cmdMenu.x + ((global::Char.vItemTime.size() == 0) ? 25 : 5), ((global::Char.vItemTime.size() == 0) ? 45 : 90) + num27 * 12);
+					ItemTime itemTime = (ItemTime)GameScr.textTime.elementAt(num27);
+					if (itemTime.isPaint_coolDownBar)
+					{
+						itemTime.paintText(g, this.cmdMenu.x + ((global::Char.vItemTime.size() == 0) ? 25 : 5), ((global::Char.vItemTime.size() == 0) ? 45 : 90) + num27 * 12);
+					}
 				}
 				this.paintXoSo(g);
 				if (mResources.language == 1)

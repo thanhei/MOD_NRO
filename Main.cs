@@ -38,7 +38,7 @@ public class Main : MonoBehaviour
 					Screen.SetResolution(460, 300, false);
 					return;
 				}
-				Screen.SetResolution(1024, 600, false);
+				Screen.SetResolution(960, 540, false);
 			}
 		}
 	}

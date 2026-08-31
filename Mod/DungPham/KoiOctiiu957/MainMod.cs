@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -133,26 +133,34 @@ namespace Mod.DungPham.KoiOctiiu957
 			{
 				MainMod.paintListCharsInMap(g);
 			}
+			int startY = (int)((float)GameCanvas.h * 0.30f);
+			if (startY < 75)
+			{
+				startY = 75;
+			}
 			mFont.tahoma_7.drawString(g, string.Concat(new string[]
-				{
-					"Map: ",
-					TileMap.mapNames[TileMap.mapID],
-					" [",
-					TileMap.zoneID.ToString(),
-					"]"
-				}), 25, GameCanvas.h - 220, 0);
-				mFont.tahoma_7.drawString(g, "Time: " + DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy"), 25, GameCanvas.h - 210, 0);
-				mFont.tahoma_7.drawString(g, string.Concat(new string[]
-				{
-					"X: ",
-					global::Char.myCharz().cx.ToString(),
-					" - ",
-					global::Char.myCharz().cy.ToString(),
-					" , FPS: ",
-					string.Format("{0:0.#}", System.Math.Round((double)(1f / Time.smoothDeltaTime * Time.timeScale), 1))
-				}), 25, GameCanvas.h - 200, 0);
+			{
+				"Map: ",
+				TileMap.mapNames[TileMap.mapID],
+				" [",
+				TileMap.zoneID.ToString(),
+				"]"
+			}), 25, startY, 0);
+			startY += 10;
+			mFont.tahoma_7.drawString(g, "Time: " + DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy"), 25, startY, 0);
+			startY += 10;
+			mFont.tahoma_7.drawString(g, string.Concat(new string[]
+			{
+				"X: ",
+				global::Char.myCharz().cx.ToString(),
+				" - ",
+				global::Char.myCharz().cy.ToString(),
+				" , FPS: ",
+				string.Format("{0:0.#}", System.Math.Round((double)(1f / Time.smoothDeltaTime * Time.timeScale), 1))
+			}), 25, startY, 0);
+			startY += 10;
 				
-			int num = GameCanvas.h - 190;
+			int num = startY;
 			if (MainMod.isConnectToAccountManager)
 			{
 				mFont.tahoma_7.drawString(g, "Đã kết nối!", 25, num, 0);
@@ -629,9 +637,9 @@ namespace Mod.DungPham.KoiOctiiu957
 				GameScr.info1.addInfo("Auto Bom\nPic Poc" + (MainMod.isAutoBomPicPoc ? "[STATUS: ON] " : "[STATUS: OFF]"), 0);
 				return;
 			case 34:
-				MainMod.hideServerChat = !MainMod.hideServerChat;
-				Rms.saveRMSInt("hideServerChat", MainMod.hideServerChat ? 1 : 0);
-				GameScr.info1.addInfo("Hide\n Server Chat" + (MainMod.hideServerChat ? "[STATUS: ON] " : "[STATUS: OFF]"), 0);
+				MainMod.serverChat = !MainMod.serverChat;
+				Rms.saveRMSInt("serverChat", MainMod.serverChat ? 1 : 0);
+				GameScr.info1.addInfo("Server Chat\n" + (MainMod.serverChat ? "[STATUS: ON]" : "[STATUS: OFF]"), 0);
 				return;
 			case 36:
 				MainMod.ShowMenuDisplaySettings();
@@ -687,39 +695,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
 				return;
 			default:
-				switch (idAction)
-				{
-				case 100:
-					Application.OpenURL("http://acc957.com/");
-					return;
-				case 101:
-					Application.OpenURL("http://vangngoc957.com/");
-					return;
-				case 102:
-					Application.OpenURL("https://www.youtube.com/channel/UCkE_Mbny4y1BREb2E-sSZvQ");
-					return;
-				case 103:
-					Application.OpenURL("https://www.facebook.com/octiiu957.official");
-					return;
-				case 104:
-					Application.OpenURL("https://www.facebook.com/groups/TEAM957/");
-					return;
-				case 105:
-					Application.OpenURL("https://www.facebook.com/pham.dung177/");
-					return;
-				case 106:
-					Application.OpenURL("https://www.youtube.com/channel/UCx2ehE3tT4bRGpFXb1IsKhw");
-					return;
-				case 107:
-					Application.OpenURL("https://dungpham.com.vn/");
-					return;
-				case 108:
-					GameCanvas.startOKDlg("Để nâng cấp phiên bản cần liên hệ Dũng Phạm\nTrong phiên bản mới sẽ có thêm nhiều tính năng như QLTK, điều khiển tab (bom cả dàn ac cùng lúc,... ), hiển thị đầy đủ thông tin người ôm ngọc rồng đen (time khiên, khỉ, thôi miên,... ), và nhiều tính năng khác, hỗ trợ tối đa ngọc rồng đen, pk và săn boss\nPhiên bản nâng cấp sẽ được hỗ trợ update fix lỗi free liên tục trong quá trình sử dụng\nGía: 300k/1key/sv - HSD: vĩnh viễn");
-					return;
-				default:
-					return;
-				}
-				break;
+				return;
 			}
 		}
 
@@ -948,7 +924,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Giảm\nĐồ Họa\n" + (MainMod.isReduceGraphics ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 31, null));
 			myVector.addElement(new Command("Thông Báo\nBoss\n" + (MainMod.isHuntingBoss ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 29, null));
 			myVector.addElement(new Command("Danh Sách\nNgười Trong Map\n" + (MainMod.isShowCharsInMap ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 30, null));
-			myVector.addElement(new Command("Ẩn\nServer Chat\n" + (MainMod.hideServerChat ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 34, null));
+			myVector.addElement(new Command("Server Chat\n" + (MainMod.serverChat ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 34, null));
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -1474,7 +1450,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			MainMod.isPaintBackground = (Rms.loadRMSInt("isPaintBgr") == 1);
 			MainMod.isShowCharsInMap = (Rms.loadRMSInt("showchar") == 1);
 			MainMod.isReduceGraphics = (Rms.loadRMSInt("IsReduceGraphics") == 1);
-			MainMod.hideServerChat = (Rms.loadRMSInt("hideServerChat") == 1);
+			MainMod.serverChat = (Rms.loadRMSInt("serverChat") != 0); // Mặc định là ON, chỉ OFF khi RMS = 0
 			MainMod.isAutoLogin = false; // Forced disabled on startup
 			MainMod.isAutoJump = (Rms.loadRMSInt("isAutoJump") == 1);
 			MainMod.delayAutoJump = Rms.loadRMSInt("delayAutoJump");
@@ -2200,7 +2176,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static string[] inputDistanceMove = new string[] { "Nhập Khoảng Cách Di Chuyển (px)", "Khoảng cách" };
 
 		// Token: 0x0400169D RID: 5789
-		public static bool hideServerChat = false;
+		public static bool serverChat = true;
 		public static bool isAutoLogin;
 		public static bool isDisconnecting;
 		public static long timeDisconnect;

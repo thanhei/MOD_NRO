@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using UnityEngine;
@@ -204,6 +204,7 @@ public class Rms
 			lower.StartsWith("isreducegraphics") ||
 			lower.StartsWith("sanboss") ||
 			lower.StartsWith("showchar") ||
+			lower.StartsWith("serverchat") ||
 			lower.StartsWith("hideserverchat") ||
 			lower.StartsWith("isauto") ||
 			lower.StartsWith("delayauto") ||

@@ -10,6 +10,8 @@ public class Main : MonoBehaviour
 	// Token: 0x0600013B RID: 315 RVA: 0x0000E000 File Offset: 0x0000C200
 	private void Start()
 	{
+		UnityEngine.QualitySettings.antiAliasing = 0;
+		UnityEngine.QualitySettings.vSyncCount = 0;
 		Application.targetFrameRate = 60;
 		if (!Main.started)
 		{

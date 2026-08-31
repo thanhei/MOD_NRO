@@ -194,9 +194,63 @@ public class Rms
 	}
 
 	// Token: 0x06000094 RID: 148 RVA: 0x0000AA88 File Offset: 0x00008C88
+	public static bool IsModCache(string filename)
+	{
+		if (string.IsNullOrEmpty(filename)) return false;
+		string lower = filename.ToLower();
+		
+		// Mod Settings & Auto Features
+		if (lower.StartsWith("ispaintbgr") ||
+			lower.StartsWith("isreducegraphics") ||
+			lower.StartsWith("sanboss") ||
+			lower.StartsWith("showchar") ||
+			lower.StartsWith("hideserverchat") ||
+			lower.StartsWith("isauto") ||
+			lower.StartsWith("delayauto") ||
+			lower.StartsWith("distanceauto") ||
+			lower.StartsWith("auto") || // Covers AutoMap, AutoPean, AutoSkill, auto_manager, auto_pick_list, etc.
+			lower.Contains("_list") ||
+			lower.Contains("_part") ||
+			lower.Contains("item_animation") ||
+			lower.StartsWith("onscreenskill") ||
+			lower.StartsWith("keyskill") ||
+			lower.EndsWith("_head") ||
+			lower.EndsWith("_body") ||
+			lower.EndsWith("_leg") ||
+			lower.EndsWith("_back") ||
+			lower.EndsWith("_board"))
+		{
+			return true;
+		}
+		
+		// Core Game Settings (Protect these too so users don't have to reconfigure)
+		if (lower == "acc" ||
+			lower == "pass" ||
+			lower.StartsWith("userao") ||
+			lower == "analog" ||
+			lower == "isplaysound" ||
+			lower.StartsWith("ispaintaura") ||
+			lower == "lowgraphic" ||
+			lower == "serverchat" ||
+			lower == "viewchat" ||
+			lower == "languageversion" ||
+			lower == "indserver")
+		{
+			return true;
+		}
+		
+		return false;
+	}
+
 	private static void __saveRMS(string filename, sbyte[] data)
 	{
-		string text = Rms.GetiPhoneDocumentsPath() + "/" + filename;
+		string path = Rms.GetiPhoneDocumentsPath();
+		if (IsModCache(filename))
+		{
+			path = path + "/ModCache";
+			if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+		}
+		string text = path + "/" + filename;
 		FileStream fileStream = new FileStream(text, FileMode.Create);
 		fileStream.Write(ArrayCast.cast(data), 0, data.Length);
 		fileStream.Flush();
@@ -210,7 +264,20 @@ public class Rms
 		sbyte[] result;
 		try
 		{
-			FileStream fileStream = new FileStream(Rms.GetiPhoneDocumentsPath() + "/" + filename, FileMode.Open);
+			string path = Rms.GetiPhoneDocumentsPath();
+			string fullPath = path + "/" + filename;
+			
+			if (IsModCache(filename))
+			{
+				string modPath = path + "/ModCache/" + filename;
+				if (File.Exists(modPath)) 
+				{
+					fullPath = modPath;
+				}
+				// If it doesn't exist in ModCache, it falls back to fullPath (root), 
+				// preserving user's old configs before the update!
+			}
+			FileStream fileStream = new FileStream(fullPath, FileMode.Open);
 			byte[] array = new byte[fileStream.Length];
 			fileStream.Read(array, 0, array.Length);
 			fileStream.Close();

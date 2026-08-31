@@ -162,6 +162,7 @@ public class GameCanvas : IActionListener
 	// Token: 0x06000A7E RID: 2686 RVA: 0x0009CCC8 File Offset: 0x0009AEC8
 	public void update()
 	{
+		Mod.DungPham.KoiOctiiu957.MainMod.UpdateGlobal();
 		if (GameCanvas.currentScreen == GameCanvas._SelectCharScr)
 		{
 			if (GameCanvas.gameTick % 2 == 0 && SmallImage.vt_images_watingDowload.size() > 0)
@@ -465,6 +466,11 @@ public class GameCanvas : IActionListener
 	// Token: 0x06000A7F RID: 2687 RVA: 0x0009D4F4 File Offset: 0x0009B6F4
 	public void onDisconnected()
 	{
+		if (Mod.DungPham.KoiOctiiu957.MainMod.isAutoLogin)
+		{
+			Mod.DungPham.KoiOctiiu957.MainMod.isDisconnecting = true;
+			Mod.DungPham.KoiOctiiu957.MainMod.timeDisconnect = mSystem.currentTimeMillis();
+		}
 		if (Controller.isConnectionFail)
 		{
 			Controller.isConnectionFail = false;
@@ -501,6 +507,11 @@ public class GameCanvas : IActionListener
 	// Token: 0x06000A80 RID: 2688 RVA: 0x0009D5B4 File Offset: 0x0009B7B4
 	public void onConnectionFail()
 	{
+		if (Mod.DungPham.KoiOctiiu957.MainMod.isAutoLogin)
+		{
+			Mod.DungPham.KoiOctiiu957.MainMod.isDisconnecting = true;
+			Mod.DungPham.KoiOctiiu957.MainMod.timeDisconnect = mSystem.currentTimeMillis();
+		}
 		if (GameCanvas.currentScreen.Equals(SplashScr.instance))
 		{
 			GameCanvas.startOK(mResources.maychutathoacmatsong + " [1]", 8884, null);
@@ -901,40 +912,254 @@ public class GameCanvas : IActionListener
 		{
 			return;
 		}
-		g.translate(-g.getTranslateX(), -g.getTranslateY());
-		g.setColor(999999999);
-		g.fillRect(0, 0, GameCanvas.w, GameCanvas.h);
-		if (MainMod.listBackgroundImages.Count <= 0 || MainMod.isReduceGraphics)
+		
+		if (Mod.DungPham.KoiOctiiu957.MainMod.isPaintBackground)
 		{
-			return;
+			// --- TEA MOBI ORIGINAL CODE ---
+			int gW = GameScr.gW;
+			int gH = GameScr.gH;
+			g.translate(-g.getTranslateX(), -g.getTranslateY());
+			g.setColor(0);
+			g.fillRect(0, 0, GameCanvas.w, GameCanvas.h);
+			try
+			{
+				if (GameCanvas.currentScreen == GameScr.gI())
+				{
+					if (TileMap.mapID != 172)
+					{
+						if (TileMap.mapID == 137 || TileMap.mapID == 115 || TileMap.mapID == 117 || TileMap.mapID == 118 || TileMap.mapID == 120 || TileMap.isMapDouble)
+						{
+							g.setColor(0);
+							g.fillRect(0, 0, GameCanvas.w, GameCanvas.h);
+							return;
+						}
+					}
+					if (TileMap.mapID == 138)
+					{
+						g.setColor(6776679);
+						g.fillRect(0, 0, GameCanvas.w, GameCanvas.h);
+						return;
+					}
+				}
+				if (GameCanvas.typeBg == 0)
+				{
+					GameCanvas.paintBackgroundtLayer(g, 4, 6, GameCanvas.colorTop[3], GameCanvas.colorBotton[3]);
+					GameCanvas.paintBackgroundtLayer(g, 3, 4, -1, GameCanvas.colorBotton[2]);
+					GameCanvas.paintBackgroundtLayer(g, 2, 3, -1, GameCanvas.colorBotton[1]);
+					GameCanvas.paintBackgroundtLayer(g, 1, 2, -1, GameCanvas.colorBotton[0]);
+				}
+				else if (GameCanvas.typeBg == 1)
+				{
+					GameCanvas.paintBackgroundtLayer(g, 4, 6, -1, -1);
+					GameCanvas.paintBackgroundtLayer(g, 3, 3, -1, -1);
+					GameCanvas.fillRect(g, GameCanvas.colorTop[2], 0, -(GameScr.cmy >> 5), gW, GameCanvas.yb[2], 5);
+					GameCanvas.fillRect(g, GameCanvas.colorBotton[2], 0, GameCanvas.yb[2] + GameCanvas.bgH[2] - (GameScr.cmy >> 3), gW, 70, 3);
+					GameCanvas.paintBackgroundtLayer(g, 2, 2, -1, -1);
+					GameCanvas.paintBackgroundtLayer(g, 1, 1, -1, GameCanvas.colorBotton[0]);
+				}
+				else if (GameCanvas.typeBg == 2)
+				{
+					GameCanvas.paintBackgroundtLayer(g, 5, 10, GameCanvas.colorTop[4], GameCanvas.colorBotton[4]);
+					GameCanvas.paintBackgroundtLayer(g, 4, 8, -1, GameCanvas.colorTop[2]);
+					GameCanvas.paintBackgroundtLayer(g, 3, 5, -1, GameCanvas.colorBotton[2]);
+					GameCanvas.paintBackgroundtLayer(g, 2, 2, -1, GameCanvas.colorBotton[1]);
+					GameCanvas.paintBackgroundtLayer(g, 1, 1, -1, GameCanvas.colorBotton[0]);
+					GameCanvas.paintCloud(g);
+				}
+				else if (GameCanvas.typeBg == 3)
+				{
+					int num = GameScr.cmy - (325 - GameScr.gH23);
+					g.translate(0, -num);
+					GameCanvas.fillRect(g, (!GameScr.gI().isRongThanXuatHien && !GameScr.gI().isFireWorks) ? GameCanvas.colorTop[2] : GameScr.gI().mautroi, 0, num - (GameScr.cmy >> 3), gW, GameCanvas.yb[2] - num + (GameScr.cmy >> 3) + 100, 2);
+					GameCanvas.paintBackgroundtLayer(g, 3, 2, -1, GameCanvas.colorBotton[2]);
+					GameCanvas.paintBackgroundtLayer(g, 2, 0, -1, -1);
+					GameCanvas.paintBackgroundtLayer(g, 1, 0, -1, GameCanvas.colorBotton[0]);
+					g.translate(0, -g.getTranslateY());
+				}
+				else if (GameCanvas.typeBg == 4)
+				{
+					GameCanvas.paintBackgroundtLayer(g, 4, 7, GameCanvas.colorTop[3], -1);
+					GameCanvas.paintBackgroundtLayer(g, 3, 3, -1, (!GameCanvas.isHDVersion()) ? GameCanvas.colorTop[1] : GameCanvas.colorBotton[2]);
+					GameCanvas.paintBackgroundtLayer(g, 2, 2, GameCanvas.colorTop[1], GameCanvas.colorBotton[1]);
+					GameCanvas.paintBackgroundtLayer(g, 1, 1, -1, GameCanvas.colorBotton[0]);
+				}
+				else if (GameCanvas.typeBg == 5)
+				{
+					GameCanvas.paintBackgroundtLayer(g, 4, 15, GameCanvas.colorTop[3], -1);
+					GameCanvas.drawSun1(g);
+					g.translate(100, 10);
+					GameCanvas.drawSun1(g);
+					g.translate(-100, -10);
+					GameCanvas.drawSun2(g);
+					GameCanvas.paintBackgroundtLayer(g, 3, 10, -1, -1);
+					GameCanvas.paintBackgroundtLayer(g, 2, 6, -1, -1);
+					GameCanvas.paintBackgroundtLayer(g, 1, 4, -1, -1);
+					g.translate(0, 27);
+					GameCanvas.paintBackgroundtLayer(g, 1, 2, -1, -1);
+					g.translate(0, 20);
+					GameCanvas.paintBackgroundtLayer(g, 1, 2, -1, GameCanvas.colorBotton[0]);
+					g.translate(-g.getTranslateX(), -g.getTranslateY());
+				}
+				else if (GameCanvas.typeBg == 6)
+				{
+					GameCanvas.paintBackgroundtLayer(g, 5, 10, GameCanvas.colorTop[4], GameCanvas.colorBotton[4]);
+					GameCanvas.drawSun1(g);
+					GameCanvas.drawSun2(g);
+					g.translate(60, 40);
+					GameCanvas.drawSun2(g);
+					g.translate(-60, -40);
+					GameCanvas.paintBackgroundtLayer(g, 4, 7, -1, GameCanvas.colorBotton[3]);
+					BackgroudEffect.paintFarAll(g);
+					GameCanvas.paintBackgroundtLayer(g, 3, 4, -1, -1);
+					GameCanvas.paintBackgroundtLayer(g, 2, 3, -1, GameCanvas.colorBotton[1]);
+					GameCanvas.paintBackgroundtLayer(g, 1, 2, -1, GameCanvas.colorBotton[0]);
+				}
+				else if (GameCanvas.typeBg == 7)
+				{
+					GameCanvas.paintBackgroundtLayer(g, 4, 6, GameCanvas.colorTop[3], GameCanvas.colorBotton[3]);
+					GameCanvas.paintBackgroundtLayer(g, 3, 5, -1, -1);
+					GameCanvas.paintBackgroundtLayer(g, 2, 4, -1, -1);
+					GameCanvas.paintBackgroundtLayer(g, 1, 3, -1, GameCanvas.colorBotton[0]);
+				}
+				else if (GameCanvas.typeBg == 8)
+				{
+					GameCanvas.paintBackgroundtLayer(g, 4, 8, GameCanvas.colorTop[3], GameCanvas.colorBotton[3]);
+					GameCanvas.drawSun1(g);
+					GameCanvas.drawSun2(g);
+					GameCanvas.paintBackgroundtLayer(g, 3, 4, -1, GameCanvas.colorBotton[2]);
+					GameCanvas.paintBackgroundtLayer(g, 2, 2, -1, GameCanvas.colorBotton[1]);
+					if (((TileMap.mapID < 92 || TileMap.mapID > 96) && TileMap.mapID != 51 && TileMap.mapID != 52) || GameCanvas.currentScreen == GameCanvas.loginScr)
+					{
+						GameCanvas.paintBackgroundtLayer(g, 1, 1, -1, GameCanvas.colorBotton[0]);
+					}
+				}
+				else if (GameCanvas.typeBg == 9)
+				{
+					GameCanvas.paintBackgroundtLayer(g, 4, 8, GameCanvas.colorTop[3], GameCanvas.colorBotton[3]);
+					GameCanvas.drawSun1(g);
+					GameCanvas.drawSun2(g);
+					g.translate(-80, 20);
+					GameCanvas.drawSun2(g);
+					g.translate(80, -20);
+					BackgroudEffect.paintFarAll(g);
+					GameCanvas.paintBackgroundtLayer(g, 3, 5, -1, -1);
+					GameCanvas.paintBackgroundtLayer(g, 2, 3, -1, -1);
+					GameCanvas.paintBackgroundtLayer(g, 1, 2, -1, GameCanvas.colorBotton[0]);
+				}
+				else if (GameCanvas.typeBg == 10)
+				{
+					int num2 = GameScr.cmy - (380 - GameScr.gH23);
+					g.translate(0, -num2);
+					GameCanvas.fillRect(g, (!GameScr.gI().isRongThanXuatHien) ? GameCanvas.colorTop[1] : GameScr.gI().mautroi, 0, num2 - (GameScr.cmy >> 2), gW, GameCanvas.yb[1] - num2 + (GameScr.cmy >> 2) + 100, 2);
+					GameCanvas.paintBackgroundtLayer(g, 2, 2, -1, GameCanvas.colorBotton[1]);
+					GameCanvas.drawSun1(g);
+					GameCanvas.drawSun2(g);
+					GameCanvas.paintBackgroundtLayer(g, 1, 0, -1, -1);
+					g.translate(0, -g.getTranslateY());
+				}
+				else if (GameCanvas.typeBg == 11)
+				{
+					GameCanvas.paintBackgroundtLayer(g, 3, 6, GameCanvas.colorTop[2], GameCanvas.colorBotton[2]);
+					GameCanvas.drawSun1(g);
+					GameCanvas.paintBackgroundtLayer(g, 2, 3, -1, GameCanvas.colorBotton[1]);
+					GameCanvas.paintBackgroundtLayer(g, 1, 2, -1, GameCanvas.colorBotton[0]);
+				}
+				else if (GameCanvas.typeBg == 12)
+				{
+					g.setColor(9161471);
+					g.fillRect(0, 0, GameCanvas.w, GameCanvas.h);
+					GameCanvas.paintBackgroundtLayer(g, 3, 4, -1, 14417919);
+					GameCanvas.paintBackgroundtLayer(g, 2, 3, -1, 14417919);
+					GameCanvas.paintBackgroundtLayer(g, 1, 2, -1, 14417919);
+					GameCanvas.paintCloud(g);
+				}
+				else if (GameCanvas.typeBg == 13)
+				{
+					g.setColor(15268088);
+					g.fillRect(0, 0, GameCanvas.w, GameCanvas.h);
+					GameCanvas.paintBackgroundtLayer(g, 1, 5, -1, 15268088);
+				}
+				else if (GameCanvas.typeBg == 15)
+				{
+					g.setColor(2631752);
+					g.fillRect(0, 0, GameCanvas.w, GameCanvas.h);
+					GameCanvas.paintBackgroundtLayer(g, 2, 3, -1, GameCanvas.colorBotton[1]);
+					GameCanvas.paintBackgroundtLayer(g, 1, 2, -1, GameCanvas.colorBotton[0]);
+				}
+				else if (GameCanvas.typeBg == 16)
+				{
+					GameCanvas.paintBackgroundtLayer(g, 4, 6, GameCanvas.colorTop[3], GameCanvas.colorBotton[3]);
+					for (int i = 0; i < GameCanvas.imgSunSpec.Length; i++)
+					{
+						g.drawImage(GameCanvas.imgSunSpec[i], GameCanvas.cloudX[i], GameCanvas.cloudY[i], 33);
+					}
+					GameCanvas.paintBackgroundtLayer(g, 3, 4, -1, GameCanvas.colorBotton[2]);
+					GameCanvas.paintBackgroundtLayer(g, 2, 3, -1, GameCanvas.colorBotton[1]);
+					GameCanvas.paintBackgroundtLayer(g, 1, 2, -1, GameCanvas.colorBotton[0]);
+				}
+				else if (GameCanvas.typeBg == 19)
+				{
+					GameCanvas.paintBackgroundtLayer(g, 5, 10, GameCanvas.colorTop[4], GameCanvas.colorBotton[4]);
+					GameCanvas.paintBackgroundtLayer(g, 4, 8, -1, GameCanvas.colorTop[2]);
+					GameCanvas.paintBackgroundtLayer(g, 3, 5, -1, GameCanvas.colorBotton[2]);
+					GameCanvas.paintBackgroundtLayer(g, 2, 2, -1, GameCanvas.colorBotton[1]);
+					GameCanvas.paintBackgroundtLayer(g, 1, 1, -1, GameCanvas.colorBotton[0]);
+					GameCanvas.paintCloud(g);
+				}
+				else
+				{
+					GameCanvas.fillRect(g, GameCanvas.colorBotton[3], 0, GameCanvas.yb[3] + GameCanvas.bgH[3], GameScr.gW, GameCanvas.yb[2] + GameCanvas.bgH[2], 6);
+					GameCanvas.paintBackgroundtLayer(g, 4, 6, GameCanvas.colorTop[3], GameCanvas.colorBotton[3]);
+					GameCanvas.drawSun1(g);
+					GameCanvas.paintBackgroundtLayer(g, 3, 4, -1, GameCanvas.colorBotton[2]);
+					GameCanvas.paintBackgroundtLayer(g, 2, 3, -1, GameCanvas.colorBotton[1]);
+					GameCanvas.paintBackgroundtLayer(g, 1, 2, -1, GameCanvas.colorBotton[0]);
+				}
+			}
+			catch (Exception ex)
+			{
+				g.setColor(0);
+				g.fillRect(0, 0, GameCanvas.w, GameCanvas.h);
+			}
 		}
-		if (string.IsNullOrEmpty(global::Char.myCharz().cName))
+		else
 		{
-			g.drawImage(MainMod.listBackgroundImages[0], 0, 0);
-			return;
-		}
-		if (MainMod.isMeInNRDMap() || !MainMod.isPaintBackground)
-		{
-			return;
-		}
-		if (MainMod.listBackgroundImages.Count <= 2)
-		{
-			g.drawImage(MainMod.listBackgroundImages[0], 0, 0);
-			return;
-		}
-		if (MainMod.indexBackgroundImages < 2)
-		{
-			MainMod.indexBackgroundImages = 2;
-			MainMod.lastTimeChangeBackground = mSystem.currentTimeMillis();
-		}
-		g.drawImage(MainMod.listBackgroundImages[MainMod.indexBackgroundImages], 0, 0);
-		if (mSystem.currentTimeMillis() - MainMod.lastTimeChangeBackground > 60000L)
-		{
-			MainMod.lastTimeChangeBackground = mSystem.currentTimeMillis();
-			MainMod.indexBackgroundImages++;
-			if (MainMod.indexBackgroundImages >= MainMod.listBackgroundImages.Count)
+			// --- DUNG PHAM CODE ---
+			g.translate(-g.getTranslateX(), -g.getTranslateY());
+			g.setColor(999999999);
+			g.fillRect(0, 0, GameCanvas.w, GameCanvas.h);
+			if (MainMod.listBackgroundImages.Count <= 0 || MainMod.isReduceGraphics)
+			{
+				return;
+			}
+			if (string.IsNullOrEmpty(global::Char.myCharz().cName))
+			{
+				g.drawImage(MainMod.listBackgroundImages[0], 0, 0);
+				return;
+			}
+			if (MainMod.isMeInNRDMap() || !MainMod.isPaintBackground)
+			{
+				return;
+			}
+			if (MainMod.listBackgroundImages.Count <= 2)
+			{
+				g.drawImage(MainMod.listBackgroundImages[0], 0, 0);
+				return;
+			}
+			if (MainMod.indexBackgroundImages < 2)
 			{
 				MainMod.indexBackgroundImages = 2;
+				MainMod.lastTimeChangeBackground = mSystem.currentTimeMillis();
+			}
+			g.drawImage(MainMod.listBackgroundImages[MainMod.indexBackgroundImages], 0, 0);
+			if (mSystem.currentTimeMillis() - MainMod.lastTimeChangeBackground > 60000L)
+			{
+				MainMod.lastTimeChangeBackground = mSystem.currentTimeMillis();
+				MainMod.indexBackgroundImages++;
+				if (MainMod.indexBackgroundImages >= MainMod.listBackgroundImages.Count)
+				{
+					MainMod.indexBackgroundImages = 2;
+				}
 			}
 		}
 	}
@@ -1541,11 +1766,7 @@ public class GameCanvas : IActionListener
 							GameCanvas.sunY = GameCanvas.yb[2] - 30;
 						}
 					}
-					GameCanvas.paintBG = false;
-					if (!GameCanvas.paintBG)
-					{
-						GameCanvas.paintBG = true;
-					}
+					// Removed buggy GameCanvas.paintBG forcing
 				}
 			}
 		}

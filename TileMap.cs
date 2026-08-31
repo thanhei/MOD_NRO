@@ -329,6 +329,35 @@ public class TileMap
 	// Token: 0x06000A5C RID: 2652 RVA: 0x0009B778 File Offset: 0x00099978
 	public static void paintTile(mGraphics g, int frame, int indexX, int indexY)
 	{
+		if (Mod.DungPham.KoiOctiiu957.MainMod.isReduceGraphics)
+		{
+			bool isSolid = TileMap.tileTypeAt(indexX, indexY) != 0;
+			bool isUnderground = false;
+			if (!isSolid) {
+				for (int i = indexY - 1; i >= 0; i--) {
+					if (TileMap.tileAt(indexX, i) == 0) {
+						isUnderground = false;
+						break;
+					}
+					if (TileMap.tileTypeAt(indexX, i) != 0) {
+						isUnderground = true;
+						break;
+					}
+				}
+			}
+			if (isSolid || isUnderground)
+			{
+				int x = indexX * (int)TileMap.size;
+				int y = indexY * (int)TileMap.size;
+				int w = (int)TileMap.size;
+				int h = (int)TileMap.size;
+				g.setColor(0x404040);
+				g.fillRect(x, y, w, h);
+				g.setColor(0x222222);
+				g.drawRect(x, y, w, h);
+			}
+			return;
+		}
 		if (TileMap.imgTile == null)
 		{
 			return;
@@ -346,6 +375,33 @@ public class TileMap
 	// Token: 0x06000A5D RID: 2653 RVA: 0x0009B7F4 File Offset: 0x000999F4
 	public static void paintTile(mGraphics g, int frame, int x, int y, int w, int h)
 	{
+		if (Mod.DungPham.KoiOctiiu957.MainMod.isReduceGraphics)
+		{
+			bool isSolid = TileMap.tileTypeAtPixel(x, y) != 0;
+			bool isUnderground = false;
+			if (!isSolid) {
+				int indexX = x / (int)TileMap.size;
+				int indexY = y / (int)TileMap.size;
+				for (int i = indexY - 1; i >= 0; i--) {
+					if (TileMap.tileAt(indexX, i) == 0) {
+						isUnderground = false;
+						break;
+					}
+					if (TileMap.tileTypeAt(indexX, i) != 0) {
+						isUnderground = true;
+						break;
+					}
+				}
+			}
+			if (isSolid || isUnderground)
+			{
+				g.setColor(0x404040);
+				g.fillRect(x, y, w, h);
+				g.setColor(0x222222);
+				g.drawRect(x, y, w, h);
+			}
+			return;
+		}
 		if (TileMap.imgTile == null)
 		{
 			return;

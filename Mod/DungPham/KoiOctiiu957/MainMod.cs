@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -133,9 +133,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			{
 				MainMod.paintListCharsInMap(g);
 			}
-			if (!MainMod.isReduceGraphics)
-			{
-				mFont.tahoma_7.drawString(g, string.Concat(new string[]
+			mFont.tahoma_7.drawString(g, string.Concat(new string[]
 				{
 					"Map: ",
 					TileMap.mapNames[TileMap.mapID],
@@ -153,7 +151,7 @@ namespace Mod.DungPham.KoiOctiiu957
 					" , FPS: ",
 					string.Format("{0:0.#}", System.Math.Round((double)(1f / Time.smoothDeltaTime * Time.timeScale), 1))
 				}), 25, GameCanvas.h - 200, 0);
-			}
+				
 			int num = GameCanvas.h - 190;
 			if (MainMod.isConnectToAccountManager)
 			{
@@ -413,6 +411,7 @@ namespace Mod.DungPham.KoiOctiiu957
 						int delay = int.Parse(ChatTextField.gI().tfChat.getText());
 						if (delay < 50) delay = 50;
 						MainMod.delayAutoJump = delay;
+						Rms.saveRMSInt("delayAutoJump", delay);
 						GameScr.info1.addInfo("Delay Nhảy: " + delay + "ms", 0);
 					}
 					catch { GameScr.info1.addInfo("Delay không hợp lệ!", 0); }
@@ -439,6 +438,7 @@ namespace Mod.DungPham.KoiOctiiu957
 						int delay = int.Parse(ChatTextField.gI().tfChat.getText());
 						if (delay < 50) delay = 50;
 						MainMod.delayAutoMove = delay;
+						Rms.saveRMSInt("delayAutoMove", delay);
 						GameScr.info1.addInfo("Delay Di Chuyển: " + delay + "ms", 0);
 					}
 					catch { GameScr.info1.addInfo("Delay không hợp lệ!", 0); }
@@ -452,6 +452,7 @@ namespace Mod.DungPham.KoiOctiiu957
 						int dist = int.Parse(ChatTextField.gI().tfChat.getText());
 						if (dist < 5) dist = 5;
 						MainMod.distanceAutoMove = dist;
+						Rms.saveRMSInt("distanceAutoMove", dist);
 						GameScr.info1.addInfo("Khoảng Cách Di Chuyển: " + dist + "px", 0);
 					}
 					catch { GameScr.info1.addInfo("Khoảng cách không hợp lệ!", 0); }
@@ -476,6 +477,10 @@ namespace Mod.DungPham.KoiOctiiu957
 		{
 			switch (idAction)
 			{
+			case 10001:
+				MainMod.isAutoLogin = !MainMod.isAutoLogin;
+				GameScr.info1.addInfo("Auto Login " + (MainMod.isAutoLogin ? "[STATUS: ON] " : "[STATUS: OFF]"), 0);
+				return;
 			case 1:
 				AutoMap.ShowMenu();
 				return;
@@ -600,8 +605,8 @@ namespace Mod.DungPham.KoiOctiiu957
 				GameScr.info1.addInfo("Tính năng chưa hoàn thiện, vui lòng chờ bản update!", 0);
 				return;
 			case 28:
-				GameCanvas.paintBG = !GameCanvas.paintBG;
-				Rms.saveRMSInt("isPaintBgr", GameCanvas.paintBG ? 1 : 0);
+				MainMod.isPaintBackground = !MainMod.isPaintBackground;
+				Rms.saveRMSInt("isPaintBgr", MainMod.isPaintBackground ? 1 : 0);
 				return;
 			case 29:
 				MainMod.isHuntingBoss = !MainMod.isHuntingBoss;
@@ -625,6 +630,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				return;
 			case 34:
 				MainMod.hideServerChat = !MainMod.hideServerChat;
+				Rms.saveRMSInt("hideServerChat", MainMod.hideServerChat ? 1 : 0);
 				GameScr.info1.addInfo("Hide\n Server Chat" + (MainMod.hideServerChat ? "[STATUS: ON] " : "[STATUS: OFF]"), 0);
 				return;
 			case 36:
@@ -641,6 +647,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				return;
 			case 351:
 				MainMod.isAutoJump = !MainMod.isAutoJump;
+				Rms.saveRMSInt("isAutoJump", MainMod.isAutoJump ? 1 : 0);
 				GameScr.info1.addInfo("Đã " + (MainMod.isAutoJump ? "bật" : "tắt") + " auto nhảy.", 0);
 				if (MainMod.isAutoJump && global::Char.myCharz() != null)
 				{
@@ -918,6 +925,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static void ShowMenuMore()
 		{
 			MyVector myVector = new MyVector();
+			myVector.addElement(new Command("Auto Login\n" + (MainMod.isAutoLogin ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 10001, null));
 			myVector.addElement(new Command("Auto Chat", MainMod.getInstance(), 6, null));
 			myVector.addElement(new Command("Auto Point", MainMod.getInstance(), 7, null));
 			myVector.addElement(new Command("Cài Đặt\nHiển Thị", MainMod.getInstance(), 36, null));
@@ -936,10 +944,10 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static void ShowMenuDisplaySettings()
 		{
 			MyVector myVector = new MyVector();
+			myVector.addElement(new Command("Background\n" + (MainMod.isPaintBackground ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 28, null));
+			myVector.addElement(new Command("Giảm\nĐồ Họa\n" + (MainMod.isReduceGraphics ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 31, null));
 			myVector.addElement(new Command("Thông Báo\nBoss\n" + (MainMod.isHuntingBoss ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 29, null));
-			myVector.addElement(new Command("Background\n" + (GameCanvas.paintBG ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 28, null));
 			myVector.addElement(new Command("Danh Sách\nNgười Trong Map\n" + (MainMod.isShowCharsInMap ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 30, null));
-			myVector.addElement(new Command("Ẩn\nThông Tin Map\n" + (MainMod.isReduceGraphics ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 31, null));
 			myVector.addElement(new Command("Ẩn\nServer Chat\n" + (MainMod.hideServerChat ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 34, null));
 			GameCanvas.menu.startAt(myVector, 3);
 		}
@@ -1047,6 +1055,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		{
 			MainMod.isHuntingBoss = true;
 			MainMod.listBosses = new List<Boss>();
+			MainMod.LoadData();
 			MainMod.listBackgroundImages = new List<Image>();
 			MainMod.limitHPChar = -1;
 			MainMod.inputHPChar = new string[]
@@ -1460,15 +1469,23 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static void LoadData()
 		{
 			MainMod.LoadFlagColor();
-			if (Rms.loadRMSInt("dayinfo") != DateTime.Now.Day)
-			{
-				Rms.saveRMSInt("dayinfo", DateTime.Now.Day);
-				Application.OpenURL("https://www.youtube.com/@MoiShareMod");
-			}
+
 			MainMod.isHuntingBoss = (Rms.loadRMSInt("sanboss") == 1);
-			MainMod.isPaintBackground = (Rms.loadRMSInt("sanboss") == 1);
-			MainMod.isShowCharsInMap = true;
+			MainMod.isPaintBackground = (Rms.loadRMSInt("isPaintBgr") == 1);
+			MainMod.isShowCharsInMap = (Rms.loadRMSInt("showchar") == 1);
 			MainMod.isReduceGraphics = (Rms.loadRMSInt("IsReduceGraphics") == 1);
+			MainMod.hideServerChat = (Rms.loadRMSInt("hideServerChat") == 1);
+			MainMod.isAutoLogin = false; // Forced disabled on startup
+			MainMod.isAutoJump = (Rms.loadRMSInt("isAutoJump") == 1);
+			MainMod.delayAutoJump = Rms.loadRMSInt("delayAutoJump");
+			if (MainMod.delayAutoJump <= 0) MainMod.delayAutoJump = 1000;
+			MainMod.distanceAutoJump = Rms.loadRMSInt("distanceAutoJump");
+			if (MainMod.distanceAutoJump <= 0) MainMod.distanceAutoJump = 50;
+			MainMod.isAutoMove = false; // Forced disabled on startup
+			MainMod.delayAutoMove = Rms.loadRMSInt("delayAutoMove");
+			if (MainMod.delayAutoMove <= 0) MainMod.delayAutoMove = 1000;
+			MainMod.distanceAutoMove = Rms.loadRMSInt("distanceAutoMove");
+			if (MainMod.distanceAutoMove <= 0) MainMod.distanceAutoMove = 50;
 			try
 			{
 				MainMod.APIKey = File.ReadAllText("Data\\keyAPI.ini");
@@ -2165,6 +2182,29 @@ namespace Mod.DungPham.KoiOctiiu957
 
 		// Token: 0x0400169D RID: 5789
 		public static bool hideServerChat = false;
+		public static bool isAutoLogin;
+		public static bool isDisconnecting;
+		public static long timeDisconnect;
+		public static void UpdateGlobal()
+		{
+			if (isAutoLogin && isDisconnecting)
+			{
+				if (mSystem.currentTimeMillis() - timeDisconnect > 10000L)
+				{
+					isDisconnecting = false;
+					if (GameCanvas.currentScreen == GameCanvas.serverScreen)
+					{
+						GameCanvas.endDlg();
+						GameCanvas.serverScreen.selectServer();
+					}
+					else if (GameCanvas.currentScreen == GameCanvas.loginScr)
+					{
+						GameCanvas.endDlg();
+						GameCanvas.loginScr.doLogin();
+					}
+				}
+			}
+		}
 
 		// Token: 0x0400169E RID: 5790
 		public static bool isLockMap = false;

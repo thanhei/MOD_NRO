@@ -207,6 +207,7 @@ public class Rms
 			lower.StartsWith("serverchat") ||
 			lower.StartsWith("hideserverchat") ||
 			lower.StartsWith("isauto") ||
+			lower.StartsWith("target") ||
 			lower.StartsWith("delayauto") ||
 			lower.StartsWith("distanceauto") ||
 			lower.StartsWith("auto") || // Covers AutoMap, AutoPean, AutoSkill, auto_manager, auto_pick_list, etc.

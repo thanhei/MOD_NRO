@@ -12,7 +12,7 @@ public class Main : MonoBehaviour
 	{
 		UnityEngine.QualitySettings.antiAliasing = 0;
 		UnityEngine.QualitySettings.vSyncCount = 0;
-		Application.targetFrameRate = 60;
+		Application.targetFrameRate = Mod.DungPham.KoiOctiiu957.MainMod.targetFPS;
 		if (!Main.started)
 		{
 			Time.timeScale = 2.2f;
@@ -158,7 +158,7 @@ public class Main : MonoBehaviour
 		{
 			Screen.orientation = ScreenOrientation.LandscapeLeft;
 			Application.runInBackground = true;
-			Application.targetFrameRate = 35;
+			Application.targetFrameRate = Mod.DungPham.KoiOctiiu957.MainMod.targetFPS;
 			base.useGUILayout = false;
 			Main.isCompactDevice = Main.detectCompactDevice();
 			if (Main.main == null)

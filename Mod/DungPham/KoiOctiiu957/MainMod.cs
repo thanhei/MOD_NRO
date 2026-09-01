@@ -412,6 +412,22 @@ namespace Mod.DungPham.KoiOctiiu957
 					MainMod.ResetChatTextField();
 					return;
 				}
+				if (ChatTextField.gI().strChat.Equals(MainMod.inputFPS[0]))
+				{
+					try
+					{
+						int fps = int.Parse(ChatTextField.gI().tfChat.getText());
+						if (fps < 5) fps = 5;
+						if (fps > 200) fps = 200;
+						MainMod.targetFPS = fps;
+						UnityEngine.Application.targetFrameRate = fps;
+						Rms.saveRMSInt("targetFPS", fps);
+						GameScr.info1.addInfo("Đã cài FPS: " + fps, 0);
+					}
+					catch { GameScr.info1.addInfo("FPS không hợp lệ!", 0); }
+					MainMod.ResetChatTextField();
+					return;
+				}
 				if (ChatTextField.gI().strChat.Equals(MainMod.inputDelayJump[0]))
 				{
 					try
@@ -643,6 +659,11 @@ namespace Mod.DungPham.KoiOctiiu957
 				return;
 			case 36:
 				MainMod.ShowMenuDisplaySettings();
+				return;
+			case 37:
+				ChatTextField.gI().strChat = MainMod.inputFPS[0];
+				ChatTextField.gI().tfChat.name = MainMod.inputFPS[1];
+				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
 				return;
 			case 35:
 				MainMod.ShowMenuPositionSettings();
@@ -892,7 +913,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Auto Pean", MainMod.getInstance(), 3, null));
 			myVector.addElement(new Command("Auto Pick", MainMod.getInstance(), 4, null));
 			myVector.addElement(new Command("Auto Train", MainMod.getInstance(), 5, null));
-			myVector.addElement(new Command("Auto Vị Trí", MainMod.getInstance(), 35, null));
+			myVector.addElement(new Command("Cài Đặt\nHiển Thị", MainMod.getInstance(), 36, null));
 			myVector.addElement(new Command("More", MainMod.getInstance(), 8, null));
 			GameCanvas.menu.startAt(myVector, 3);
 		}
@@ -904,7 +925,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Auto Login\n" + (MainMod.isAutoLogin ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 10001, null));
 			myVector.addElement(new Command("Auto Chat", MainMod.getInstance(), 6, null));
 			myVector.addElement(new Command("Auto Point", MainMod.getInstance(), 7, null));
-			myVector.addElement(new Command("Cài Đặt\nHiển Thị", MainMod.getInstance(), 36, null));
+			myVector.addElement(new Command("Auto Vị Trí", MainMod.getInstance(), 35, null));
 			myVector.addElement(new Command("Mod Skin\n" + ModSkin.GetMenuSummary(), ModSkin.getInstance(), 37, null));
 			GameCanvas.menu.startAt(myVector, 3);
 		}
@@ -925,6 +946,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Thông Báo\nBoss\n" + (MainMod.isHuntingBoss ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 29, null));
 			myVector.addElement(new Command("Danh Sách\nNgười Trong Map\n" + (MainMod.isShowCharsInMap ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 30, null));
 			myVector.addElement(new Command("Server Chat\n" + (MainMod.serverChat ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 34, null));
+			myVector.addElement(new Command("Cài Đặt\nFPS\n[" + MainMod.targetFPS + "]", MainMod.getInstance(), 37, null));
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -1462,6 +1484,12 @@ namespace Mod.DungPham.KoiOctiiu957
 			if (MainMod.delayAutoMove <= 0) MainMod.delayAutoMove = 1000;
 			MainMod.distanceAutoMove = Rms.loadRMSInt("distanceAutoMove");
 			if (MainMod.distanceAutoMove <= 0) MainMod.distanceAutoMove = 50;
+			
+			int savedFps = Rms.loadRMSInt("targetFPS");
+			if (savedFps >= 5) {
+				MainMod.targetFPS = savedFps;
+			}
+			UnityEngine.Application.targetFrameRate = MainMod.targetFPS;
 			try
 			{
 				MainMod.APIKey = File.ReadAllText("Data\\keyAPI.ini");
@@ -2174,6 +2202,9 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static int delayAutoMove = 3000;
 		public static string[] inputDelayMove = new string[] { "Nhập Delay Di Chuyển (ms)", "Delay" };
 		public static string[] inputDistanceMove = new string[] { "Nhập Khoảng Cách Di Chuyển (px)", "Khoảng cách" };
+
+		public static int targetFPS = 60;
+		public static string[] inputFPS = new string[] { "Nhập mức FPS mong muốn", "FPS" };
 
 		// Token: 0x0400169D RID: 5789
 		public static bool serverChat = true;

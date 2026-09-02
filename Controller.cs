@@ -305,6 +305,11 @@ public class Controller : IMessageHandler
 				}
 				global::Char.myPetz().cGiamST = (long)msg.reader().readByte();
 				global::Char.myPetz().cCritDameFull = (int)msg.reader().readShort();
+				if (!Panel.isOpeningPet)
+				{
+					goto IL_8E36;
+				}
+				Panel.isOpeningPet = false;
 				if (GameCanvas.w > 2 * Panel.WIDTH_PANEL)
 				{
 					GameCanvas.panel2 = new Panel();

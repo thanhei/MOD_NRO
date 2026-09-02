@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Assets.src.g;
 using Mod.DungPham.KoiOctiiu957;
@@ -6865,6 +6865,7 @@ public class Panel : IActionListener, IChatable
 	// Token: 0x06000941 RID: 2369 RVA: 0x000899B8 File Offset: 0x00087BB8
 	public void hide()
 	{
+		Panel.isOpeningPet = false;
 		if (this.timeShow > 0)
 		{
 			this.isClose = false;
@@ -6960,6 +6961,10 @@ public class Panel : IActionListener, IChatable
 		if (this.isShow && this.type == 3 && !this.isChangeZone && this.selected == -1 && GameCanvas.gameTick % 20 == 0)
 		{
 			Service.gI().openUIZone();
+		}
+		if (this.isShow && this.type == 21 && global::Char.myCharz().havePet && GameCanvas.gameTick % 20 == 0)
+		{
+			Service.gI().petInfo();
 		}
 		if (this.chatTField != null && this.chatTField.isShow)
 		{
@@ -7947,6 +7952,7 @@ public class Panel : IActionListener, IChatable
 	// Token: 0x06000954 RID: 2388 RVA: 0x000083B0 File Offset: 0x000065B0
 	private void doFirePet()
 	{
+		Panel.isOpeningPet = true;
 		InfoDlg.showWait();
 		Service.gI().petInfo();
 		this.timeShow = 20;
@@ -12227,6 +12233,8 @@ public class Panel : IActionListener, IChatable
 
 	// Token: 0x0400119A RID: 4506
 	public bool isChangeZone;
+
+	public static bool isOpeningPet;
 
 	// Token: 0x0400119B RID: 4507
 	private bool isKiguiXu;

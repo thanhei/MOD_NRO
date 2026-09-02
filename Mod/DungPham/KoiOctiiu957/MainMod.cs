@@ -206,6 +206,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		// Token: 0x06000B97 RID: 2967 RVA: 0x000A8A08 File Offset: 0x000A6C08
 		public static void paintCharInfo(mGraphics g, global::Char ch)
 		{
+			int centerX = GameCanvas.w / 2;
 			mFont.tahoma_7b_red.drawString(g, string.Concat(new string[]
 			{
 				ch.cName,
@@ -214,17 +215,17 @@ namespace Mod.DungPham.KoiOctiiu957
 				"/",
 				NinjaUtil.getMoneys(ch.cHPFull),
 				"]"
-			}), MainMod.infoStartX, 62, 2);
-			int num = 72;
+			}), centerX, MainMod.infoStartY, 2);
+			int num = MainMod.infoStartY + 10;
 			int num2 = 10;
 			if (ch.isNRD)
 			{
-				mFont.tahoma_7b_yellow.drawString(g, "NRD: Còn " + ch.timeNRD + " giây", MainMod.infoStartX, num, 2);
+				mFont.tahoma_7b_yellow.drawString(g, "NRD: Còn " + ch.timeNRD + " giây", centerX, num, 2);
 				num += num2;
 			}
 			if (ch.isFreez)
 			{
-				mFont.tahoma_7b_red.drawString(g, "Bị TDHS: " + ch.freezSeconds + "s", MainMod.infoStartX, num, 2);
+				mFont.tahoma_7b_red.drawString(g, "Bị TDHS: " + ch.freezSeconds + "s", centerX, num, 2);
 				num += num2;
 			}
 			if (ch.protectEff)
@@ -234,7 +235,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				{
 					int seconds = 46 - (int)((mSystem.currentTimeMillis() - startTime) / 1000L);
 					if (seconds < 0) seconds = 0;
-					mFont.tahoma_7b_blue.drawString(g, "Khiên: " + seconds + "s", MainMod.infoStartX, num, 2);
+					mFont.tahoma_7b_blue.drawString(g, "Khiên: " + seconds + "s", centerX, num, 2);
 					num += num2;
 				}
 			}
@@ -245,7 +246,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				{
 					int seconds = 46 - (int)((mSystem.currentTimeMillis() - startTime) / 1000L);
 					if (seconds < 0) seconds = 0;
-					mFont.tahoma_7b_red.drawString(g, "Trói: " + seconds + "s", MainMod.infoStartX, num, 2);
+					mFont.tahoma_7b_red.drawString(g, "Trói: " + seconds + "s", centerX, num, 2);
 					num += num2;
 				}
 			}
@@ -256,7 +257,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				{
 					int seconds = 12 - (int)((mSystem.currentTimeMillis() - startTime) / 1000L);
 					if (seconds < 0) seconds = 0;
-					mFont.tahoma_7b_yellow.drawString(g, "Thôi miên: " + seconds + "s", MainMod.infoStartX, num, 2);
+					mFont.tahoma_7b_yellow.drawString(g, "Thôi miên: " + seconds + "s", centerX, num, 2);
 					num += num2;
 				}
 			}
@@ -267,7 +268,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				{
 					int seconds = 121 - (int)((mSystem.currentTimeMillis() - startTime) / 1000L);
 					if (seconds < 0) seconds = 0;
-					mFont.tahoma_7b_red.drawString(g, "Khỉ: " + seconds + "s", MainMod.infoStartX, num, 2);
+					mFont.tahoma_7b_red.drawString(g, "Khỉ: " + seconds + "s", centerX, num, 2);
 					num += num2;
 				}
 			}
@@ -278,7 +279,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				{
 					int seconds = 31 - (int)((mSystem.currentTimeMillis() - startTime) / 1000L);
 					if (seconds < 0) seconds = 0;
-					mFont.tahoma_7b_blue.drawString(g, "Huýt sáo: " + seconds + "s", MainMod.infoStartX, num, 2);
+					mFont.tahoma_7b_blue.drawString(g, "Huýt sáo: " + seconds + "s", centerX, num, 2);
 					num += num2;
 				}
 			}
@@ -288,11 +289,11 @@ namespace Mod.DungPham.KoiOctiiu957
 				if (dictTimeStone.TryGetValue(ch.charID, out startTime))
 				{
 					int seconds = (int)((mSystem.currentTimeMillis() - startTime) / 1000L);
-					mFont.tahoma_7b_yellow.drawString(g, "Hóa đá: " + seconds + "s", MainMod.infoStartX, num, 2);
+					mFont.tahoma_7b_yellow.drawString(g, "Hóa đá: " + seconds + "s", centerX, num, 2);
 					num += num2;
 				}
 			}
-			MainMod.infoStartX += 100;
+			MainMod.infoStartY = num + 3;
 		}
 
 		// Token: 0x06000B98 RID: 2968 RVA: 0x000045ED File Offset: 0x000027ED
@@ -1700,20 +1701,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			global::Char @char = global::Char.myCharz();
 			global::Char charFocus = @char.charFocus;
 			int num2 = GameCanvas.w - MainMod.widthRect;
-			int countTargets = 0;
-			for (int i = 0; i < MainMod.listCharsInMap.Count; i++)
-			{
-				global::Char char2 = MainMod.listCharsInMap[i];
-				if (!string.IsNullOrEmpty(char2.cName) && !char2.isPet && !char2.isMiniPet && !char2.cName.StartsWith("#") && !char2.cName.StartsWith("$") && char2.cName != "Trọng tài")
-				{
-					if (char2.isNRD || (charFocus != null && charFocus == char2))
-					{
-						countTargets++;
-					}
-				}
-			}
-			MainMod.infoStartX = GameCanvas.w / 2 - (countTargets - 1) * 100 / 2;
-			
+			MainMod.infoStartY = 62;
 			for (int i = 0; i < MainMod.listCharsInMap.Count; i++)
 			{
 				global::Char char2 = MainMod.listCharsInMap[i];
@@ -2241,6 +2229,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static Dictionary<int, long> dictTimeWhistle = new Dictionary<int, long>();
 		public static Dictionary<int, long> dictTimeStone = new Dictionary<int, long>();
 		public static int infoStartX = 0;
+		public static int infoStartY = 62;
 
 	}
 }

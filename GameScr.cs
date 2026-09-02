@@ -5260,6 +5260,10 @@ public class GameScr : mScreen, IChatable
 		g.setClip((int)((long)(GameCanvas.w / 2 + 60 - 83 - GameScr.mpBarW) + GameScr.hpBarW - (long)num2), 20, num2, 6);
 		g.drawImage(GameScr.imgMP, GameCanvas.w / 2 + 60 - 83, 20, mGraphics.RIGHT | mGraphics.TOP);
 		g.setClip(0, 0, GameCanvas.w, GameCanvas.h);
+		int xHP = GameCanvas.w / 2 + 60 - 83 - (int)(GameScr.hpBarW / 2L);
+		int xMP = GameCanvas.w / 2 + 60 - 83 - GameScr.mpBarW / 2;
+		mFont.paintDamageWhite(g, NinjaUtil.getMoneys(c.cHP), xHP, 4, mFont.CENTER, 13);
+		mFont.paintDamageYellow(g, NinjaUtil.getMoneys(c.cMP), xMP, 17, mFont.CENTER, 13);
 	}
 
 	// Token: 0x0600078A RID: 1930 RVA: 0x0006C308 File Offset: 0x0006A508
@@ -5354,6 +5358,10 @@ public class GameScr : mScreen, IChatable
 			g.drawImage(GameScr.imgMPLost, 83, 20, 0);
 			g.setClip(0, 0, GameCanvas.w, GameCanvas.h);
 		}
+		int xHP = 83 + (int)(GameScr.hpBarW / 2L);
+		int xMP = 83 + GameScr.mpBarW / 2;
+		mFont.paintDamageWhite(g, NinjaUtil.getMoneys(c.cHP), xHP, 4, mFont.CENTER, 13);
+		mFont.paintDamageYellow(g, NinjaUtil.getMoneys(c.cMP), xMP, 17, mFont.CENTER, 13);
 	}
 
 	// Token: 0x0600078B RID: 1931 RVA: 0x000045ED File Offset: 0x000027ED
@@ -5720,6 +5728,24 @@ public class GameScr : mScreen, IChatable
 	// Token: 0x06000793 RID: 1939 RVA: 0x0006D78C File Offset: 0x0006B98C
 	public static void startFlyText(string flyString, int x, int y, int dx, int dy, int color)
 	{
+		if (!string.IsNullOrEmpty(flyString))
+		{
+			try
+			{
+				flyString = System.Text.RegularExpressions.Regex.Replace(flyString, @"\d+", delegate(System.Text.RegularExpressions.Match match)
+				{
+					long val;
+					if (long.TryParse(match.Value, out val))
+					{
+						return NinjaUtil.getMoneys(val);
+					}
+					return match.Value;
+				});
+			}
+			catch
+			{
+			}
+		}
 		int num = -1;
 		for (int i = 0; i < 5; i++)
 		{

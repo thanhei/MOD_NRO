@@ -362,6 +362,30 @@ public class mFont
 		this.setTypePaint(g, st, x, y, align, 0);
 	}
 
+	public void drawStringWithOutline(mGraphics g, string st, int x, int y, int align)
+	{
+		mFont fontOutline = (this.yAdd == 1) ? mFont.tahoma_7b_dark : mFont.tahoma_7;
+		fontOutline.drawString(g, st, x - 1, y, align);
+		fontOutline.drawString(g, st, x + 1, y, align);
+		fontOutline.drawString(g, st, x, y - 1, align);
+		fontOutline.drawString(g, st, x, y + 1, align);
+		this.drawString(g, st, x, y, align);
+	}
+
+	public void drawStringWithOutline(mGraphics g, string st, int x, int y, int align, mFont borderFont)
+	{
+		if (borderFont != null)
+		{
+			borderFont.drawString(g, st, x - 1, y, align);
+			borderFont.drawString(g, st, x + 1, y, align);
+			borderFont.drawString(g, st, x, y - 1, align);
+			borderFont.drawString(g, st, x, y + 1, align);
+		}
+		this.drawString(g, st, x, y, align);
+	}
+
+
+
 	// Token: 0x0600019C RID: 412 RVA: 0x00010BB4 File Offset: 0x0000EDB4
 	public void drawString(mGraphics g, string st, int x, int y, int align, mFont font)
 	{

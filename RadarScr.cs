@@ -562,6 +562,7 @@ public class RadarScr : mScreen
 				g.drawImage(RadarScr.imgBar_1, RadarScr.xUi + 36, RadarScr.yText + 10, 0);
 				GameScr.resetTranslate(g);
 				g.drawImage(RadarScr.imgRank[(int)this.focus_card.rank], RadarScr.xUi + 39 - 5 + 14, RadarScr.yText + 12, 0);
+				mFont.tahoma_7_white.drawString(g, (int)this.focus_card.amount + "/" + (int)this.focus_card.max_amount, RadarScr.xUi + 39, this.yClip + 4, mFont.CENTER);
 			}
 			g.setClip(RadarScr.xText, RadarScr.yText, RadarScr.wText + 5, RadarScr.hText + 8);
 			if (this.focus_card != null)

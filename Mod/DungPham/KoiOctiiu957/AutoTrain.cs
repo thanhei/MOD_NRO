@@ -542,13 +542,13 @@ namespace Mod.DungPham.KoiOctiiu957
 		private static AutoTrain _Instance;
 
 		// Token: 0x040015D3 RID: 5587
-		private static bool isAvoidSuperMob;
+		public static bool isAvoidSuperMob;
 
 		// Token: 0x040015D4 RID: 5588
-		private static bool isGoBack;
+		public static bool isGoBack;
 
 		// Token: 0x040015D5 RID: 5589
-		private static bool isGobackCoordinate;
+		public static bool isGobackCoordinate;
 
 		// Token: 0x040015D6 RID: 5590
 		private static int gobackX;
@@ -566,7 +566,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static bool isAutoTrain;
 
 		// Token: 0x040015DB RID: 5595
-		private static int minimumMPGoHome;
+		public static int minimumMPGoHome;
 
 		// Token: 0x040015DC RID: 5596
 		private static string[] inputMPPercentGoHome;

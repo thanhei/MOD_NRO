@@ -686,6 +686,9 @@ namespace Mod.DungPham.KoiOctiiu957
 				ChatTextField.gI().tfChat.name = MainMod.inputDistanceMove[1];
 				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
 				return;
+						case 10002:
+				Mod.DungPham.KoiOctiiu957.ModMenuPanel.isShowMenu = true;
+				return;
 			default:
 				return;
 			}
@@ -695,7 +698,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static bool UpdateKey(int unused)
 		{
 			bool result;
-						if (GameCanvas.keyAsciiPress == Hotkeys.A)
+									if (GameCanvas.keyAsciiPress == Hotkeys.A)
 			{
 				AutoSkill.isAutoSendAttack = !AutoSkill.isAutoSendAttack;
 				GameScr.info1.addInfo("Tự Đánh\n" + (AutoSkill.isAutoSendAttack ? "[STATUS: ON]" : "[STATUS: OFF]"), 0);
@@ -888,7 +891,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Auto Pean", MainMod.getInstance(), 3, null));
 			myVector.addElement(new Command("Auto Pick", MainMod.getInstance(), 4, null));
 			myVector.addElement(new Command("Auto Train", MainMod.getInstance(), 5, null));
-			myVector.addElement(new Command("Cài Đặt\nHiển Thị", MainMod.getInstance(), 36, null));
+			myVector.addElement(new Command("Bảng Điều Khiển\n(Mod Menu)", MainMod.getInstance(), 10002, null));
 			myVector.addElement(new Command("More", MainMod.getInstance(), 8, null));
 			GameCanvas.menu.startAt(myVector, 3);
 		}
@@ -901,6 +904,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Auto Chat", MainMod.getInstance(), 6, null));
 			myVector.addElement(new Command("Auto Point", MainMod.getInstance(), 7, null));
 			myVector.addElement(new Command("Auto Vị Trí", MainMod.getInstance(), 35, null));
+			myVector.addElement(new Command("Cài Đặt\nHiển Thị", MainMod.getInstance(), 36, null));
 			myVector.addElement(new Command("Mod Skin\n" + ModSkin.GetMenuSummary(), ModSkin.getInstance(), 37, null));
 			GameCanvas.menu.startAt(myVector, 3);
 		}

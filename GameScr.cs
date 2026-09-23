@@ -1812,6 +1812,14 @@ public class GameScr : mScreen, IChatable
 	// Token: 0x0600074B RID: 1867 RVA: 0x00065200 File Offset: 0x00063400
 	public override void updateKey()
 	{
+		if (Mod.DungPham.KoiOctiiu957.ModMenuPanel.isShowMenu)
+		{
+			Mod.DungPham.KoiOctiiu957.ModMenuPanel.Update();
+			GameCanvas.clearAllPointerEvent();
+			GameCanvas.clearKeyHold();
+			GameCanvas.clearKeyPressed();
+			return;
+		}
 		if (Controller.isStopReadMessage || global::Char.myCharz().isTeleport || global::Char.myCharz().isPaintNewSkill)
 		{
 			return;
@@ -4697,7 +4705,7 @@ public class GameScr : mScreen, IChatable
 			GameScr.resetTranslate(g);
 			if (!GameScr.isPaintOther)
 			{
-				MainMod.Paint(g);
+				Mod.DungPham.KoiOctiiu957.MainMod.Paint(g);
 				GameCanvas.debug("PA21", 1);
 				GameCanvas.debug("PA18", 1);
 				g.translate(-g.getTranslateX(), -g.getTranslateY());

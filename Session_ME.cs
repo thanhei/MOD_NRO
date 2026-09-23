@@ -46,10 +46,7 @@ public class Session_ME : ISession
 	// Token: 0x0600015B RID: 347 RVA: 0x0000E798 File Offset: 0x0000C998
 	public void connect(string host, int port)
 	{
-		Mod.DungPham.KoiOctiiu957.MainMod.serverHost = host;
-		Mod.DungPham.KoiOctiiu957.MainMod.serverPort = port;
-		Mod.DungPham.KoiOctiiu957.MainMod.StartPingThread();
-		if (Session_ME.connected || Session_ME.connecting)
+				if (Session_ME.connected || Session_ME.connecting)
 		{
 			Debug.Log(string.Concat(new object[]
 			{
@@ -451,6 +448,12 @@ public class Session_ME : ISession
 	// Token: 0x04000143 RID: 323
 	public static MyVector recieveMsg = new MyVector();
 
+	// RTT của gói CHECK_CONTROLLER/CHECK_MAP gần nhất, đo trực tiếp trong 2 thread I/O
+	// mạng (Sender.run() lúc gửi, MessageCollector.run() lúc nhận) - không đi qua
+	// Session_ME.update()/Controller2 (chỉ chạy theo nhịp OnGUI() của Unity), nên không
+	// bị cộng thêm độ trễ giả tạo phụ thuộc FPS/tải máy như cách đọc Service.logController.
+	public static int lastCheckRtt = -1;
+
 	// Token: 0x02000026 RID: 38
 	public class Sender
 	{
@@ -479,6 +482,14 @@ public class Session_ME : ISession
 						{
 							Message m = this.sendingMessage[0];
 							Session_ME.doSendMessage(m);
+							if (m.command == Cmd.CHECK_CONTROLLER)
+							{
+								Service.curCheckController = mSystem.currentTimeMillis();
+							}
+							else if (m.command == Cmd.CHECK_MAP)
+							{
+								Service.curCheckMap = mSystem.currentTimeMillis();
+							}
 							this.sendingMessage.RemoveAt(0);
 						}
 					}
@@ -519,6 +530,14 @@ public class Session_ME : ISession
 					}
 					try
 					{
+						if (message.command == Cmd.CHECK_CONTROLLER && Service.curCheckController > 0L)
+						{
+							Session_ME.lastCheckRtt = (int)(mSystem.currentTimeMillis() - Service.curCheckController);
+						}
+						else if (message.command == Cmd.CHECK_MAP && Service.curCheckMap > 0L)
+						{
+							Session_ME.lastCheckRtt = (int)(mSystem.currentTimeMillis() - Service.curCheckMap);
+						}
 						if ((int)message.command == -27)
 						{
 							this.getKey(message);

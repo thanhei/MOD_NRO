@@ -1,5 +1,3 @@
-using System.Net.Sockets;
-using System.Diagnostics;
 using System.Threading;
 using System;
 using System.Collections;
@@ -697,7 +695,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static bool UpdateKey(int unused)
 		{
 			bool result;
-			if (GameCanvas.keyAsciiPress == Hotkeys.A)
+						if (GameCanvas.keyAsciiPress == Hotkeys.A)
 			{
 				AutoSkill.isAutoSendAttack = !AutoSkill.isAutoSendAttack;
 				GameScr.info1.addInfo("Tự Đánh\n" + (AutoSkill.isAutoSendAttack ? "[STATUS: ON]" : "[STATUS: OFF]"), 0);
@@ -2174,77 +2172,18 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static int targetFPS = 60;
 
 		public static int ping;
-		public static string serverHost = "";
-		public static int serverPort = 14445;
 		public static bool isPingThreadRunning = false;
 
-		public static void StartPingThread()
-		{
-			if (MainMod.isPingThreadRunning) return;
-			MainMod.isPingThreadRunning = true;
-			new Thread(() => {
-				while (true)
-				{
-					try
-					{
-						if (!string.IsNullOrEmpty(MainMod.serverHost) && Session_ME.connected)
-						{
-							Stopwatch sw = new Stopwatch();
-							sw.Start();
-							using (TcpClient client = new TcpClient())
-							{
-								var result = client.BeginConnect(MainMod.serverHost, MainMod.serverPort, null, null);
-								bool success = result.AsyncWaitHandle.WaitOne(1000);
-								if (success)
-								{
-									client.EndConnect(result);
-									sw.Stop();
-									MainMod.ping = (int)sw.ElapsedMilliseconds;
-								}
-								else
-								{
-									MainMod.ping = -1;
-								}
-							}
-						}
-					}
-					catch {
-						MainMod.ping = -2;
-					}
-					Thread.Sleep(2000);
-				}
-			}).Start();
-		}
-		public static string[] inputFPS = new string[] { "Nhập mức FPS mong muốn", "FPS" };
-
-		// Token: 0x0400169D RID: 5789
-		public static bool serverChat = true;
-		public static bool isAutoLogin;
-		public static bool isDisconnecting;
-		public static long timeDisconnect;
-		public static void UpdateGlobal()
-		{
-			if (isAutoLogin && isDisconnecting)
-			{
-				if (mSystem.currentTimeMillis() - timeDisconnect > 5000L)
-				{
-					timeDisconnect = mSystem.currentTimeMillis();
-					if (GameCanvas.currentScreen == GameCanvas.serverScreen)
-					{
-						GameCanvas.endDlg();
-						GameCanvas.serverScreen.selectServer();
-					}
-					else if (GameCanvas.currentScreen == GameCanvas.loginScr)
-					{
-						GameCanvas.endDlg();
-						GameCanvas.loginScr.doLogin();
-						isDisconnecting = false;
-					}
-				}
-			}
-		}
-
-		public static void updateCharEff(global::Char c)
+		// Đo RTT thật của CHÍNH kết nối game đang chơi, qua cơ chế keep-alive sẵn có
+		// (Cmd.CHECK_CONTROLLER / Cmd.CHECK_MAP): server echo lại đúng lệnh đã gửi.
+		// Cả 2 mốc thời gian đều được ghi ngay trong thread I/O mạng của Session_ME
+		// (Sender.run() lúc gửi, MessageCollector.run() lúc nhận - xem Session_ME.cs),
+		// KHÔNG đi qua Service.logController/logMap (chỉ được Controller2 cập nhật khi
+		// Session_ME.update() chạy, mà hàm đó chỉ được gọi từ OnGUI() của Unity - tức phụ
+		// thuộc nhịp khung hình/tải máy, cộng thêm độ trễ giả tạo không liên quan mạng).
+		// Đọc Session_ME.lastCheckRtt ở đây là số gần với RTT thật nhất có thể lấy được
+		// khi ICMP bị chặn: đúng kết nối, đúng đường đi, không qua vòng lặp Unity.
+public static void updateCharEff(global::Char c)
 		{
 			if (c == null)
 			{

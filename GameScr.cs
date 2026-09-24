@@ -1820,6 +1820,14 @@ public class GameScr : mScreen, IChatable
 			GameCanvas.clearKeyPressed();
 			return;
 		}
+		if (Mod.Menu.SkillSelectionPanel.gI().isShowing)
+		{
+			Mod.Menu.SkillSelectionPanel.gI().Update();
+			GameCanvas.clearAllPointerEvent();
+			GameCanvas.clearKeyHold();
+			GameCanvas.clearKeyPressed();
+			return;
+		}
 		if (Controller.isStopReadMessage || global::Char.myCharz().isTeleport || global::Char.myCharz().isPaintNewSkill)
 		{
 			return;

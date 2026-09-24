@@ -166,6 +166,9 @@ namespace Mod.DungPham.KoiOctiiu957
 				ChatTextField.gI().tfChat.name = AutoTrain.inputMPPercentGoHome[1];
 				ChatTextField.gI().startChat2(AutoTrain.getInstance(), string.Empty);
 				return;
+			case 12:
+				AutoTrain.ShowMenuSkill();
+				return;
 			default:
 				return;
 			}
@@ -175,6 +178,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static void ShowMenu()
 		{
 			MyVector myVector = new MyVector();
+			myVector.addElement(new Command("Cài Đặt Kỹ Năng", AutoTrain.getInstance(), 12, null));
 			List<Mob> list = new List<Mob>();
 			if (AutoTrain.isAutoTrain && !GameScr.canAutoPlay)
 			{
@@ -225,6 +229,11 @@ namespace Mod.DungPham.KoiOctiiu957
 				}), AutoTrain.getInstance(), 7, null));
 			}
 			GameCanvas.menu.startAt(myVector, 3);
+		}
+
+		public static void ShowMenuSkill()
+		{
+			Mod.Menu.SkillSelectionPanel.gI().Show();
 		}
 
 		// Token: 0x06000B35 RID: 2869 RVA: 0x000A527C File Offset: 0x000A347C
@@ -513,20 +522,41 @@ namespace Mod.DungPham.KoiOctiiu957
 				Service.gI().charMove();
 			}
 			Skill skill = null;
-			for (int i = 0; i < GameScr.keySkill.Length; i++)
+			if (AutoTrain.selectedAutoTrainSkills.Count > 0)
 			{
-				if (GameScr.keySkill[i] != null && !GameScr.keySkill[i].paintCanNotUseSkill && GameScr.keySkill[i].template.id != 10 && GameScr.keySkill[i].template.id != 11 && GameScr.keySkill[i].template.id != 14 && GameScr.keySkill[i].template.id != 23 && GameScr.keySkill[i].template.id != 7 && GameScr.keySkill[i].template.id != 3 && GameScr.keySkill[i].template.id != 1 && GameScr.keySkill[i].template.id != 5 && GameScr.keySkill[i].template.id != 20 && GameScr.keySkill[i].template.id != 22 && GameScr.keySkill[i].template.id != 18 && GameScr.keySkill[i].template.id != 24 && GameScr.keySkill[i].template.id != 25 && GameScr.keySkill[i].template.id != 26 && ((global::Char.myCharz().cgender == 1 && (global::Char.myCharz().getSkill(global::Char.myCharz().nClass.skillTemplates[5]) == null || GameScr.keySkill[i].template.id != 2)) || (global::Char.myCharz().cgender == 0 && (global::Char.myCharz().getSkill(global::Char.myCharz().nClass.skillTemplates[3]) == null || GameScr.keySkill[i].template.id != 0))) && global::Char.myCharz().skillInfoPaint() == null)
+				for (int i = 0; i < global::Char.myCharz().vSkillFight.size(); i++)
 				{
-					int num = (int)((GameScr.keySkill[i].template.manaUseType == 2) ? 1L : ((GameScr.keySkill[i].template.manaUseType == 1) ? ((long)GameScr.keySkill[i].manaUse * global::Char.myCharz().cMPFull / 100L) : ((long)GameScr.keySkill[i].manaUse)));
-					if (global::Char.myCharz().cMP >= (long)num)
+					Skill s = (Skill)global::Char.myCharz().vSkillFight.elementAt(i);
+					if (s != null && s.template != null && AutoTrain.selectedAutoTrainSkills.Contains((int)s.template.id) && !s.paintCanNotUseSkill && global::Char.myCharz().skillInfoPaint() == null)
 					{
-						if (skill == null)
+						int num = (int)((s.template.manaUseType == 2) ? 1L : ((s.template.manaUseType == 1) ? ((long)s.manaUse * global::Char.myCharz().cMPFull / 100L) : ((long)s.manaUse)));
+						if (global::Char.myCharz().cMP >= (long)num)
 						{
-							skill = GameScr.keySkill[i];
+							if (skill == null || skill.coolDown < s.coolDown)
+							{
+								skill = s;
+							}
 						}
-						else if (skill.coolDown < GameScr.keySkill[i].coolDown)
+					}
+				}
+			}
+			else
+			{
+				for (int i = 0; i < GameScr.keySkill.Length; i++)
+				{
+					if (GameScr.keySkill[i] != null && !GameScr.keySkill[i].paintCanNotUseSkill && GameScr.keySkill[i].template.id != 10 && GameScr.keySkill[i].template.id != 11 && GameScr.keySkill[i].template.id != 14 && GameScr.keySkill[i].template.id != 23 && GameScr.keySkill[i].template.id != 7 && GameScr.keySkill[i].template.id != 3 && GameScr.keySkill[i].template.id != 1 && GameScr.keySkill[i].template.id != 5 && GameScr.keySkill[i].template.id != 20 && GameScr.keySkill[i].template.id != 22 && GameScr.keySkill[i].template.id != 18 && GameScr.keySkill[i].template.id != 24 && GameScr.keySkill[i].template.id != 25 && GameScr.keySkill[i].template.id != 26 && ((global::Char.myCharz().cgender == 1 && (global::Char.myCharz().getSkill(global::Char.myCharz().nClass.skillTemplates[5]) == null || GameScr.keySkill[i].template.id != 2)) || (global::Char.myCharz().cgender == 0 && (global::Char.myCharz().getSkill(global::Char.myCharz().nClass.skillTemplates[3]) == null || GameScr.keySkill[i].template.id != 0))) && global::Char.myCharz().skillInfoPaint() == null)
+					{
+						int num = (int)((GameScr.keySkill[i].template.manaUseType == 2) ? 1L : ((GameScr.keySkill[i].template.manaUseType == 1) ? ((long)GameScr.keySkill[i].manaUse * global::Char.myCharz().cMPFull / 100L) : ((long)GameScr.keySkill[i].manaUse)));
+						if (global::Char.myCharz().cMP >= (long)num)
 						{
-							skill = GameScr.keySkill[i];
+							if (skill == null)
+							{
+								skill = GameScr.keySkill[i];
+							}
+							else if (skill.coolDown < GameScr.keySkill[i].coolDown)
+							{
+								skill = GameScr.keySkill[i];
+							}
 						}
 					}
 				}
@@ -543,6 +573,7 @@ namespace Mod.DungPham.KoiOctiiu957
 
 		// Token: 0x040015D3 RID: 5587
 		public static bool isAvoidSuperMob;
+		public static System.Collections.Generic.List<int> selectedAutoTrainSkills = new System.Collections.Generic.List<int>(new int[] { 0, 2, 4 });
 
 		// Token: 0x040015D4 RID: 5588
 		public static bool isGoBack;

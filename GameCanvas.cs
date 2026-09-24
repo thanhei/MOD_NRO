@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Assets.src.e;
 using Assets.src.g;
 using Mod.DungPham.KoiOctiiu957;
@@ -2342,6 +2342,7 @@ public class GameCanvas : IActionListener
 				GameCanvas.menu.paintMenu(this.g);
 			}
 			Mod.DungPham.KoiOctiiu957.ModMenuPanel.Paint(this.g);
+			Mod.Menu.SkillSelectionPanel.gI().Paint(this.g);
 			GameScr.info1.paint(this.g);
 			GameScr.info2.paint(this.g);
 			if (GameScr.gI().popUpYesNo != null)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Mod.DungPham.KoiOctiiu957
@@ -315,6 +315,39 @@ namespace Mod.DungPham.KoiOctiiu957
 		}
 
 		// Token: 0x06000B3B RID: 2875 RVA: 0x00009343 File Offset: 0x00007543
+		public static void LoadAutoTrainSkills()
+		{
+			string text = Rms.loadRMSString("AutoTrainSkills");
+			if (text != null)
+			{
+				try
+				{
+					AutoTrain.selectedAutoTrainSkills.Clear();
+					string[] array = text.Split(new char[] { ',' });
+					for (int i = 0; i < array.Length; i++)
+					{
+						if (array[i] != "")
+						{
+							AutoTrain.selectedAutoTrainSkills.Add(int.Parse(array[i]));
+						}
+					}
+				}
+				catch (Exception ex)
+				{
+				}
+			}
+		}
+
+		public static void SaveAutoTrainSkills()
+		{
+			string text = "";
+			for (int i = 0; i < AutoTrain.selectedAutoTrainSkills.Count; i++)
+			{
+				text = text + AutoTrain.selectedAutoTrainSkills[i].ToString() + ",";
+			}
+			Rms.saveRMSString("AutoTrainSkills", text);
+		}
+
 		static AutoTrain()
 		{
 			AutoTrain.minimumMPGoHome = 5;
@@ -323,6 +356,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				"Nhập %MP",
 				"%MP"
 			};
+			AutoTrain.LoadAutoTrainSkills();
 		}
 
 		// Token: 0x06000B3C RID: 2876 RVA: 0x000A5410 File Offset: 0x000A3610

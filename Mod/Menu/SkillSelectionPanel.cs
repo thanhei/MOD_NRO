@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Mod.DungPham.KoiOctiiu957;
@@ -184,6 +184,7 @@ namespace Mod.Menu
                                 {
                                     AutoTrain.selectedAutoTrainSkills.Add(sId);
                                 }
+                                AutoTrain.SaveAutoTrainSkills();
                                 GameCanvas.clearAllPointerEvent();
                                 return;
                             }

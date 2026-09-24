@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Mod.DungPham.KoiOctiiu957;
@@ -67,7 +67,7 @@ namespace Mod.Menu
                     {
                         if (cY >= menuY + 25 && cY <= menuY + menuH - 10)
                         {
-                            if (GameCanvas.isPointerClick && GameCanvas.isPointer(mX, cY, menuW - 20, 20))
+                            if (GameCanvas.isPointerClick && GameCanvas.isPointer(mX, cY, 15, 15))
                             {
                                 int sId = (int)s.template.id;
                                 if (AutoTrain.selectedAutoTrainSkills.Contains(sId))

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Mod.UI;
@@ -90,8 +90,9 @@ namespace Mod.Menu
                 // Right Column
                 CustomUIHelper.PaintCheckbox(g, menuX + 140, cY, "Tự Động Đánh", AutoSkill.isAutoSendAttack);
                 CustomUIHelper.PaintCheckbox(g, menuX + 140, cY + 25, "Né Siêu Quái", AutoTrain.isAvoidSuperMob);
+                CustomUIHelper.PaintCheckbox(g, menuX + 140, cY + 50, "Đánh Ảo", AutoTrain.isAttackBySendCommand);
 
-                cY += 55;
+                cY += 75;
 
                 // Mode Selection
                 mFont.tahoma_7b_dark.drawString(g, "Chế Độ Lọc:", menuX + 15, cY + 2, mFont.LEFT);
@@ -218,6 +219,8 @@ namespace Mod.Menu
                             }
                         } else {
                             GameScr.isAutoPlay = false;
+                            GameScr.canAutoPlay = false;
+                            global::Char.myCharz().mobFocus = null;
                         }
                         GameScr.info1.addInfo("Auto Train: " + (AutoTrain.isAutoTrain ? "BẬT" : "TẮT"), 0);
                         GameCanvas.clearAllPointerEvent();
@@ -246,8 +249,15 @@ namespace Mod.Menu
                         GameCanvas.clearAllPointerEvent();
                         return;
                     }
+                    if (GameCanvas.isPointer(menuX + 140, cY + 50, 110, 20))
+                    {
+                        AutoTrain.isAttackBySendCommand = !AutoTrain.isAttackBySendCommand;
+                        GameScr.info1.addInfo("Đánh Ảo: " + (AutoTrain.isAttackBySendCommand ? "BẬT" : "TẮT"), 0);
+                        GameCanvas.clearAllPointerEvent();
+                        return;
+                    }
 
-                    cY += 55;
+                    cY += 75;
 
                     // Mode Selection
                     if (GameCanvas.isPointer(menuX + 85, cY, 80, 20))

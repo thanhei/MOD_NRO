@@ -10,18 +10,20 @@ namespace Mod.UI
             // Always draw the base box (unbroken)
             g.setColor(6702080); // Brown border
             g.fillRect(x, y, 12, 12);
-            g.setColor(14338484); // Tan inner
+            g.setColor(16777215); // White inner
             g.fillRect(x + 1, y + 1, 10, 10);
 
             if (isChecked)
             {
-                // Draw a simple, thick checkmark completely inside the box
-                g.setColor(6702080); // Same color as border
-                for (int i = 0; i < 3; i++)
-                {
-                    g.drawLine(x + 2, y + 5 + i, x + 5, y + 8 + i);
-                    g.drawLine(x + 5, y + 8 + i, x + 10, y + 3 + i);
-                }
+                g.setColor(6702080);
+                g.fillRect(x + 2, y + 5, 2, 3);
+                g.fillRect(x + 3, y + 6, 2, 3);
+                g.fillRect(x + 4, y + 7, 2, 3);
+                g.fillRect(x + 5, y + 6, 2, 3);
+                g.fillRect(x + 6, y + 5, 2, 3);
+                g.fillRect(x + 7, y + 4, 2, 3);
+                g.fillRect(x + 8, y + 3, 2, 3);
+                g.fillRect(x + 9, y + 2, 2, 3);
             }
 
             mFont.tahoma_7b_dark.drawString(g, text, x + 20, y, mFont.LEFT);

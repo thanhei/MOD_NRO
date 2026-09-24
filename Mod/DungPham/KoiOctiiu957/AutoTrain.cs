@@ -86,6 +86,10 @@ namespace Mod.DungPham.KoiOctiiu957
 				AutoTrain.isAvoidSuperMob = !AutoTrain.isAvoidSuperMob;
 				GameScr.info1.addInfo("Né Siêu Quái\n" + (AutoTrain.isAvoidSuperMob ? "[STATUS: OFF]" : "[STATUS: ON]"), 0);
 				return;
+			case 13:
+				AutoTrain.isAttackBySendCommand = !AutoTrain.isAttackBySendCommand;
+				GameScr.info1.addInfo("Đánh Ảo\n" + (AutoTrain.isAttackBySendCommand ? "[STATUS: ON]" : "[STATUS: OFF]"), 0);
+				return;
 			case 5:
 				AutoTrain.ShowMenuGoback();
 				return;
@@ -108,6 +112,8 @@ namespace Mod.DungPham.KoiOctiiu957
 				break;
 			case 8:
 				AutoTrain.isAutoTrain = false;
+				GameScr.isAutoPlay = false;
+				GameScr.canAutoPlay = false;
 				global::Char.myCharz().mobFocus = null;
 				GameScr.info1.addInfo("Đã Tắt Auto Train!", 0);
 				return;
@@ -178,9 +184,8 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static void ShowMenu()
 		{
 			MyVector myVector = new MyVector();
-			myVector.addElement(new Command("Cài Đặt Kỹ Năng", AutoTrain.getInstance(), 12, null));
 			List<Mob> list = new List<Mob>();
-			if (AutoTrain.isAutoTrain && !GameScr.canAutoPlay)
+			if (AutoTrain.isAutoTrain || GameScr.canAutoPlay)
 			{
 				myVector.addElement(new Command("Tắt Auto Train", AutoTrain.getInstance(), 8, null));
 			}
@@ -214,7 +219,9 @@ namespace Mod.DungPham.KoiOctiiu957
 			}
 			myVector.addElement(new Command("Tàn Sát Tất Cả", AutoTrain.getInstance(), 2, null));
 			myVector.addElement(new Command("Tàn Sát Theo Vị Trí", AutoTrain.getInstance(), 3, null));
+						myVector.addElement(new Command("Cài Đặt Kỹ Năng", AutoTrain.getInstance(), 12, null));
 			myVector.addElement(new Command("Né Siêu Quái\n" + (AutoTrain.isAvoidSuperMob ? "[STATUS: OFF]" : "[STATUS: ON]"), AutoTrain.getInstance(), 4, null));
+			myVector.addElement(new Command("Đánh Ảo\n" + (AutoTrain.isAttackBySendCommand ? "[STATUS: ON]" : "[STATUS: OFF]"), AutoTrain.getInstance(), 13, null));
 			myVector.addElement(new Command("Goback", AutoTrain.getInstance(), 5, null));
 			myVector.addElement(new Command("Clear Danh Sách Train", AutoTrain.getInstance(), 6, null));
 			if (global::Char.myCharz().mobFocus != null)
@@ -481,9 +488,17 @@ namespace Mod.DungPham.KoiOctiiu957
 			return result2;
 		}
 
+		private static long lastTimeWait;
+		public static void Wait(int time)
+		{
+			AutoTrain.lastTimeWait = mSystem.currentTimeMillis() + (long)time;
+		}
+
 		// Token: 0x06000B40 RID: 2880 RVA: 0x000A573C File Offset: 0x000A393C
 		private static void DoIt()
 		{
+			if (mSystem.currentTimeMillis() < AutoTrain.lastTimeWait) return;
+
 			if ((!AutoTrain.isAutoTrain && !GameScr.canAutoPlay) || global::Char.myCharz().statusMe == 14 || global::Char.myCharz().statusMe == 5)
 			{
 				return;
@@ -507,13 +522,16 @@ namespace Mod.DungPham.KoiOctiiu957
 			}
 			else
 			{
-				if (!GameScr.canAutoPlay && AutoPick.isAutoPick)
+				bool hasMayDo = ItemTime.isExistItem(4387);
+				if (!GameScr.canAutoPlay && AutoPick.isAutoPick && !hasMayDo)
 				{
 					AutoPick.FocusToNearestItem();
 					if (global::Char.myCharz().itemFocus != null)
 					{
 						AutoPick.PickIt();
 						AutoPick.FocusToNearestItem();
+						AutoTrain.Wait(500); // Wait after pick
+						return;
 					}
 				}
 				else
@@ -597,8 +615,64 @@ namespace Mod.DungPham.KoiOctiiu957
 			}
 			if (skill != null)
 			{
-				GameScr.gI().doSelectSkill(skill, true);
-				GameScr.gI().doDoubleClickToObj(global::Char.myCharz().mobFocus);
+				bool isAttackSkill = (skill.template.id == 0 || skill.template.id == 1 || skill.template.id == 2 || skill.template.id == 3 || skill.template.id == 4 || skill.template.id == 5 || skill.template.id == 9 || skill.template.id == 15 || skill.template.id == 17 || skill.template.id == 18);
+				if (AutoTrain.isAttackBySendCommand && isAttackSkill)
+				{
+					Mob mobFocus = global::Char.myCharz().mobFocus;
+					if (global::Char.myCharz().myskill != skill)
+					{
+						Service.gI().selectSkill((int)skill.template.id);
+						global::Char.myCharz().myskill = skill;
+					}
+					bool isFlyMob = (mobFocus.getTemplate().type == 4 || mobFocus.getTemplate().type == 5);
+					if (isFlyMob)
+					{
+						if (global::Math.abs(global::Char.myCharz().cx - mobFocus.x) > 70)
+						{
+							if (ItemTime.isExistItem(4387)) {
+								global::Char.myCharz().cx = mobFocus.x;
+								global::Char.myCharz().cy = mobFocus.y;
+								Service.gI().charMove();
+							} else {
+								global::Char.myCharz().currentMovePoint = new MovePoint(mobFocus.x, MainMod.GetYGround(mobFocus.x));
+							}
+						}
+						else
+						{
+							global::Char.myCharz().currentMovePoint = null;
+							global::Char.myCharz().cx = mobFocus.x + Res.random(-5, 5);
+							global::Char.myCharz().cy = mobFocus.y + Res.random(-5, 5);
+							Service.gI().charMove();
+						}
+					}
+					else
+					{
+						if (global::Math.abs(global::Char.myCharz().cx - mobFocus.xFirst) > 50) {
+							if (ItemTime.isExistItem(4387)) {
+								global::Char.myCharz().cx = mobFocus.xFirst;
+								global::Char.myCharz().cy = mobFocus.yFirst;
+								Service.gI().charMove();
+							} else {
+								global::Char.myCharz().currentMovePoint = new MovePoint(mobFocus.xFirst, mobFocus.yFirst);
+							}
+						}
+					}
+
+					long timeDist = mSystem.currentTimeMillis() - skill.lastTimeUseThisSkill;
+					if ((global::Math.abs(global::Char.myCharz().cx - mobFocus.x) <= 50 || (isFlyMob && global::Math.abs(global::Char.myCharz().cx - mobFocus.x) <= 70)) && timeDist > (long)skill.coolDown + 10L)
+					{
+						global::Char.myCharz().mobFocus = mobFocus;
+						skill.lastTimeUseThisSkill = mSystem.currentTimeMillis();
+						MyVector vMob = new MyVector();
+						vMob.addElement(mobFocus);
+						Service.gI().sendPlayerAttack(vMob, new MyVector(), 1);
+					}
+				}
+				else
+				{
+					GameScr.gI().doSelectSkill(skill, true);
+					GameScr.gI().doDoubleClickToObj(global::Char.myCharz().mobFocus);
+				}
 			}
 		}
 
@@ -607,6 +681,7 @@ namespace Mod.DungPham.KoiOctiiu957
 
 		// Token: 0x040015D3 RID: 5587
 		public static bool isAvoidSuperMob;
+		public static bool isAttackBySendCommand = true;
 		public static System.Collections.Generic.List<int> selectedAutoTrainSkills = new System.Collections.Generic.List<int>(new int[] { 0, 2, 4 });
 
 		// Token: 0x040015D4 RID: 5588

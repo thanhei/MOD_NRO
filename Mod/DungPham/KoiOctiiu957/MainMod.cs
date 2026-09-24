@@ -687,7 +687,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
 				return;
 						case 10002:
-				Mod.DungPham.KoiOctiiu957.ModMenuPanel.isShowMenu = true;
+				Mod.Menu.ModMenuPanel.isShowMenu = true;
 				return;
 			default:
 				return;

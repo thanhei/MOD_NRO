@@ -48,6 +48,15 @@ namespace Mod.DungPham.KoiOctiiu957
 		// Gọi mỗi frame khi đang ở GameScr (MainMod.Update): ghi nhớ map, khu, vị trí hiện tại
 		public static void OnGameScrUpdate()
 		{
+			// Đã vào game: lần login vừa gửi là đúng, ghi nhận làm tài khoản của tab này
+			if (AutoLogin.pendingUser != null)
+			{
+				AutoLogin.loginUser = AutoLogin.pendingUser;
+				AutoLogin.loginPass = AutoLogin.pendingPass;
+				AutoLogin.loginType = AutoLogin.pendingType;
+				AutoLogin.pendingUser = null;
+				AutoLogin.pendingPass = null;
+			}
 			if (!AutoLogin.isEnabled)
 			{
 				return;
@@ -87,9 +96,17 @@ namespace Mod.DungPham.KoiOctiiu957
 				return;
 			}
 			AutoLogin.lastTimeAttemptLogin = mSystem.currentTimeMillis();
-			string acc = Rms.loadRMSString("acc");
-			string pass = Rms.loadRMSString("pass");
-			if (string.IsNullOrEmpty(acc) || string.IsNullOrEmpty(pass))
+			// Ưu tiên tài khoản mà chính tab này đã đăng nhập (RMS dùng chung giữa các tab nên có thể là tài khoản của tab khác)
+			string acc = AutoLogin.loginUser;
+			string pass = AutoLogin.loginPass;
+			sbyte type = AutoLogin.loginType;
+			if (string.IsNullOrEmpty(acc))
+			{
+				acc = Rms.loadRMSString("acc");
+				pass = Rms.loadRMSString("pass");
+				type = 0;
+			}
+			if (string.IsNullOrEmpty(acc) || (type == 0 && string.IsNullOrEmpty(pass)))
 			{
 				GameCanvas.startOKDlg("Auto Login: chưa có tài khoản đã lưu, hãy đăng nhập thủ công một lần!");
 				return;
@@ -106,7 +123,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			}
 			GameCanvas.connect();
 			GameCanvas.loginScr.switchToMe();
-			Service.gI().login(acc, pass, GameMidlet.VERSION, 0);
+			Service.gI().login(acc, pass ?? string.Empty, GameMidlet.VERSION, type);
 			GameCanvas.startWaitDlg();
 		}
 
@@ -152,6 +169,14 @@ namespace Mod.DungPham.KoiOctiiu957
 			return "Đăng nhập lại trong " + seconds.ToString() + " giây!";
 		}
 
+		// Service.login gọi vào đây mỗi lần gửi lệnh đăng nhập (mọi cách đăng nhập đều đi qua Service.login)
+		public static void OnLoginSent(string username, string pass, sbyte type)
+		{
+			AutoLogin.pendingUser = username;
+			AutoLogin.pendingPass = pass;
+			AutoLogin.pendingType = type;
+		}
+
 		public static void SetState(bool state)
 		{
 			AutoLogin.isEnabled = state;
@@ -178,5 +203,19 @@ namespace Mod.DungPham.KoiOctiiu957
 		private static int steps;
 
 		private static bool hasLastPosition;
+
+		// Tài khoản của riêng tab này (biến static nằm trong bộ nhớ tiến trình, mỗi tab một bản)
+		private static string loginUser;
+
+		private static string loginPass;
+
+		private static sbyte loginType;
+
+		// Lần login vừa gửi, chỉ được ghi nhận khi vào game thành công (tránh nhớ nhầm mật khẩu sai)
+		private static string pendingUser;
+
+		private static string pendingPass;
+
+		private static sbyte pendingType;
 	}
 }

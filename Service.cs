@@ -910,6 +910,7 @@ public class Service
 			" ",
 			version
 		}));
+		Mod.DungPham.KoiOctiiu957.AutoLogin.OnLoginSent(username, pass, type);
 		try
 		{
 			Message message = this.messageNotLogin(0);

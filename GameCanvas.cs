@@ -162,7 +162,7 @@ public class GameCanvas : IActionListener
 	// Token: 0x06000A7E RID: 2686 RVA: 0x0009CCC8 File Offset: 0x0009AEC8
 	public void update()
 	{
-		Mod.DungPham.KoiOctiiu957.MainMod.UpdateGlobal();
+		Mod.DungPham.KoiOctiiu957.AutoLogin.Update();
 		if (GameCanvas.currentScreen == GameCanvas._SelectCharScr)
 		{
 			if (GameCanvas.gameTick % 2 == 0 && SmallImage.vt_images_watingDowload.size() > 0)
@@ -466,11 +466,6 @@ public class GameCanvas : IActionListener
 	// Token: 0x06000A7F RID: 2687 RVA: 0x0009D4F4 File Offset: 0x0009B6F4
 	public void onDisconnected()
 	{
-		if (Mod.DungPham.KoiOctiiu957.MainMod.isAutoLogin)
-		{
-			Mod.DungPham.KoiOctiiu957.MainMod.isDisconnecting = true;
-			Mod.DungPham.KoiOctiiu957.MainMod.timeDisconnect = mSystem.currentTimeMillis();
-		}
 		if (Controller.isConnectionFail)
 		{
 			Controller.isConnectionFail = false;
@@ -507,11 +502,6 @@ public class GameCanvas : IActionListener
 	// Token: 0x06000A80 RID: 2688 RVA: 0x0009D5B4 File Offset: 0x0009B7B4
 	public void onConnectionFail()
 	{
-		if (Mod.DungPham.KoiOctiiu957.MainMod.isAutoLogin)
-		{
-			Mod.DungPham.KoiOctiiu957.MainMod.isDisconnecting = true;
-			Mod.DungPham.KoiOctiiu957.MainMod.timeDisconnect = mSystem.currentTimeMillis();
-		}
 		if (GameCanvas.currentScreen.Equals(SplashScr.instance))
 		{
 			GameCanvas.startOK(mResources.maychutathoacmatsong + " [1]", 8884, null);

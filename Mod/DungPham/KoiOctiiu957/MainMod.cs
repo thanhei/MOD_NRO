@@ -68,8 +68,13 @@ namespace Mod.DungPham.KoiOctiiu957
 				AutoItem.Update();
 				AutoPean.Update();
 				AutoSkill.Update();
-				AutoTrain.Update();
-				AutoPick.Update();
+				AutoLogin.OnGameScrUpdate();
+				// Đang đăng nhập lại / quay về chỗ cũ thì tạm dừng train và nhặt đồ (giống pk9r)
+				if (!AutoLogin.IsRunning)
+				{
+					AutoTrain.Update();
+					AutoPick.Update();
+				}
 				AutoMap.Update();
 				AutoPoint.Update();
 				AutoChat.Update();
@@ -473,8 +478,8 @@ namespace Mod.DungPham.KoiOctiiu957
 			switch (idAction)
 			{
 			case 10001:
-				MainMod.isAutoLogin = !MainMod.isAutoLogin;
-				GameScr.info1.addInfo("Auto Login " + (MainMod.isAutoLogin ? "[STATUS: ON] " : "[STATUS: OFF]"), 0);
+				AutoLogin.SetState(!AutoLogin.isEnabled);
+				GameScr.info1.addInfo("Auto Login " + (AutoLogin.isEnabled ? "[STATUS: ON] " : "[STATUS: OFF]"), 0);
 				return;
 			case 1:
 				AutoMap.ShowMenu();
@@ -900,7 +905,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static void ShowMenuMore()
 		{
 			MyVector myVector = new MyVector();
-			myVector.addElement(new Command("Auto Login\n" + (MainMod.isAutoLogin ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 10001, null));
+			myVector.addElement(new Command("Auto Login\n" + (AutoLogin.isEnabled ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 10001, null));
 			myVector.addElement(new Command("Auto Chat", MainMod.getInstance(), 6, null));
 			myVector.addElement(new Command("Auto Point", MainMod.getInstance(), 7, null));
 			myVector.addElement(new Command("Auto Vị Trí", MainMod.getInstance(), 35, null));
@@ -1452,7 +1457,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			MainMod.isShowCharsInMap = (Rms.loadRMSInt("showchar") == 1);
 			MainMod.isReduceGraphics = (Rms.loadRMSInt("IsReduceGraphics") == 1);
 			MainMod.serverChat = (Rms.loadRMSInt("serverChat") != 0); // Mặc định là ON, chỉ OFF khi RMS = 0
-			MainMod.isAutoLogin = false; // Forced disabled on startup
+			AutoLogin.SetState(false); // Forced disabled on startup
 			MainMod.isAutoJump = (Rms.loadRMSInt("isAutoJump") == 1);
 			MainMod.delayAutoJump = Rms.loadRMSInt("delayAutoJump");
 			if (MainMod.delayAutoJump <= 0) MainMod.delayAutoJump = 1000;

@@ -973,7 +973,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		}
 
 		// Token: 0x06000B04 RID: 2820 RVA: 0x000A343C File Offset: 0x000A163C
-		private static int GetYGround(int x)
+		internal static int GetYGround(int x)
 		{
 			int num = 50;
 			int i = 0;
@@ -995,7 +995,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		}
 
 		// Token: 0x06000B05 RID: 2821 RVA: 0x000A3478 File Offset: 0x000A1678
-		private static void TeleportTo(int x, int y)
+		internal static void TeleportTo(int x, int y)
 		{
 			global::Char me = global::Char.myCharz();
 			me.currentMovePoint = null;

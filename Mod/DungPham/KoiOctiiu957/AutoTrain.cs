@@ -659,7 +659,7 @@ namespace Mod.DungPham.KoiOctiiu957
 					}
 
 					long timeDist = mSystem.currentTimeMillis() - skill.lastTimeUseThisSkill;
-					if ((global::Math.abs(global::Char.myCharz().cx - mobFocus.x) <= 50 || (isFlyMob && global::Math.abs(global::Char.myCharz().cx - mobFocus.x) <= 70)) && timeDist > (long)skill.coolDown + 10L)
+					if ((global::Math.abs(global::Char.myCharz().cx - mobFocus.x) <= 50 || (isFlyMob && global::Math.abs(global::Char.myCharz().cx - mobFocus.x) <= 70)) && timeDist > (long)skill.coolDown + 50L)
 					{
 						global::Char.myCharz().mobFocus = mobFocus;
 						skill.lastTimeUseThisSkill = mSystem.currentTimeMillis();

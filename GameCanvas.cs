@@ -2948,11 +2948,11 @@ public class GameCanvas : IActionListener
 			return;
 		case 8884:
 			GameCanvas.endDlg();
-			if (GameCanvas.serverScr == null)
+			if (GameCanvas.loginScr == null)
 			{
-				GameCanvas.serverScr = new ServerScr();
+				GameCanvas.loginScr = new LoginScr();
 			}
-			GameCanvas.serverScr.switchToMe();
+			GameCanvas.loginScr.switchToMe();
 			return;
 		case 8885:
 			GameMidlet.instance.exit();

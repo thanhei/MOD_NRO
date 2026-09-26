@@ -297,9 +297,23 @@ public class Rms
 	public static void clearAll()
 	{
 		Cout.LogError3("clean rms");
-		foreach (FileInfo fileInfo in new DirectoryInfo(Rms.GetiPhoneDocumentsPath() + "/").GetFiles())
+		try
 		{
-			fileInfo.Delete();
+			foreach (FileInfo fileInfo in new DirectoryInfo(Rms.GetiPhoneDocumentsPath() + "/").GetFiles())
+			{
+				string name = fileInfo.Name;
+				if (name.Contains("Small") || name.Contains("part") || name.Contains("image") || 
+				    name.Contains("effect") || name.Contains("ModSkin") || name.Contains("Auto") || 
+				    name.StartsWith("NR_") || name.StartsWith("acc_") || name.EndsWith(".log"))
+				{
+					continue;
+				}
+				fileInfo.Delete();
+			}
+		}
+		catch (Exception ex)
+		{
+			Cout.println("Loi clearAll: " + ex.ToString());
 		}
 	}
 
@@ -308,6 +322,10 @@ public class Rms
 	{
 		try
 		{
+			if (path.Contains("Small") || path.Contains("ModSkin") || path.Contains("part") || path.Contains("image") || path.StartsWith("NR_"))
+			{
+				return;
+			}
 			File.Delete(Rms.GetiPhoneDocumentsPath() + "/" + path);
 		}
 		catch (Exception ex)

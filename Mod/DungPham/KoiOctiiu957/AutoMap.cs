@@ -302,8 +302,15 @@ namespace Mod.DungPham.KoiOctiiu957
 		}
 
 		// Token: 0x06000AF6 RID: 2806 RVA: 0x000A29D8 File Offset: 0x000A0BD8
-		private static void LoadData()
+		public static void LoadData()
 		{
+			string text = Rms.loadRMSString("AutoMapXmapDelay");
+			int delay;
+			if (!string.IsNullOrEmpty(text) && int.TryParse(text, out delay))
+			{
+				AutoMap.xmapDelay = System.Math.Max(0, delay);
+			}
+
 			AutoMap.isSaveData = (Rms.loadRMSInt("AutoMapIsSaveRms") == 1);
 			if (AutoMap.isSaveData)
 			{
@@ -324,7 +331,6 @@ namespace Mod.DungPham.KoiOctiiu957
 					AutoMap.isUseCapsule = (Rms.loadRMSInt("AutoMapIsUseCsb") == 1);
 				}
 				AutoMap.isHarvestPean = (Rms.loadRMSInt("AutoMapIsHarvestPean") == 1);
-				AutoMap.xmapDelay = System.Math.Max(0, Rms.loadRMSInt("AutoMapXmapDelay"));
 			}
 		}
 
@@ -334,7 +340,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			Rms.saveRMSInt("AutoMapIsEatChicken", AutoMap.isEatChicken ? 1 : 0);
 			Rms.saveRMSInt("AutoMapIsHarvestPean", AutoMap.isHarvestPean ? 1 : 0);
 			Rms.saveRMSInt("AutoMapIsUseCsb", AutoMap.isUseCapsule ? 1 : 0);
-			Rms.saveRMSInt("AutoMapXmapDelay", AutoMap.xmapDelay);
+			Rms.saveRMSString("AutoMapXmapDelay", AutoMap.xmapDelay.ToString());
 		}
 
 		public void onChatFromMe(string text, string to)
@@ -350,10 +356,7 @@ namespace Mod.DungPham.KoiOctiiu957
 					}
 					AutoMap.xmapDelay = delay;
 					GameScr.info1.addInfo("Delay Qua Map: " + delay.ToString() + "ms", 0);
-					if (AutoMap.isSaveData)
-					{
-						Rms.saveRMSInt("AutoMapXmapDelay", AutoMap.xmapDelay);
-					}
+					Rms.saveRMSString("AutoMapXmapDelay", AutoMap.xmapDelay.ToString());
 				}
 				catch
 				{

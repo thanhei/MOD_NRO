@@ -327,7 +327,7 @@ namespace Mod.DungPham.KoiOctiiu957
 
 		public static void AutoSendAttack()
 		{
-			if (!global::Char.myCharz().meDead && global::Char.myCharz().cHP > 0L && global::Char.myCharz().statusMe != 14 && global::Char.myCharz().statusMe != 5 && global::Char.myCharz().myskill.template.type != 3 && global::Char.myCharz().myskill.template.id != 10 && global::Char.myCharz().myskill.template.id != 11 && (!global::Char.myCharz().myskill.paintCanNotUseSkill || GameCanvas.panel.isShow))
+			if (!global::Char.myCharz().meDead && global::Char.myCharz().cHP > 0L && global::Char.myCharz().statusMe != 14 && global::Char.myCharz().myskill.template.type != 3 && global::Char.myCharz().myskill.template.id != 10 && global::Char.myCharz().myskill.template.id != 11 && (!global::Char.myCharz().myskill.paintCanNotUseSkill || GameCanvas.panel.isShow))
 			{
 				int mySkillIndex = AutoSkill.GetMySkillIndex();
 				if (mSystem.currentTimeMillis() - AutoSkill.lastTimeSendAttack[mySkillIndex] > AutoSkill.GetCoolDown(global::Char.myCharz().myskill))
@@ -528,7 +528,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				AutoSkill.isAutoChangeFocus = false;
 				return;
 			}
-			if (!global::Char.myCharz().meDead && global::Char.myCharz().statusMe != 14 && global::Char.myCharz().statusMe != 5 && global::Char.myCharz().myskill.template.type != 3 && global::Char.myCharz().myskill.template.id != 10 && global::Char.myCharz().myskill.template.id != 11 && !global::Char.myCharz().myskill.paintCanNotUseSkill)
+			if (!global::Char.myCharz().meDead && global::Char.myCharz().statusMe != 14 && global::Char.myCharz().myskill.template.type != 3 && global::Char.myCharz().myskill.template.id != 10 && global::Char.myCharz().myskill.template.id != 11 && !global::Char.myCharz().myskill.paintCanNotUseSkill)
 			{
 				AutoSkill.cooldownAutoChangeFocus = AutoSkill.GetCooldownAutoChangeFocus(global::Char.myCharz().myskill);
 				if (AutoSkill.targetIndex >= AutoSkill.listTargetAutoChangeFocus.Count)

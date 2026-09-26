@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Assets.src.g;
 using Mod.DungPham.KoiOctiiu957;
 
@@ -1786,7 +1786,7 @@ public class GameScr : mScreen, IChatable
 		GameScr.indexTitle = 0;
 		this.typeTrade = (this.typeTradeOrder = 0);
 		mSystem.endKey();
-		if (global::Char.myCharz().cHP <= 0L || global::Char.myCharz().statusMe == 14 || global::Char.myCharz().statusMe == 5)
+		if (global::Char.myCharz().cHP <= 0L || global::Char.myCharz().statusMe == 14)
 		{
 			if (global::Char.myCharz().meDead)
 			{

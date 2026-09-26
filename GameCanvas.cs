@@ -482,15 +482,12 @@ public class GameCanvas : IActionListener
 			return;
 		}
 		Debug.LogError(">>>>onDisconnected");
-		if (GameCanvas.currentScreen != GameCanvas.serverScreen)
+		if (GameCanvas.loginScr == null)
 		{
-			GameCanvas.serverScreen.switchToMe();
-			GameCanvas.startOK(mResources.maychutathoacmatsong + " [4]", 8884, null);
+			GameCanvas.loginScr = new LoginScr();
 		}
-		else
-		{
-			GameCanvas.endDlg();
-		}
+		GameCanvas.loginScr.switchToMe();
+		GameCanvas.startOK(mResources.maychutathoacmatsong + " [4]", 8884, null);
 		global::Char.isLoadingMap = false;
 		if (Controller.isMain)
 		{
@@ -518,17 +515,16 @@ public class GameCanvas : IActionListener
 		}
 		GameCanvas.isResume = true;
 		LoginScr.isContinueToLogin = false;
-		LoginScr.serverName = ServerListScreen.nameServer[ServerListScreen.ipSelect];
-		if (GameCanvas.currentScreen != GameCanvas.serverScreen)
+		if (ServerListScreen.nameServer != null && ServerListScreen.ipSelect >= 0 && ServerListScreen.ipSelect < ServerListScreen.nameServer.Length)
 		{
-			ServerListScreen.countDieConnect = 0;
+			LoginScr.serverName = ServerListScreen.nameServer[ServerListScreen.ipSelect];
 		}
-		else
+		if (GameCanvas.loginScr == null)
 		{
-			GameCanvas.endDlg();
-			ServerListScreen.loadScreen = true;
-			GameCanvas.serverScreen.switchToMe();
+			GameCanvas.loginScr = new LoginScr();
 		}
+		GameCanvas.loginScr.switchToMe();
+		GameCanvas.startOK(mResources.maychutathoacmatsong + " [3]", 8884, null);
 		global::Char.isLoadingMap = false;
 		if (Controller.isMain)
 		{
@@ -694,11 +690,11 @@ public class GameCanvas : IActionListener
 			GameCanvas.serverScr.switchToMe();
 			return;
 		}
-		if (GameCanvas.serverScreen == null)
+		if (GameCanvas.loginScr == null)
 		{
-			GameCanvas.serverScreen = new ServerListScreen();
+			GameCanvas.loginScr = new LoginScr();
 		}
-		GameCanvas.serverScreen.switchToMe();
+		GameCanvas.loginScr.switchToMe();
 	}
 
 	// Token: 0x06000A8C RID: 2700 RVA: 0x000045ED File Offset: 0x000027ED

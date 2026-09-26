@@ -76,7 +76,11 @@ namespace Mod.DungPham.KoiOctiiu957
 			if (!(GameCanvas.currentScreen is GameScr) || !Session_ME.gI().isConnected())
 			{
 				AutoLogin.lastTimeAttemptLogin = mSystem.currentTimeMillis();
-				GameCanvas.serverScreen.switchToMe();
+				if (GameCanvas.loginScr == null)
+				{
+					GameCanvas.loginScr = new LoginScr();
+				}
+				GameCanvas.loginScr.switchToMe();
 				GameCanvas.startOKDlg(AutoLogin.GetCountdownText(AutoLogin.delayLogin / 1000));
 				AutoLogin.steps = 1;
 			}
@@ -110,10 +114,6 @@ namespace Mod.DungPham.KoiOctiiu957
 			{
 				GameCanvas.startOKDlg("Auto Login: chưa có tài khoản đã lưu, hãy đăng nhập thủ công một lần!");
 				return;
-			}
-			if (GameCanvas.currentScreen is LoginScr)
-			{
-				GameCanvas.serverScreen.switchToMe();
 			}
 			Session_ME.gI().close();
 			Session_ME2.gI().close();

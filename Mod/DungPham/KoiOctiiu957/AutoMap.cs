@@ -7,84 +7,6 @@ namespace Mod.DungPham.KoiOctiiu957
 	// Token: 0x020000EF RID: 239
 	public class AutoMap : IActionListener, IChatable
 	{
-		// Token: 0x06000AEA RID: 2794 RVA: 0x00009135 File Offset: 0x00007335
-		public static bool isMovingAStar = false;
-		public static void ThreadMoveAStar(int x, int y, object actionObj)
-		{
-			if (isMovingAStar) return;
-			isMovingAStar = true;
-			new System.Threading.Thread(() =>
-			{
-				try
-				{
-					Tile start = new Tile(global::Char.myCharz().cx / (int)TileMap.size, (global::Char.myCharz().cy - 10) / (int)TileMap.size);
-					Tile dest = new Tile(x / (int)TileMap.size, y / (int)TileMap.size);
-					var path = AutoMapAStar.FindPath(start, dest);
-					if (path.Count == 0)
-					{
-						TeleportTo(x, y);
-						ExecuteAction(actionObj);
-						isMovingAStar = false;
-						return;
-					}
-					while (path.Count > 0 && AutoMap.IdMapEnd != -1)
-					{
-						Tile tile = path.Pop();
-						int tx = tile.x * (int)TileMap.size;
-						int ty = tile.y * (int)TileMap.size;
-						global::Char.myCharz().currentMovePoint = new MovePoint(tx, ty);
-						
-						int waitTicks = 0;
-						while (global::Math.abs(global::Char.myCharz().cx - tx) > 30 || global::Math.abs(global::Char.myCharz().cy - ty) > 30)
-						{
-							if (AutoMap.IdMapEnd == -1) break;
-							System.Threading.Thread.Sleep(100);
-							waitTicks++;
-							if (waitTicks > 30) {
-								global::Char.myCharz().currentMovePoint = new MovePoint(tx, ty); // retry
-								if (waitTicks > 60) break; // stuck
-							}
-						}
-					}
-					if (AutoMap.IdMapEnd != -1)
-					{
-						ExecuteAction(actionObj);
-					}
-				}
-				catch { }
-				finally
-				{
-					isMovingAStar = false;
-				}
-			}).Start();
-		}
-		
-		private static void ExecuteAction(object actionObj)
-		{
-			if (actionObj is Waypoint wp)
-			{
-				int targetX = (wp.maxX < 60) ? 15 : (((int)wp.minX <= TileMap.pxw - 60) ? ((int)((wp.minX + wp.maxX) / 2)) : (TileMap.pxw - 15));
-				AutoMap.TeleportTo(targetX, wp.maxY);
-				
-				if (wp.isOffline) {
-					global::Char.isLoadingMap = true;
-					global::Char.isLockKey = true;
-					global::Char.ischangingMap = true;
-					Service.gI().getMapOffline();
-				} else {
-					global::Char.isLoadingMap = true;
-					global::Char.isLockKey = true;
-					global::Char.ischangingMap = true;
-					Service.gI().requestChangeMap();
-				}
-				AutoMap.MarkActionSent();
-			}
-			else if (actionObj is Npc npc)
-			{
-				Service.gI().openMenu(npc.template.npcTemplateId);
-				AutoMap.MarkActionSent();
-			}
-		}
 		public static AutoMap getInstance()
 		{
 			if (AutoMap._Instance == null)
@@ -909,6 +831,10 @@ namespace Mod.DungPham.KoiOctiiu957
 		// Token: 0x06000B03 RID: 2819 RVA: 0x000A3260 File Offset: 0x000A1460
 		private static string getTextPopup(PopUp popUp)
 		{
+			if (popUp == null || popUp.says == null)
+			{
+				return string.Empty;
+			}
 			System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
 			for (int i = 0; i < popUp.says.Length; i++)
 			{
@@ -972,6 +898,19 @@ namespace Mod.DungPham.KoiOctiiu957
 			}
 		}
 
+		private static int GetWaypointX(Waypoint wp)
+		{
+			if (wp.maxX < 60)
+			{
+				return 15;
+			}
+			if ((int)wp.minX <= TileMap.pxw - 60)
+			{
+				return (int)(wp.minX + (wp.maxX - wp.minX) / 2);
+			}
+			return TileMap.pxw - 15;
+		}
+
 		// Token: 0x06000B04 RID: 2820 RVA: 0x000A343C File Offset: 0x000A163C
 		internal static int GetYGround(int x)
 		{
@@ -1002,6 +941,10 @@ namespace Mod.DungPham.KoiOctiiu957
 			me.cx = x;
 			me.cy = y;
 			Service.gI().charMove();
+			if (ItemTime.isExistItem(4387))
+			{
+				return;
+			}
 			me.cy = y + 1;
 			Service.gI().charMove();
 			me.cy = y;
@@ -1049,8 +992,6 @@ namespace Mod.DungPham.KoiOctiiu957
 				AutoMap.TeleportInNRDMap(position);
 				return;
 			}
-			GameCanvas.timeLoading = 15;
-			GameCanvas.TIMEOUT = mSystem.currentTimeMillis();
 			AutoMap.LoadWaypointsInMap();
 			GameCanvas.clearKeyHold();
 			GameCanvas.clearKeyPressed();
@@ -1061,29 +1002,29 @@ namespace Mod.DungPham.KoiOctiiu957
 				wp = AutoMap.wayPointMapLeft;
 				if (wp != null)
 				{
-					AutoMap.TeleportTo(wp.minX + 15, wp.maxY);
+					AutoMap.TeleportTo(AutoMap.GetWaypointX(wp), (int)wp.maxY);
 				}
 				else
 				{
-					AutoMap.TeleportTo(15, AutoMap.GetYGround(15));
+					AutoMap.TeleportTo(60, AutoMap.GetYGround(60));
 				}
 				break;
 			case 1:
 				wp = AutoMap.wayPointMapRight;
 				if (wp != null)
 				{
-					AutoMap.TeleportTo(wp.maxX - 15, wp.maxY);
+					AutoMap.TeleportTo(AutoMap.GetWaypointX(wp), (int)wp.maxY);
 				}
 				else
 				{
-					AutoMap.TeleportTo(TileMap.pxw - 15, AutoMap.GetYGround(TileMap.pxw - 15));
+					AutoMap.TeleportTo(TileMap.pxw - 60, AutoMap.GetYGround(TileMap.pxw - 60));
 				}
 				break;
 			case 2:
 				wp = AutoMap.wayPointMapCenter;
 				if (wp != null)
 				{
-					AutoMap.TeleportTo(wp.minX + 15, wp.maxY);
+					AutoMap.TeleportTo(AutoMap.GetWaypointX(wp), (int)wp.maxY);
 				}
 				else
 				{
@@ -1091,11 +1032,8 @@ namespace Mod.DungPham.KoiOctiiu957
 				}
 				break;
 			}
-			// Bật cờ SAU khi teleport: nếu bật trước thì charMove bị chặn, server không nhận vị trí cổng và từ chối đổi map
-			global::Char.isLoadingMap = true;
-			global::Char.isLockKey = true;
-			global::Char.ischangingMap = true;
-			if (wp != null && wp.isOffline)
+
+			if (TileMap.mapID == 7 || TileMap.mapID == 14 || TileMap.mapID == 0 || (wp != null && wp.isOffline))
 			{
 				Service.gI().getMapOffline();
 				return;
@@ -1384,9 +1322,6 @@ namespace Mod.DungPham.KoiOctiiu957
 				if (this.IsPosition)
 				{
 					AutoMap.TeleportTo(this.PosX, this.PosY);
-					global::Char.isLoadingMap = true;
-					global::Char.isLockKey = true;
-					global::Char.ischangingMap = true;
 					Service.gI().requestChangeMap();
 					AutoMap.MarkActionSent();
 					return;
@@ -1441,13 +1376,24 @@ namespace Mod.DungPham.KoiOctiiu957
 					GameScr.info1.addInfo("Có lỗi xảy ra", 0);
 					return;
 				}
-				AutoMap.lastWaitTime = mSystem.currentTimeMillis() + 600000L;
-				AutoMap.ThreadMoveAStar(num, maxY, waypoint);
+				AutoMap.TeleportTo(num, maxY);
+				if (waypoint.isOffline || TileMap.mapID == 7 || TileMap.mapID == 14 || TileMap.mapID == 0)
+				{
+					AutoMap.MarkActionSent();
+					Service.gI().getMapOffline();
+					return;
+				}
+				AutoMap.MarkActionSent();
+				Service.gI().requestChangeMap();
 			}
 
 			// Token: 0x06000B13 RID: 2835 RVA: 0x000A3938 File Offset: 0x000A1B38
 			public string GetMapName(PopUp popup)
 			{
+				if (popup == null || popup.says == null)
+				{
+					return string.Empty;
+				}
 				StringBuilder stringBuilder = new StringBuilder();
 				for (int i = 0; i < popup.says.Length; i++)
 				{

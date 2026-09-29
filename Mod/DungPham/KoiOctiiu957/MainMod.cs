@@ -136,6 +136,8 @@ namespace Mod.DungPham.KoiOctiiu957
 			startY += 10;
 				
 			int num = startY;
+			mFont.tahoma_7.drawString(g, "Hợp thể: " + (global::Char.myCharz().isNhapThe ? "true" : "false"), 25, num, 0);
+			num += 10;
 			if (MainMod.isConnectToAccountManager)
 			{
 				mFont.tahoma_7.drawString(g, "Đã kết nối!", 25, num, 0);

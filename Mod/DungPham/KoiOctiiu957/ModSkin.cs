@@ -124,6 +124,24 @@ namespace Mod.DungPham.KoiOctiiu957
 					ModSkin.ResetChatTextField();
 					return;
 				}
+				if (ChatTextField.gI().strChat.Equals(ModSkin.inputPartHead[0]))
+				{
+					ModSkin.HandlePartInput(ChatTextField.gI().tfChat.getText(), 0);
+					ModSkin.ResetChatTextField();
+					return;
+				}
+				if (ChatTextField.gI().strChat.Equals(ModSkin.inputPartBody[0]))
+				{
+					ModSkin.HandlePartInput(ChatTextField.gI().tfChat.getText(), 1);
+					ModSkin.ResetChatTextField();
+					return;
+				}
+				if (ChatTextField.gI().strChat.Equals(ModSkin.inputPartLeg[0]))
+				{
+					ModSkin.HandlePartInput(ChatTextField.gI().tfChat.getText(), 2);
+					ModSkin.ResetChatTextField();
+					return;
+				}
 			}
 			else
 			{
@@ -167,6 +185,18 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static string GetMenuSummary()
 		{
 			int num = 0;
+			if (ModSkin.modHeadPart != -1)
+			{
+				num++;
+			}
+			if (ModSkin.modBodyPart != -1)
+			{
+				num++;
+			}
+			if (ModSkin.modLegPart != -1)
+			{
+				num++;
+			}
 			if (ModSkin.modBackItemId > 0)
 			{
 				num++;
@@ -175,7 +205,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			{
 				num++;
 			}
-			return (num != 0) ? ("ON " + num.ToString() + "/2") : "OFF";
+			return (num != 0) ? ("ON " + num.ToString() + "/5") : "OFF";
 		}
 
 		public static bool ShouldAnimateBoard()
@@ -213,6 +243,15 @@ namespace Mod.DungPham.KoiOctiiu957
 			case 43:
 				ModSkin.ToggleItemAnimation();
 				return;
+			case 44:
+				ModSkin.OpenChatInput(ModSkin.inputPartHead);
+				return;
+			case 45:
+				ModSkin.OpenChatInput(ModSkin.inputPartBody);
+				return;
+			case 46:
+				ModSkin.OpenChatInput(ModSkin.inputPartLeg);
+				return;
 			default:
 				return;
 			}
@@ -221,6 +260,9 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static void ShowMenu()
 		{
 			MyVector myVector = new MyVector();
+			myVector.addElement(new Command("Đầu\n" + ModSkin.GetPartLabel(ModSkin.modHeadPart), ModSkin.getInstance(), 44, null));
+			myVector.addElement(new Command("Thân\n" + ModSkin.GetPartLabel(ModSkin.modBodyPart), ModSkin.getInstance(), 45, null));
+			myVector.addElement(new Command("Chân\n" + ModSkin.GetPartLabel(ModSkin.modLegPart), ModSkin.getInstance(), 46, null));
 			myVector.addElement(new Command("Đeo Lưng\n" + ModSkin.GetSkinLabel(ModSkin.modBackItemId), ModSkin.getInstance(), 41, null));
 			myVector.addElement(new Command("Ván Bay\n" + ModSkin.GetSkinLabel(ModSkin.modBoardItemId), ModSkin.getInstance(), 42, null));
 			GameCanvas.menu.startAt(myVector, 3);
@@ -246,6 +288,15 @@ namespace Mod.DungPham.KoiOctiiu957
 			return "ID " + itemId.ToString();
 		}
 
+		private static string GetPartLabel(int part)
+		{
+			if (part < 0)
+			{
+				return "OFF";
+			}
+			return "Part " + part.ToString();
+		}
+
 		private static string GetAnimationLabel()
 		{
 			return ModSkin.isItemAnimationEnabled ? "ON" : "OFF";
@@ -261,6 +312,52 @@ namespace Mod.DungPham.KoiOctiiu957
 			catch
 			{
 				GameScr.info1.addInfo("Item ID không hợp lệ, vui lòng nhập lại!", 0);
+			}
+		}
+
+		private static void HandlePartInput(string text, int slot)
+		{
+			int part;
+			if (!int.TryParse(text, out part) || part < 0)
+			{
+				GameScr.info1.addInfo("Part không hợp lệ, vui lòng nhập lại!", 0);
+				return;
+			}
+			if (part == 0)
+			{
+				ModSkin.ClearSkinSlot(slot);
+				ModSkin.SaveSkinPart((slot == 0) ? "head" : ((slot == 1) ? "body" : "leg"), -1);
+				return;
+			}
+			ModSkin.SetSkinPart(slot, part, true);
+		}
+
+		// Lưu part trực tiếp vào cache (koi_skin_<charID>_<key>_part), dùng chung cho nhập tay và copy ngoại hình
+		private static void SetSkinPart(int slot, int part, bool showInfo)
+		{
+			string key = (slot == 0) ? "head" : ((slot == 1) ? "body" : "leg");
+			ModSkin.CaptureOriginalSkinPart(slot);
+			switch (slot)
+			{
+			case 0:
+				ModSkin.modHeadItemId = 0;
+				ModSkin.modHeadPart = part;
+				break;
+			case 1:
+				ModSkin.modBodyItemId = 0;
+				ModSkin.modBodyPart = part;
+				break;
+			default:
+				ModSkin.modLegItemId = 0;
+				ModSkin.modLegPart = part;
+				break;
+			}
+			// Xoá item ID đã lưu để part được ưu tiên khi load
+			ModSkin.SaveSkinMod(key, 0);
+			ModSkin.SaveSkinPart(key, part);
+			if (showInfo)
+			{
+				GameScr.info1.addInfo("Đã mod " + ((slot == 0) ? "đầu" : ((slot == 1) ? "thân" : "chân")) + " part: " + part.ToString(), 0);
 			}
 		}
 
@@ -694,23 +791,17 @@ namespace Mod.DungPham.KoiOctiiu957
 		{
 			if (headPart >= 0)
 			{
-				ModSkin.modHeadPart = headPart;
-				ModSkin.modHeadItemId = 0;
-				ModSkin.SaveSkinPart("head", headPart);
+				ModSkin.SetSkinPart(0, headPart, false);
 			}
 			if (bodyPart >= 0)
 			{
-				ModSkin.modBodyPart = bodyPart;
-				ModSkin.modBodyItemId = 0;
-				ModSkin.SaveSkinPart("body", bodyPart);
+				ModSkin.SetSkinPart(1, bodyPart, false);
 			}
 			if (legPart >= 0)
 			{
-				ModSkin.modLegPart = legPart;
-				ModSkin.modLegItemId = 0;
-				ModSkin.SaveSkinPart("leg", legPart);
+				ModSkin.SetSkinPart(2, legPart, false);
 			}
-			
+
 			ModSkin.EnsureSkinModsResolved();
 			GameScr.info1.addInfo("Đã áp dụng ngoại hình (parts).", 0);
 		}
@@ -802,6 +893,24 @@ namespace Mod.DungPham.KoiOctiiu957
 		{
 			"Nhập item ID ván bay (0 để tắt)",
 			"itemID"
+		};
+
+		private static readonly string[] inputPartHead = new string[]
+		{
+			"Nhập part đầu (0 để tắt)",
+			"part"
+		};
+
+		private static readonly string[] inputPartBody = new string[]
+		{
+			"Nhập part thân (0 để tắt)",
+			"part"
+		};
+
+		private static readonly string[] inputPartLeg = new string[]
+		{
+			"Nhập part chân (0 để tắt)",
+			"part"
 		};
 
 		private static int modHeadItemId;

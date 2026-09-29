@@ -654,7 +654,6 @@ namespace Mod.DungPham.KoiOctiiu957
 				return;
 			case 351:
 				MainMod.isAutoJump = !MainMod.isAutoJump;
-				Rms.saveRMSInt("isAutoJump", MainMod.isAutoJump ? 1 : 0);
 				GameScr.info1.addInfo("Đã " + (MainMod.isAutoJump ? "bật" : "tắt") + " auto nhảy.", 0);
 				if (MainMod.isAutoJump && global::Char.myCharz() != null)
 				{
@@ -1460,12 +1459,12 @@ namespace Mod.DungPham.KoiOctiiu957
 			MainMod.isReduceGraphics = (Rms.loadRMSInt("IsReduceGraphics") == 1);
 			MainMod.serverChat = (Rms.loadRMSInt("serverChat") != 0); // Mặc định là ON, chỉ OFF khi RMS = 0
 			AutoLogin.SetState(false); // Forced disabled on startup
-			MainMod.isAutoJump = (Rms.loadRMSInt("isAutoJump") == 1);
+			MainMod.isAutoJump = false; // Always disabled on startup
 			MainMod.delayAutoJump = Rms.loadRMSInt("delayAutoJump");
 			if (MainMod.delayAutoJump <= 0) MainMod.delayAutoJump = 1000;
 			MainMod.distanceAutoJump = Rms.loadRMSInt("distanceAutoJump");
 			if (MainMod.distanceAutoJump <= 0) MainMod.distanceAutoJump = 50;
-			MainMod.isAutoMove = false; // Forced disabled on startup
+			MainMod.isAutoMove = false; // Always disabled on startup
 			MainMod.delayAutoMove = Rms.loadRMSInt("delayAutoMove");
 			if (MainMod.delayAutoMove <= 0) MainMod.delayAutoMove = 1000;
 			MainMod.distanceAutoMove = Rms.loadRMSInt("distanceAutoMove");

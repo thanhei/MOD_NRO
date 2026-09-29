@@ -499,7 +499,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		{
 			if (mSystem.currentTimeMillis() < AutoTrain.lastTimeWait) return;
 
-			if ((!AutoTrain.isAutoTrain && !GameScr.canAutoPlay) || global::Char.myCharz().statusMe == 14 || global::Char.myCharz().statusMe == 5)
+			if ((!AutoTrain.isAutoTrain && !GameScr.canAutoPlay) || global::Char.myCharz().statusMe == 14)
 			{
 				return;
 			}

@@ -1786,14 +1786,11 @@ public class GameScr : mScreen, IChatable
 		GameScr.indexTitle = 0;
 		this.typeTrade = (this.typeTradeOrder = 0);
 		mSystem.endKey();
-		if (global::Char.myCharz().cHP <= 0L || global::Char.myCharz().statusMe == 14)
+		if (global::Char.myCharz().meDead || global::Char.myCharz().statusMe == 14)
 		{
-			if (global::Char.myCharz().meDead)
-			{
-				this.cmdDead = new Command(mResources.DIES[0], 11038);
-				this.center = this.cmdDead;
-				global::Char.myCharz().cHP = 0L;
-			}
+			this.cmdDead = new Command(mResources.DIES[0], 11038);
+			this.center = this.cmdDead;
+			global::Char.myCharz().cHP = 0L;
 			GameScr.isHaveSelectSkill = false;
 		}
 		else

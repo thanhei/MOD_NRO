@@ -152,8 +152,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				ChatTextField.gI().startChat2(AutoMap.getInstance(), string.Empty);
 				return;
 			case 7:
-				AutoMap.isXmaping = true;
-				AutoMap.IdMapEnd = (int)p;
+				AutoMap.StartRunToMapId((int)p);
 				GameScr.info1.addInfo("Go to " + TileMap.mapNames[AutoMap.IdMapEnd], 0);
 				return;
 			default:
@@ -203,6 +202,12 @@ namespace Mod.DungPham.KoiOctiiu957
 		// Token: 0x06000AF0 RID: 2800 RVA: 0x0000914D File Offset: 0x0000734D
 		public static void StartRunToMapId(int mapID)
 		{
+			// Lock Map chặn requestChangeMap của xmap nên tắt luôn khi bắt đầu xmap
+			if (MainMod.isLockMap)
+			{
+				MainMod.isLockMap = false;
+				GameScr.info1.addInfo("Lock Map\n[STATUS: OFF]", 0);
+			}
 			AutoMap.isXmaping = true;
 			AutoMap.IdMapEnd = mapID;
 		}

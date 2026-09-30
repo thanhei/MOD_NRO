@@ -113,7 +113,6 @@ namespace Mod.DungPham.KoiOctiiu957
 			case 8:
 				AutoTrain.isAutoTrain = false;
 				GameScr.isAutoPlay = false;
-				GameScr.canAutoPlay = false;
 				global::Char.myCharz().mobFocus = null;
 				GameScr.info1.addInfo("Đã Tắt Auto Train!", 0);
 				return;
@@ -185,7 +184,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		{
 			MyVector myVector = new MyVector();
 			List<Mob> list = new List<Mob>();
-			if (AutoTrain.isAutoTrain || GameScr.canAutoPlay)
+			if (AutoTrain.isAutoTrain)
 			{
 				myVector.addElement(new Command("Tắt Auto Train", AutoTrain.getInstance(), 8, null));
 			}
@@ -292,7 +291,8 @@ namespace Mod.DungPham.KoiOctiiu957
 		// Token: 0x06000B38 RID: 2872 RVA: 0x000092BE File Offset: 0x000074BE
 		private static bool isMeCanAttack(Mob mob)
 		{
-			return GameScr.canAutoPlay || !mob.checkIsBoss() || (mob.checkIsBoss() && AutoTrain.isAvoidSuperMob);
+			// Giống pk9r: có item Tự động luyện tập thì đánh cả siêu quái
+			return ItemTime.isExistItem(4387) || !mob.checkIsBoss() || (mob.checkIsBoss() && AutoTrain.isAvoidSuperMob);
 		}
 
 		// Token: 0x06000B39 RID: 2873 RVA: 0x000092E0 File Offset: 0x000074E0
@@ -310,14 +310,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				AutoTrain.isAutoTrain = false;
 				return;
 			}
-			if (!GameScr.canAutoPlay)
-			{
-				AutoTrain.isAutoTrain = true;
-			}
-			else
-			{
-				AutoTrain.isAutoTrain = false;
-			}
+			AutoTrain.isAutoTrain = true;
 			GameScr.isAutoPlay = true;
 		}
 
@@ -392,7 +385,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		// Token: 0x06000B3E RID: 2878 RVA: 0x000A54BC File Offset: 0x000A36BC
 		public static void Update()
 		{
-			if (GameScr.isAutoPlay && (GameScr.canAutoPlay || AutoTrain.isAutoTrain) && GameCanvas.gameTick % 20 == 0)
+			if (GameScr.isAutoPlay && AutoTrain.isAutoTrain && GameCanvas.gameTick % 20 == 0)
 			{
 				AutoTrain.DoIt();
 			}
@@ -498,8 +491,10 @@ namespace Mod.DungPham.KoiOctiiu957
 		private static void DoIt()
 		{
 			if (mSystem.currentTimeMillis() < AutoTrain.lastTimeWait) return;
+			// Giống pk9r: teleport hay đi bộ chỉ phụ thuộc item Tự động luyện tập (icon 4387)
+			bool hasTDLT = ItemTime.isExistItem(4387);
 
-			if ((!AutoTrain.isAutoTrain && !GameScr.canAutoPlay) || global::Char.myCharz().statusMe == 14)
+			if (!AutoTrain.isAutoTrain || global::Char.myCharz().statusMe == 14)
 			{
 				return;
 			}
@@ -522,8 +517,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			}
 			else
 			{
-				bool hasMayDo = ItemTime.isExistItem(4387);
-				if (!GameScr.canAutoPlay && AutoPick.isAutoPick && !hasMayDo)
+				if (AutoPick.isAutoPick && !hasTDLT)
 				{
 					AutoPick.FocusToNearestItem();
 					if (global::Char.myCharz().itemFocus != null)
@@ -544,7 +538,8 @@ namespace Mod.DungPham.KoiOctiiu957
 					if (nextMob == null)
 					{
 						nextMob = AutoTrain.GetNextMob(1);
-						if (!GameScr.canAutoPlay)
+						// Có TDLT thì đứng chờ quái hồi sinh, không có mới đi bộ tới
+						if (!hasTDLT && nextMob != null)
 						{
 							global::Char.myCharz().currentMovePoint = new MovePoint(nextMob.xFirst, nextMob.yFirst);
 							global::Char.myCharz().endMovePointCommand = new Command(null, null, 8002, null);
@@ -553,10 +548,10 @@ namespace Mod.DungPham.KoiOctiiu957
 					else
 					{
 						global::Char.myCharz().mobFocus = nextMob;
-						if (GameScr.canAutoPlay)
+						if (hasTDLT)
 						{
-							global::Char.myCharz().cx = nextMob.x;
-							global::Char.myCharz().cy = nextMob.y;
+							global::Char.myCharz().cx = nextMob.xFirst - 24;
+							global::Char.myCharz().cy = nextMob.yFirst;
 							Service.gI().charMove();
 						}
 					}
@@ -566,7 +561,10 @@ namespace Mod.DungPham.KoiOctiiu957
 			{
 				return;
 			}
-			if (global::Char.myCharz().mobFocus != null && GameScr.canAutoPlay && (global::Math.abs(global::Char.myCharz().mobFocus.x - global::Char.myCharz().cx) > 100 || global::Math.abs(global::Char.myCharz().mobFocus.y - global::Char.myCharz().cy) > 100) && mSystem.currentTimeMillis() - AutoTrain.lastTimeTeleportToMob > 100L)
+			// Giống pk9r: ép vị trí quái về điểm spawn, quái đi lang thang chỉ là hiệu ứng phía client
+			global::Char.myCharz().mobFocus.x = global::Char.myCharz().mobFocus.xFirst;
+			global::Char.myCharz().mobFocus.y = global::Char.myCharz().mobFocus.yFirst;
+			if (global::Char.myCharz().mobFocus != null && hasTDLT && (global::Math.abs(global::Char.myCharz().mobFocus.x - global::Char.myCharz().cx) > 100 || global::Math.abs(global::Char.myCharz().mobFocus.y - global::Char.myCharz().cy) > 100) && mSystem.currentTimeMillis() - AutoTrain.lastTimeTeleportToMob > 100L)
 			{
 				AutoTrain.lastTimeTeleportToMob = mSystem.currentTimeMillis();
 				global::Char.myCharz().cx = global::Char.myCharz().mobFocus.x;
@@ -629,7 +627,7 @@ namespace Mod.DungPham.KoiOctiiu957
 					{
 						if (global::Math.abs(global::Char.myCharz().cx - mobFocus.x) > 70)
 						{
-							if (ItemTime.isExistItem(4387)) {
+							if (hasTDLT) {
 								global::Char.myCharz().cx = mobFocus.x;
 								global::Char.myCharz().cy = mobFocus.y;
 								Service.gI().charMove();
@@ -648,7 +646,7 @@ namespace Mod.DungPham.KoiOctiiu957
 					else
 					{
 						if (global::Math.abs(global::Char.myCharz().cx - mobFocus.xFirst) > 50) {
-							if (ItemTime.isExistItem(4387)) {
+							if (hasTDLT) {
 								global::Char.myCharz().cx = mobFocus.xFirst;
 								global::Char.myCharz().cy = mobFocus.yFirst;
 								Service.gI().charMove();
@@ -671,7 +669,22 @@ namespace Mod.DungPham.KoiOctiiu957
 				else
 				{
 					GameScr.gI().doSelectSkill(skill, true);
-					GameScr.gI().doDoubleClickToObj(global::Char.myCharz().mobFocus);
+					// Giống pk9r: chỉ click đúp khi đã ở gần, tránh game tự chạy bộ tới quái
+					Mob mobFocus2 = global::Char.myCharz().mobFocus;
+					if (Res.distance(mobFocus2.xFirst, mobFocus2.yFirst, global::Char.myCharz().cx, global::Char.myCharz().cy) <= 48)
+					{
+						GameScr.gI().doDoubleClickToObj(mobFocus2);
+					}
+					else if (hasTDLT)
+					{
+						global::Char.myCharz().cx = mobFocus2.xFirst;
+						global::Char.myCharz().cy = mobFocus2.yFirst;
+						Service.gI().charMove();
+					}
+					else
+					{
+						global::Char.myCharz().currentMovePoint = new MovePoint(mobFocus2.xFirst, mobFocus2.yFirst);
+					}
 				}
 			}
 		}

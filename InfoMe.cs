@@ -317,6 +317,7 @@ public class InfoMe
 	public void addInfo(string s, int Type)
 	{
 		s = Res.changeString(s);
+		Mod.DungPham.KoiOctiiu957.AutoInventoryPass.OnServerInfo(s);
 		if (this.info.infoWaitToShow.size() > 0 && s.Equals(((InfoItem)this.info.infoWaitToShow.lastElement()).s))
 		{
 			return;

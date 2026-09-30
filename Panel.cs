@@ -10568,7 +10568,7 @@ public class Panel : IActionListener, IChatable
 	}
 
 	// Token: 0x0600097D RID: 2429 RVA: 0x00091068 File Offset: 0x0008F268
-	private void doFireAccount()
+	public void doFireAccount()
 	{
 		if (this.selected < 0)
 		{

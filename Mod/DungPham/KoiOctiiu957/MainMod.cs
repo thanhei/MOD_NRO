@@ -79,6 +79,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				AutoPoint.Update();
 				AutoChat.Update();
 				ModSkin.Update();
+				AutoInventoryPass.Update();
 
 				try
 				{

@@ -26,7 +26,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		}
 
 		// Token: 0x06000B95 RID: 2965 RVA: 0x000A8640 File Offset: 0x000A6840
-		
+
 
 		public static void Update()
 		{
@@ -135,7 +135,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				global::Char.myCharz().cy.ToString()
 			}), 25, startY, 0);
 			startY += 10;
-				
+
 			int num = startY;
 			mFont.tahoma_7.drawString(g, "Hợp thể: " + (global::Char.myCharz().isNhapThe ? "true" : "false"), 25, num, 0);
 			num += 10;
@@ -480,221 +480,221 @@ namespace Mod.DungPham.KoiOctiiu957
 		{
 			switch (idAction)
 			{
-			case 10001:
-				AutoLogin.SetState(!AutoLogin.isEnabled);
-				GameScr.info1.addInfo("Auto Login " + (AutoLogin.isEnabled ? "[STATUS: ON] " : "[STATUS: OFF]"), 0);
-				return;
-			case 1:
-				AutoMap.ShowMenu();
-				return;
-			case 2:
-				AutoSkill.ShowMenu();
-				return;
-			case 3:
-				AutoPean.ShowMenu();
-				return;
-			case 4:
-				AutoPick.ShowMenu();
-				return;
-			case 5:
-				AutoTrain.ShowMenu();
-				return;
-			case 6:
-				AutoChat.ShowMenu();
-				return;
-			case 7:
-				AutoPoint.ShowMenu();
-				return;
-			case 8:
-				MainMod.ShowMenuMore();
-				return;
-			case 9:
-				if (MainMod.minumumHPPercentFusionDance > 0)
-				{
-					MainMod.minumumHPPercentFusionDance = 0;
-					GameScr.info1.addInfo("Hợp thể khi HP dưới: 0% HP", 0);
+				case 10001:
+					AutoLogin.SetState(!AutoLogin.isEnabled);
+					GameScr.info1.addInfo("Auto Login " + (AutoLogin.isEnabled ? "[STATUS: ON] " : "[STATUS: OFF]"), 0);
 					return;
-				}
-				ChatTextField.gI().strChat = MainMod.inputHPPercentFusionDance[0];
-				ChatTextField.gI().tfChat.name = MainMod.inputHPPercentFusionDance[1];
-				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
-				return;
-			case 10:
-				if (MainMod.minimumHPFusionDance > 0)
-				{
-					MainMod.minimumHPFusionDance = 0;
-					GameScr.info1.addInfo("Hợp thể khi HP dưới: 0", 0);
+				case 1:
+					AutoMap.ShowMenu();
 					return;
-				}
-				ChatTextField.gI().strChat = MainMod.inputHPFusionDance[0];
-				ChatTextField.gI().tfChat.name = MainMod.inputHPFusionDance[1];
-				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
-				return;
-			case 11:
-				MainMod.smethod_2();
-				return;
-			case 12:
-				MainMod.isAutoLockControl = !MainMod.isAutoLockControl;
-				GameScr.info1.addInfo("Auto Khống Chế\n" + (MainMod.isAutoLockControl ? "[STATUS: ON]" : "[STATUS: OFF]"), 0);
-				return;
-			case 13:
-				MainMod.isAutoTeleport = !MainMod.isAutoTeleport;
-				GameScr.info1.addInfo("Auto Teleport\n" + (MainMod.isAutoTeleport ? "[STATUS: ON]" : "[STATUS: OFF]"), 0);
-				return;
-			case 14:
-				MainMod.smethod_3();
-				return;
-			case 15:
-				ChatTextField.gI().strChat = MainMod.inputCharID[0];
-				ChatTextField.gI().tfChat.name = MainMod.inputCharID[1];
-				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
-				return;
-			case 16:
-			{
-				int num = (int)p;
-				if (num != 0)
-				{
-					MainMod.listCharIDs.Add(num);
-					GameScr.info1.addInfo("Đã Thêm: " + num.ToString(), 0);
+				case 2:
+					AutoSkill.ShowMenu();
 					return;
-				}
-				break;
-			}
-			case 17:
-			{
-				int num2 = (int)p;
-				if (num2 != 0)
-				{
-					MainMod.listCharIDs.Remove(num2);
-					GameScr.info1.addInfo("Đã Xóa: " + num2.ToString(), 0);
+				case 3:
+					AutoPean.ShowMenu();
 					return;
-				}
-				break;
-			}
-			case 18:
-				MainMod.smethod_0();
-				return;
-			case 19:
-				MainMod.isAutoAttackBoss = !MainMod.isAutoAttackBoss;
-				GameScr.info1.addInfo("Tấn Công Boss\n" + (MainMod.isAutoAttackBoss ? "[STATUS: ON]" : "[STATUS: OFF]"), 0);
-				return;
-			case 20:
-				ChatTextField.gI().strChat = MainMod.inputHPLimit[0];
-				ChatTextField.gI().tfChat.name = MainMod.inputHPLimit[1];
-				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
-				return;
-			case 21:
-				MainMod.smethod_1();
-				return;
-			case 22:
-				MainMod.isAutoAttackOtherChars = !MainMod.isAutoAttackOtherChars;
-				GameScr.info1.addInfo("Tàn Sát Người\n" + (MainMod.isAutoAttackOtherChars ? "[STATUS: ON]" : "[STATUS: OFF]"), 0);
-				return;
-			case 23:
-				ChatTextField.gI().strChat = MainMod.inputHPChar[0];
-				ChatTextField.gI().tfChat.name = MainMod.inputHPChar[1];
-				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
-				return;
-			case 24:
-				GameScr.info1.addInfo("Tính năng chưa hoàn thiện, vui lòng chờ bản update!", 0);
-				return;
-			case 25:
-				GameScr.info1.addInfo("Tính năng chưa hoàn thiện, vui lòng chờ bản update!", 0);
-				return;
-			case 26:
-				GameScr.info1.addInfo("Tính năng chưa hoàn thiện, vui lòng chờ bản update!", 0);
-				return;
-			case 27:
-				GameScr.info1.addInfo("Tính năng chưa hoàn thiện, vui lòng chờ bản update!", 0);
-				return;
-			case 28:
-				MainMod.isPaintBackground = !MainMod.isPaintBackground;
-				Rms.saveRMSInt("isPaintBgr", MainMod.isPaintBackground ? 1 : 0);
-				return;
-			case 29:
-				MainMod.isHuntingBoss = !MainMod.isHuntingBoss;
-				Rms.saveRMSInt("sanboss", MainMod.isHuntingBoss ? 1 : 0);
-				return;
-			case 30:
-				MainMod.isShowCharsInMap = !MainMod.isShowCharsInMap;
-				Rms.saveRMSInt("showchar", MainMod.isShowCharsInMap ? 1 : 0);
-				return;
-			case 31:
-				MainMod.isReduceGraphics = !MainMod.isReduceGraphics;
-				Rms.saveRMSInt("IsReduceGraphics", MainMod.isReduceGraphics ? 1 : 0);
-				return;
-			case 32:
-				MainMod.isAutoT77 = !MainMod.isAutoT77;
-				GameScr.info1.addInfo("Auto T77\n" + (MainMod.isAutoT77 ? "[STATUS: ON] " : "[STATUS: OFF]"), 0);
-				return;
-			case 33:
-				MainMod.isAutoBomPicPoc = !MainMod.isAutoBomPicPoc;
-				GameScr.info1.addInfo("Auto Bom\nPic Poc" + (MainMod.isAutoBomPicPoc ? "[STATUS: ON] " : "[STATUS: OFF]"), 0);
-				return;
-			case 34:
-				MainMod.serverChat = !MainMod.serverChat;
-				Rms.saveRMSInt("serverChat", MainMod.serverChat ? 1 : 0);
-				GameScr.info1.addInfo("Server Chat\n" + (MainMod.serverChat ? "[STATUS: ON]" : "[STATUS: OFF]"), 0);
-				return;
-			case 36:
-				MainMod.ShowMenuDisplaySettings();
-				return;
-			case 37:
-				ChatTextField.gI().strChat = MainMod.inputFPS[0];
-				ChatTextField.gI().tfChat.name = MainMod.inputFPS[1];
-				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
-				return;
-			case 35:
-				MainMod.ShowMenuPositionSettings();
-				return;
-			case 350:
-				MainMod.ShowMenuAutoJump();
-				return;
-			case 360:
-				MainMod.ShowMenuAutoMove();
-				return;
-			case 351:
-				MainMod.isAutoJump = !MainMod.isAutoJump;
-				GameScr.info1.addInfo("Đã " + (MainMod.isAutoJump ? "bật" : "tắt") + " auto nhảy.", 0);
-				if (MainMod.isAutoJump && global::Char.myCharz() != null)
-				{
-					MainMod.originJumpX = global::Char.myCharz().cx;
-					MainMod.originJumpY = global::Char.myCharz().cy;
-					new Thread(new ThreadStart(MainMod.AutoJumpThread)).Start();
-				}
-				return;
-			case 352:
-				ChatTextField.gI().strChat = MainMod.inputDelayJump[0];
-				ChatTextField.gI().tfChat.name = MainMod.inputDelayJump[1];
-				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
-				return;
-			case 353:
-				ChatTextField.gI().strChat = MainMod.inputDistanceJump[0];
-				ChatTextField.gI().tfChat.name = MainMod.inputDistanceJump[1];
-				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
-				return;
-			case 361:
-				MainMod.isAutoMove = !MainMod.isAutoMove;
-				GameScr.info1.addInfo("Đã " + (MainMod.isAutoMove ? "bật" : "tắt") + " auto di chuyển.", 0);
-				if (MainMod.isAutoMove && global::Char.myCharz() != null)
-				{
-					MainMod.originMoveX = global::Char.myCharz().cx;
-					MainMod.originMoveY = global::Char.myCharz().cy;
-					new Thread(new ThreadStart(MainMod.AutoMoveThread)).Start();
-				}
-				return;
-			case 362:
-				ChatTextField.gI().strChat = MainMod.inputDelayMove[0];
-				ChatTextField.gI().tfChat.name = MainMod.inputDelayMove[1];
-				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
-				return;
-			case 363:
-				ChatTextField.gI().strChat = MainMod.inputDistanceMove[0];
-				ChatTextField.gI().tfChat.name = MainMod.inputDistanceMove[1];
-				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
-				return;
-			default:
-				return;
+				case 4:
+					AutoPick.ShowMenu();
+					return;
+				case 5:
+					AutoTrain.ShowMenu();
+					return;
+				case 6:
+					AutoChat.ShowMenu();
+					return;
+				case 7:
+					AutoPoint.ShowMenu();
+					return;
+				case 8:
+					MainMod.ShowMenuMore();
+					return;
+				case 9:
+					if (MainMod.minumumHPPercentFusionDance > 0)
+					{
+						MainMod.minumumHPPercentFusionDance = 0;
+						GameScr.info1.addInfo("Hợp thể khi HP dưới: 0% HP", 0);
+						return;
+					}
+					ChatTextField.gI().strChat = MainMod.inputHPPercentFusionDance[0];
+					ChatTextField.gI().tfChat.name = MainMod.inputHPPercentFusionDance[1];
+					ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
+					return;
+				case 10:
+					if (MainMod.minimumHPFusionDance > 0)
+					{
+						MainMod.minimumHPFusionDance = 0;
+						GameScr.info1.addInfo("Hợp thể khi HP dưới: 0", 0);
+						return;
+					}
+					ChatTextField.gI().strChat = MainMod.inputHPFusionDance[0];
+					ChatTextField.gI().tfChat.name = MainMod.inputHPFusionDance[1];
+					ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
+					return;
+				case 11:
+					MainMod.smethod_2();
+					return;
+				case 12:
+					MainMod.isAutoLockControl = !MainMod.isAutoLockControl;
+					GameScr.info1.addInfo("Auto Khống Chế\n" + (MainMod.isAutoLockControl ? "[STATUS: ON]" : "[STATUS: OFF]"), 0);
+					return;
+				case 13:
+					MainMod.isAutoTeleport = !MainMod.isAutoTeleport;
+					GameScr.info1.addInfo("Auto Teleport\n" + (MainMod.isAutoTeleport ? "[STATUS: ON]" : "[STATUS: OFF]"), 0);
+					return;
+				case 14:
+					MainMod.smethod_3();
+					return;
+				case 15:
+					ChatTextField.gI().strChat = MainMod.inputCharID[0];
+					ChatTextField.gI().tfChat.name = MainMod.inputCharID[1];
+					ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
+					return;
+				case 16:
+					{
+						int num = (int)p;
+						if (num != 0)
+						{
+							MainMod.listCharIDs.Add(num);
+							GameScr.info1.addInfo("Đã Thêm: " + num.ToString(), 0);
+							return;
+						}
+						break;
+					}
+				case 17:
+					{
+						int num2 = (int)p;
+						if (num2 != 0)
+						{
+							MainMod.listCharIDs.Remove(num2);
+							GameScr.info1.addInfo("Đã Xóa: " + num2.ToString(), 0);
+							return;
+						}
+						break;
+					}
+				case 18:
+					MainMod.smethod_0();
+					return;
+				case 19:
+					MainMod.isAutoAttackBoss = !MainMod.isAutoAttackBoss;
+					GameScr.info1.addInfo("Tấn Công Boss\n" + (MainMod.isAutoAttackBoss ? "[STATUS: ON]" : "[STATUS: OFF]"), 0);
+					return;
+				case 20:
+					ChatTextField.gI().strChat = MainMod.inputHPLimit[0];
+					ChatTextField.gI().tfChat.name = MainMod.inputHPLimit[1];
+					ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
+					return;
+				case 21:
+					MainMod.smethod_1();
+					return;
+				case 22:
+					MainMod.isAutoAttackOtherChars = !MainMod.isAutoAttackOtherChars;
+					GameScr.info1.addInfo("Tàn Sát Người\n" + (MainMod.isAutoAttackOtherChars ? "[STATUS: ON]" : "[STATUS: OFF]"), 0);
+					return;
+				case 23:
+					ChatTextField.gI().strChat = MainMod.inputHPChar[0];
+					ChatTextField.gI().tfChat.name = MainMod.inputHPChar[1];
+					ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
+					return;
+				case 24:
+					GameScr.info1.addInfo("Tính năng chưa hoàn thiện, vui lòng chờ bản update!", 0);
+					return;
+				case 25:
+					GameScr.info1.addInfo("Tính năng chưa hoàn thiện, vui lòng chờ bản update!", 0);
+					return;
+				case 26:
+					GameScr.info1.addInfo("Tính năng chưa hoàn thiện, vui lòng chờ bản update!", 0);
+					return;
+				case 27:
+					GameScr.info1.addInfo("Tính năng chưa hoàn thiện, vui lòng chờ bản update!", 0);
+					return;
+				case 28:
+					MainMod.isPaintBackground = !MainMod.isPaintBackground;
+					Rms.saveRMSInt("isPaintBgr", MainMod.isPaintBackground ? 1 : 0);
+					return;
+				case 29:
+					MainMod.isHuntingBoss = !MainMod.isHuntingBoss;
+					Rms.saveRMSInt("sanboss", MainMod.isHuntingBoss ? 1 : 0);
+					return;
+				case 30:
+					MainMod.isShowCharsInMap = !MainMod.isShowCharsInMap;
+					Rms.saveRMSInt("showchar", MainMod.isShowCharsInMap ? 1 : 0);
+					return;
+				case 31:
+					MainMod.isReduceGraphics = !MainMod.isReduceGraphics;
+					Rms.saveRMSInt("IsReduceGraphics", MainMod.isReduceGraphics ? 1 : 0);
+					return;
+				case 32:
+					MainMod.isAutoT77 = !MainMod.isAutoT77;
+					GameScr.info1.addInfo("Auto T77\n" + (MainMod.isAutoT77 ? "[STATUS: ON] " : "[STATUS: OFF]"), 0);
+					return;
+				case 33:
+					MainMod.isAutoBomPicPoc = !MainMod.isAutoBomPicPoc;
+					GameScr.info1.addInfo("Auto Bom\nPic Poc" + (MainMod.isAutoBomPicPoc ? "[STATUS: ON] " : "[STATUS: OFF]"), 0);
+					return;
+				case 34:
+					MainMod.serverChat = !MainMod.serverChat;
+					Rms.saveRMSInt("serverChat", MainMod.serverChat ? 1 : 0);
+					GameScr.info1.addInfo("Server Chat\n" + (MainMod.serverChat ? "[STATUS: ON]" : "[STATUS: OFF]"), 0);
+					return;
+				case 36:
+					MainMod.ShowMenuDisplaySettings();
+					return;
+				case 37:
+					ChatTextField.gI().strChat = MainMod.inputFPS[0];
+					ChatTextField.gI().tfChat.name = MainMod.inputFPS[1];
+					ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
+					return;
+				case 35:
+					MainMod.ShowMenuPositionSettings();
+					return;
+				case 350:
+					MainMod.ShowMenuAutoJump();
+					return;
+				case 360:
+					MainMod.ShowMenuAutoMove();
+					return;
+				case 351:
+					MainMod.isAutoJump = !MainMod.isAutoJump;
+					GameScr.info1.addInfo("Đã " + (MainMod.isAutoJump ? "bật" : "tắt") + " auto nhảy.", 0);
+					if (MainMod.isAutoJump && global::Char.myCharz() != null)
+					{
+						MainMod.originJumpX = global::Char.myCharz().cx;
+						MainMod.originJumpY = global::Char.myCharz().cy;
+						new Thread(new ThreadStart(MainMod.AutoJumpThread)).Start();
+					}
+					return;
+				case 352:
+					ChatTextField.gI().strChat = MainMod.inputDelayJump[0];
+					ChatTextField.gI().tfChat.name = MainMod.inputDelayJump[1];
+					ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
+					return;
+				case 353:
+					ChatTextField.gI().strChat = MainMod.inputDistanceJump[0];
+					ChatTextField.gI().tfChat.name = MainMod.inputDistanceJump[1];
+					ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
+					return;
+				case 361:
+					MainMod.isAutoMove = !MainMod.isAutoMove;
+					GameScr.info1.addInfo("Đã " + (MainMod.isAutoMove ? "bật" : "tắt") + " auto di chuyển.", 0);
+					if (MainMod.isAutoMove && global::Char.myCharz() != null)
+					{
+						MainMod.originMoveX = global::Char.myCharz().cx;
+						MainMod.originMoveY = global::Char.myCharz().cy;
+						new Thread(new ThreadStart(MainMod.AutoMoveThread)).Start();
+					}
+					return;
+				case 362:
+					ChatTextField.gI().strChat = MainMod.inputDelayMove[0];
+					ChatTextField.gI().tfChat.name = MainMod.inputDelayMove[1];
+					ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
+					return;
+				case 363:
+					ChatTextField.gI().strChat = MainMod.inputDistanceMove[0];
+					ChatTextField.gI().tfChat.name = MainMod.inputDistanceMove[1];
+					ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
+					return;
+				default:
+					return;
 			}
 		}
 
@@ -702,7 +702,7 @@ namespace Mod.DungPham.KoiOctiiu957
 		public static bool UpdateKey(int unused)
 		{
 			bool result;
-									if (GameCanvas.keyAsciiPress == Hotkeys.A)
+			if (GameCanvas.keyAsciiPress == Hotkeys.A)
 			{
 				AutoSkill.isAutoSendAttack = !AutoSkill.isAutoSendAttack;
 				GameScr.info1.addInfo("Tự Đánh\n" + (AutoSkill.isAutoSendAttack ? "[STATUS: ON]" : "[STATUS: OFF]"), 0);
@@ -1235,7 +1235,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				GameScr.info1.addInfo("Đã copy ngoại hình thú cưng.", 0);
 				return true;
 			}
-						else if (text.Equals("uncopy"))
+			else if (text.Equals("uncopy"))
 			{
 				Mod.DungPham.KoiOctiiu957.ModSkin.ClearCharSkinParts();
 				GameScr.info1.addInfo("Đã khôi phục ngoại hình nhân vật.", 0);
@@ -1401,39 +1401,39 @@ namespace Mod.DungPham.KoiOctiiu957
 				string text = "";
 				switch (flagId)
 				{
-				case 1:
-					text = "Cờ xanh";
-					break;
-				case 2:
-					text = "Cờ đỏ";
-					break;
-				case 3:
-					text = "Cờ tím";
-					break;
-				case 4:
-					text = "Cờ vàng";
-					break;
-				case 5:
-					text = "Cờ lục";
-					break;
-				case 6:
-					text = "Cờ hồng";
-					break;
-				case 7:
-					text = "Cờ cam";
-					break;
-				case 8:
-					text = "Cờ đen";
-					break;
-				case 9:
-					text = "Cờ Kaio";
-					break;
-				case 10:
-					text = "Cờ Mabu";
-					break;
-				case 11:
-					text = "Cờ xanh dương";
-					break;
+					case 1:
+						text = "Cờ xanh";
+						break;
+					case 2:
+						text = "Cờ đỏ";
+						break;
+					case 3:
+						text = "Cờ tím";
+						break;
+					case 4:
+						text = "Cờ vàng";
+						break;
+					case 5:
+						text = "Cờ lục";
+						break;
+					case 6:
+						text = "Cờ hồng";
+						break;
+					case 7:
+						text = "Cờ cam";
+						break;
+					case 8:
+						text = "Cờ đen";
+						break;
+					case 9:
+						text = "Cờ Kaio";
+						break;
+					case 10:
+						text = "Cờ Mabu";
+						break;
+					case 11:
+						text = "Cờ xanh dương";
+						break;
 				}
 				if (!text.Equals(""))
 				{
@@ -1472,9 +1472,10 @@ namespace Mod.DungPham.KoiOctiiu957
 			if (MainMod.delayAutoMove <= 0) MainMod.delayAutoMove = 1000;
 			MainMod.distanceAutoMove = Rms.loadRMSInt("distanceAutoMove");
 			if (MainMod.distanceAutoMove <= 0) MainMod.distanceAutoMove = 50;
-			
+
 			int savedFps = Rms.loadRMSInt("targetFPS");
-			if (savedFps >= 5) {
+			if (savedFps >= 5)
+			{
 				MainMod.targetFPS = savedFps;
 			}
 			UnityEngine.Application.targetFrameRate = MainMod.targetFPS;
@@ -1486,7 +1487,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			catch
 			{
 			}
-			new Thread(delegate()
+			new Thread(delegate ()
 			{
 			}).Start();
 		}
@@ -1517,7 +1518,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			if (mSystem.currentTimeMillis() - MainMod.lastTimeConnected >= 3500L && File.Exists(path))
 			{
 				string text = File.ReadAllText(path);
-				new Thread(delegate()
+				new Thread(delegate ()
 				{
 					MainMod.UseSkill(int.Parse(text));
 				}).Start();
@@ -1892,7 +1893,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			MainMod.drawFlagSquare(g, (int)ch.cFlag, num, num2);
 		}
 
-			public static void drawFlagSquare(mGraphics g, int cFlag, int x, int y)
+		public static void drawFlagSquare(mGraphics g, int cFlag, int x, int y)
 		{
 			if (cFlag != 0)
 			{
@@ -2184,19 +2185,9 @@ namespace Mod.DungPham.KoiOctiiu957
 
 		public static int targetFPS = 60;
 
-		public static int ping;
-		public static bool isPingThreadRunning = false;
 
-		// Đo RTT thật của CHÍNH kết nối game đang chơi, qua cơ chế keep-alive sẵn có
-		// (Cmd.CHECK_CONTROLLER / Cmd.CHECK_MAP): server echo lại đúng lệnh đã gửi.
-		// Cả 2 mốc thời gian đều được ghi ngay trong thread I/O mạng của Session_ME
-		// (Sender.run() lúc gửi, MessageCollector.run() lúc nhận - xem Session_ME.cs),
-		// KHÔNG đi qua Service.logController/logMap (chỉ được Controller2 cập nhật khi
-		// Session_ME.update() chạy, mà hàm đó chỉ được gọi từ OnGUI() của Unity - tức phụ
-		// thuộc nhịp khung hình/tải máy, cộng thêm độ trễ giả tạo không liên quan mạng).
-		// Đọc Session_ME.lastCheckRtt ở đây là số gần với RTT thật nhất có thể lấy được
-		// khi ICMP bị chặn: đúng kết nối, đúng đường đi, không qua vòng lặp Unity.
-public static void updateCharEff(global::Char c)
+
+		public static void updateCharEff(global::Char c)
 		{
 			if (c == null)
 			{
@@ -2225,7 +2216,7 @@ public static void updateCharEff(global::Char c)
 				if (!dictTimeMonkey.ContainsKey(c.charID)) dictTimeMonkey[c.charID] = mSystem.currentTimeMillis();
 			}
 			else if (dictTimeMonkey.ContainsKey(c.charID)) dictTimeMonkey.Remove(c.charID);
-			
+
 			if (c.huytSao)
 			{
 				if (!dictTimeWhistle.ContainsKey(c.charID)) dictTimeWhistle[c.charID] = mSystem.currentTimeMillis();
@@ -2264,6 +2255,8 @@ public static void updateCharEff(global::Char c)
 		public static Dictionary<int, long> dictTimeStone = new Dictionary<int, long>();
 		public static int infoStartX = 0;
 		public static int infoStartY = 62;
+		public static string[] inputFPS = new string[] { "Nhập mức FPS mong muốn", "FPS" };
+		public static bool serverChat = true;
 
 	}
 }

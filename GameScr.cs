@@ -1809,14 +1809,6 @@ public class GameScr : mScreen, IChatable
 	// Token: 0x0600074B RID: 1867 RVA: 0x00065200 File Offset: 0x00063400
 	public override void updateKey()
 	{
-		if (Mod.Menu.ModMenuPanel.isShowMenu)
-		{
-			Mod.Menu.ModMenuPanel.gI().Update();
-			GameCanvas.clearAllPointerEvent();
-			GameCanvas.clearKeyHold();
-			GameCanvas.clearKeyPressed();
-			return;
-		}
 		if (Mod.Menu.ItemListPanel.gI().isShowing)
 		{
 			Mod.Menu.ItemListPanel.gI().Update();

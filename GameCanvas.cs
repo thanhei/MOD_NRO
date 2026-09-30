@@ -2328,7 +2328,6 @@ public class GameCanvas : IActionListener
 				GameCanvas.resetTrans(this.g);
 				GameCanvas.menu.paintMenu(this.g);
 			}
-			Mod.Menu.ModMenuPanel.gI().Paint(this.g);
 			Mod.Menu.SkillSelectionPanel.gI().Paint(this.g);
 			Mod.Menu.ItemListPanel.gI().Paint(this.g);
 			GameScr.info1.paint(this.g);

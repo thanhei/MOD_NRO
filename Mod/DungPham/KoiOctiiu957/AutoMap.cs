@@ -152,6 +152,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				ChatTextField.gI().startChat2(AutoMap.getInstance(), string.Empty);
 				return;
 			case 7:
+				Mod.UI.ModMenuHelper.NoReopen();
 				AutoMap.StartRunToMapId((int)p);
 				GameScr.info1.addInfo("Go to " + TileMap.mapNames[AutoMap.IdMapEnd], 0);
 				return;
@@ -171,6 +172,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Sử Dụng Capsule\n" + (AutoMap.isUseCapsule ? "[STATUS: ON]" : "[STATUS: OFF]"), AutoMap.getInstance(), 4, null));
 			myVector.addElement(new Command("Delay Qua Map\n[" + AutoMap.xmapDelay.ToString() + "ms]", AutoMap.getInstance(), 8, null));
 			myVector.addElement(new Command("Lưu Cài Đặt\n" + (AutoMap.isSaveData ? "[STATUS: ON]" : "[STATUS: OFF]"), AutoMap.getInstance(), 5, null));
+			Mod.UI.ModMenuHelper.Remember(ShowMenu);
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -182,6 +184,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			{
 				myVector.addElement(new Command(keyValuePair.Key, AutoMap.getInstance(), 6, keyValuePair.Value));
 			}
+			Mod.UI.ModMenuHelper.Remember(ShowPlanetMenu);
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -196,6 +199,7 @@ namespace Mod.DungPham.KoiOctiiu957
 					myVector.addElement(new Command(AutoMap.GetMapName(mapIDs[i]), AutoMap.getInstance(), 7, mapIDs[i]));
 				}
 			}
+			Mod.UI.ModMenuHelper.Remember(delegate { ShowMapsMenu(mapIDs); });
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 

@@ -118,6 +118,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				{
 					myVector.addElement(new Command(((GameScr.keySkill[i] != null) ? GameScr.keySkill[i].template.name : "null") + "\n[" + (i + 1).ToString() + "]\n", AutoSkill.getInstance(), 10, i));
 				}
+				Mod.UI.ModMenuHelper.Remember(delegate { AutoSkill.getInstance().perform(3, null); });
 				GameCanvas.menu.startAt(myVector, 3);
 				return;
 			}
@@ -237,6 +238,7 @@ namespace Mod.DungPham.KoiOctiiu957
 					myVector.addElement(new Command("Thêm Vào Danh Sách Chuyển Mục Tiêu", AutoSkill.getInstance(), 9, null));
 				}
 			}
+			Mod.UI.ModMenuHelper.Remember(ShowMenu);
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -247,6 +249,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Auto Sử Dụng\n" + (AutoSkill.isAutoUseSkills[skillIndex] ? ("[" + NinjaUtil.getMoneys(AutoSkill.timeAutoSkills[skillIndex]) + " mili giây]") : "[STATUS: OFF]"), AutoSkill.getInstance(), 11, skillIndex));
 			myVector.addElement(new Command("Nhập Delay\n[mili giây]", AutoSkill.getInstance(), 12, skillIndex));
 			myVector.addElement(new Command("Đóng Băng\n" + GameScr.keySkill[skillIndex].template.name, AutoSkill.getInstance(), 13, skillIndex));
+			Mod.UI.ModMenuHelper.Remember(delegate { ShowMenuAutoSkill(skillIndex); });
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 

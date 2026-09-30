@@ -275,6 +275,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			}) : "[STATUS: OFF]"), AutoChat.getInstance(), 3, null));
 			myVector.addElement(new Command("Auto Inbox\n" + (AutoChat.isAutoInbox ? "[STATUS: ON]" : "[STATUS: OFF]"), AutoChat.getInstance(), 4, null));
 			myVector.addElement(new Command("Lưu Cài Đặt\n" + (AutoChat.isSaveData ? "[STATUS: ON]" : "[STATUS: OFF]"), AutoChat.getInstance(), 5, null));
+			Mod.UI.ModMenuHelper.Remember(ShowMenu);
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 

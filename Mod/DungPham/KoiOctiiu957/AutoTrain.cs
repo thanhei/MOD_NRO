@@ -64,6 +64,8 @@ namespace Mod.DungPham.KoiOctiiu957
 						AutoTrain.listMobIds.Add(mob.mobId);
 					}
 				}
+				// Bắt đầu train thì tắt menu như cũ
+				Mod.UI.ModMenuHelper.NoReopen();
 				AutoTrain.TurnOnAutoTrain();
 				return;
 			}
@@ -77,9 +79,13 @@ namespace Mod.DungPham.KoiOctiiu957
 						AutoTrain.listMobIds.Add(mob2.mobId);
 					}
 				}
+				// Bắt đầu train thì tắt menu như cũ
+				Mod.UI.ModMenuHelper.NoReopen();
 				AutoTrain.TurnOnAutoTrain();
 				return;
 			case 3:
+				// Bắt đầu train thì tắt menu như cũ
+				Mod.UI.ModMenuHelper.NoReopen();
 				AutoTrain.TurnOnAutoTrain();
 				return;
 			case 4:
@@ -234,6 +240,7 @@ namespace Mod.DungPham.KoiOctiiu957
 					"]"
 				}), AutoTrain.getInstance(), 7, null));
 			}
+			Mod.UI.ModMenuHelper.Remember(ShowMenu);
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -263,6 +270,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				"]"
 			})), AutoTrain.getInstance(), 10, null));
 			myVector.addElement(new Command("Về Nhà Khi MP Dưới\n[" + AutoTrain.minimumMPGoHome.ToString() + "%]", AutoTrain.getInstance(), 11, null));
+			Mod.UI.ModMenuHelper.Remember(ShowMenuGoback);
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 

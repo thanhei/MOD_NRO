@@ -225,6 +225,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			MyVector myVector = new MyVector();
 			myVector.addElement(new Command("Auto\nCộng\nChỉ Số", AutoPoint.getInstance(), 1, null));
 			myVector.addElement(new Command("Cộng\nChỉ Số\nNhanh", AutoPoint.getInstance(), 2, null));
+			Mod.UI.ModMenuHelper.Remember(ShowMenu);
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -236,6 +237,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Sức Đánh\n[" + NinjaUtil.getMoneys((long)AutoPoint.damageToAuto) + "]", AutoPoint.getInstance(), 4, null));
 			myVector.addElement(new Command("HP\n[" + NinjaUtil.getMoneys((long)AutoPoint.hpToAuto) + "]", AutoPoint.getInstance(), 5, null));
 			myVector.addElement(new Command("MP\n[" + NinjaUtil.getMoneys((long)AutoPoint.mpToAuto) + "]", AutoPoint.getInstance(), 6, null));
+			Mod.UI.ModMenuHelper.Remember(ShowMenuAutoPoint);
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -248,6 +250,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Sức Đánh", AutoPoint.getInstance(), 9, null));
 			myVector.addElement(new Command("Giáp", AutoPoint.getInstance(), 10, null));
 			myVector.addElement(new Command("Chí Mạng", AutoPoint.getInstance(), 11, null));
+			Mod.UI.ModMenuHelper.Remember(ShowMenuAutoPointFast);
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -257,6 +260,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			MyVector myVector = new MyVector();
 			myVector.addElement(new Command("Cộng", AutoPoint.getInstance(), 12, typePotential));
 			myVector.addElement(new Command("Cộng\nTới Mức", AutoPoint.getInstance(), 13, typePotential));
+			Mod.UI.ModMenuHelper.Remember(delegate { ShowMenuAddPoint(typePotential); });
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 

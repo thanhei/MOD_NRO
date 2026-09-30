@@ -266,6 +266,7 @@ public class GameCanvas : IActionListener
 					Service.gI().sendCheckMap();
 					GameCanvas.lastTimeKeepAlive = mSystem.currentTimeMillis();
 				}
+				Mod.UI.ModMenuHelper.Update();
 				if (ChatPopup.serverChatPopUp != null)
 				{
 					ChatPopup.serverChatPopUp.update();

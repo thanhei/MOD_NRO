@@ -449,6 +449,7 @@ public class Menu
 		InfoDlg.hide();
 		if (this.close)
 		{
+			Mod.UI.ModMenuHelper.OnMenuClosed();
 			GameCanvas.panel.cp = null;
 			global::Char.chatPopup = null;
 			if (GameCanvas.panel2 != null && GameCanvas.panel2.cp != null)
@@ -469,7 +470,9 @@ public class Menu
 				if (command != null)
 				{
 					SoundMn.gI().buttonClose();
+					Mod.UI.ModMenuHelper.BeforePerform(command);
 					command.performAction();
+					Mod.UI.ModMenuHelper.AfterPerform();
 				}
 			}
 		}

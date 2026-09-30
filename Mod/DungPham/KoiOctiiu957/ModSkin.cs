@@ -265,6 +265,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Chân\n" + ModSkin.GetPartLabel(ModSkin.modLegPart), ModSkin.getInstance(), 46, null));
 			myVector.addElement(new Command("Đeo Lưng\n" + ModSkin.GetSkinLabel(ModSkin.modBackItemId), ModSkin.getInstance(), 41, null));
 			myVector.addElement(new Command("Ván Bay\n" + ModSkin.GetSkinLabel(ModSkin.modBoardItemId), ModSkin.getInstance(), 42, null));
+			Mod.UI.ModMenuHelper.Remember(ShowMenu);
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 

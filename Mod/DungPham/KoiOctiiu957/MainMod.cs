@@ -693,9 +693,6 @@ namespace Mod.DungPham.KoiOctiiu957
 				ChatTextField.gI().tfChat.name = MainMod.inputDistanceMove[1];
 				ChatTextField.gI().startChat2(MainMod.getInstance(), string.Empty);
 				return;
-						case 10002:
-				Mod.Menu.ModMenuPanel.isShowMenu = true;
-				return;
 			default:
 				return;
 			}
@@ -898,8 +895,8 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Auto Pean", MainMod.getInstance(), 3, null));
 			myVector.addElement(new Command("Auto Pick", MainMod.getInstance(), 4, null));
 			myVector.addElement(new Command("Auto Train", MainMod.getInstance(), 5, null));
-			myVector.addElement(new Command("Bảng Điều Khiển\n(Mod Menu)", MainMod.getInstance(), 10002, null));
 			myVector.addElement(new Command("More", MainMod.getInstance(), 8, null));
+			Mod.UI.ModMenuHelper.Remember(ShowMenu);
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -913,6 +910,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Auto Vị Trí", MainMod.getInstance(), 35, null));
 			myVector.addElement(new Command("Cài Đặt\nHiển Thị", MainMod.getInstance(), 36, null));
 			myVector.addElement(new Command("Mod Skin\n" + ModSkin.GetMenuSummary(), ModSkin.getInstance(), 37, null));
+			Mod.UI.ModMenuHelper.Remember(ShowMenuMore);
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -921,6 +919,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			MyVector myVector = new MyVector();
 			myVector.addElement(new Command("Cài Đặt\nAuto Nhảy (Y)", MainMod.getInstance(), 350, null));
 			myVector.addElement(new Command("Cài Đặt\nAuto Di Chuyển (X)", MainMod.getInstance(), 360, null));
+			Mod.UI.ModMenuHelper.Remember(ShowMenuPositionSettings);
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -933,6 +932,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Danh Sách\nNgười Trong Map\n" + (MainMod.isShowCharsInMap ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 30, null));
 			myVector.addElement(new Command("Server Chat\n" + (MainMod.serverChat ? "[STATUS: ON] " : "[STATUS: OFF]"), MainMod.getInstance(), 34, null));
 			myVector.addElement(new Command("Cài Đặt\nFPS\n[" + MainMod.targetFPS + "]", MainMod.getInstance(), 37, null));
+			Mod.UI.ModMenuHelper.Remember(ShowMenuDisplaySettings);
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -942,6 +942,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Auto Nhảy (Y)\n" + (MainMod.isAutoJump ? "[STATUS: ON]" : "[STATUS: OFF]"), MainMod.getInstance(), 351, null));
 			myVector.addElement(new Command("Delay Nhảy\n[" + MainMod.delayAutoJump + "ms]", MainMod.getInstance(), 352, null));
 			myVector.addElement(new Command("Bước Nhảy\n[" + MainMod.distanceAutoJump + "px]", MainMod.getInstance(), 353, null));
+			Mod.UI.ModMenuHelper.Remember(ShowMenuAutoJump);
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -951,6 +952,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Auto Di Chuyển (X)\n" + (MainMod.isAutoMove ? "[STATUS: ON]" : "[STATUS: OFF]"), MainMod.getInstance(), 361, null));
 			myVector.addElement(new Command("Delay Di Chuyển\n[" + MainMod.delayAutoMove + "ms]", MainMod.getInstance(), 362, null));
 			myVector.addElement(new Command("Bước Di Chuyển\n[" + MainMod.distanceAutoMove + "px]", MainMod.getInstance(), 363, null));
+			Mod.UI.ModMenuHelper.Remember(ShowMenuAutoMove);
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 

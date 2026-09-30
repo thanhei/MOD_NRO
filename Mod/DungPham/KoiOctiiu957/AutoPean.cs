@@ -279,6 +279,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Ăn Đậu Khi MP Dưới: " + NinjaUtil.getMoneys((long)AutoPean.minimumMP) + "MP", AutoPean.getInstance(), 6, null));
 			myVector.addElement(new Command("Ăn Đậu Khi MP Dưới: " + AutoPean.minimumMPPercent + "%", AutoPean.getInstance(), 7, null));
 			myVector.addElement(new Command("Lưu Cài Đặt\n" + (AutoPean.isSaveData ? "[STATUS: ON]" : "[STATUS: OFF]"), AutoPean.getInstance(), 8, null));
+			Mod.UI.ModMenuHelper.Remember(ShowMenu);
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 

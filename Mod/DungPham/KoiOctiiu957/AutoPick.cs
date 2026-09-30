@@ -302,6 +302,7 @@ namespace Mod.DungPham.KoiOctiiu957
 			myVector.addElement(new Command("Khoảng Cách Nhặt\n[" + AutoPick.maximumPickDistance.ToString() + "]", AutoPick.getInstance(), 5, null));
 			myVector.addElement(new Command("Cấu Hình Nhặt", AutoPick.getInstance(), 14, null));
 			myVector.addElement(new Command("Cấu Hình Ko Nhặt", AutoPick.getInstance(), 15, null));
+			Mod.UI.ModMenuHelper.Remember(ShowMenu);
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -322,6 +323,7 @@ namespace Mod.DungPham.KoiOctiiu957
 					"] "
 				}), AutoPick.getInstance(), 9, null));
 			}
+			Mod.UI.ModMenuHelper.Remember(ShowMenuPickConfig);
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 
@@ -342,6 +344,7 @@ namespace Mod.DungPham.KoiOctiiu957
 					"] "
 				}), AutoPick.getInstance(), 13, null));
 			}
+			Mod.UI.ModMenuHelper.Remember(ShowMenuIgnoreConfig);
 			GameCanvas.menu.startAt(myVector, 3);
 		}
 

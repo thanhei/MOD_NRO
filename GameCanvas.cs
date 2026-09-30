@@ -2329,6 +2329,7 @@ public class GameCanvas : IActionListener
 			}
 			Mod.Menu.ModMenuPanel.gI().Paint(this.g);
 			Mod.Menu.SkillSelectionPanel.gI().Paint(this.g);
+			Mod.Menu.ItemListPanel.gI().Paint(this.g);
 			GameScr.info1.paint(this.g);
 			GameScr.info2.paint(this.g);
 			if (GameScr.gI().popUpYesNo != null)

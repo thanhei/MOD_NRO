@@ -1817,6 +1817,14 @@ public class GameScr : mScreen, IChatable
 			GameCanvas.clearKeyPressed();
 			return;
 		}
+		if (Mod.Menu.ItemListPanel.gI().isShowing)
+		{
+			Mod.Menu.ItemListPanel.gI().Update();
+			GameCanvas.clearAllPointerEvent();
+			GameCanvas.clearKeyHold();
+			GameCanvas.clearKeyPressed();
+			return;
+		}
 		if (Mod.Menu.SkillSelectionPanel.gI().isShowing)
 		{
 			Mod.Menu.SkillSelectionPanel.gI().Update();

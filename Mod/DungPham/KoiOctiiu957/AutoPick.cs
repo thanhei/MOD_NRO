@@ -231,20 +231,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				ChatTextField.gI().startChat2(AutoPick.getInstance(), string.Empty);
 				return;
 			case 6:
-				if (AutoPick.listItemAutoPick.Count == 0)
-				{
-					GameScr.info1.addInfo("Danh Sách Trống!", 0);
-				}
-				if (AutoPick.listItemAutoPick.Count > 0)
-				{
-					string text = "";
-					for (int i = 0; i < AutoPick.listItemAutoPick.Count; i++)
-					{
-						text = text + AutoPick.listItemAutoPick[i].ToString() + " ";
-					}
-					GameScr.info1.addInfo(text, 0);
-					return;
-				}
+				Mod.Menu.ItemListPanel.gI().Show("Danh sách nhặt", AutoPick.listItemAutoPick, AutoPick.SaveSettings);
 				return;
 			case 7:
 				AutoPick.listItemAutoPick.Clear();
@@ -269,20 +256,7 @@ namespace Mod.DungPham.KoiOctiiu957
 				}), 0);
 				return;
 			case 10:
-				if (AutoPick.listItemIgnorePick.Count == 0)
-				{
-					GameScr.info1.addInfo("Danh Sách Trống!", 0);
-				}
-				if (AutoPick.listItemIgnorePick.Count > 0)
-				{
-					string text = "";
-					for (int i = 0; i < AutoPick.listItemIgnorePick.Count; i++)
-					{
-						text = text + AutoPick.listItemIgnorePick[i].ToString() + " ";
-					}
-					GameScr.info1.addInfo(text, 0);
-					return;
-				}
+				Mod.Menu.ItemListPanel.gI().Show("Danh sách không nhặt", AutoPick.listItemIgnorePick, AutoPick.SaveSettings);
 				return;
 			case 11:
 				AutoPick.listItemIgnorePick.Clear();

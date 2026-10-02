@@ -429,11 +429,23 @@ public class Panel : IActionListener, IChatable
 	// Token: 0x060008C5 RID: 2245 RVA: 0x000081E9 File Offset: 0x000063E9
 	public void setTypeTop(sbyte t)
 	{
+		bool isSame = (this.type == 15 && this.isThachDau == (t != 0));
+		int oldSelected = this.selected;
+		int oldCmy = this.cmy;
 		this.type = 15;
 		this.setType(0);
 		this.ITEM_HEIGHT = 24;
 		this.selected = ((!GameCanvas.isTouch) ? 0 : -1);
+		if (isSame)
+		{
+			this.selected = oldSelected;
+		}
 		this.setTabTop();
+		if (isSame)
+		{
+			this.cmy = oldCmy;
+			this.cmtoY = oldCmy;
+		}
 		this.isThachDau = (t != 0);
 	}
 
@@ -6965,6 +6977,10 @@ public class Panel : IActionListener, IChatable
 		if (this.isShow && this.type == 21 && global::Char.myCharz().havePet && GameCanvas.gameTick % 20 == 0)
 		{
 			Service.gI().petInfo();
+		}
+		if (this.isShow && this.type == 15 && this.isThachDau && GameCanvas.gameTick % 20 == 0)
+		{
+			Service.gI().sendTop(this.topName, (sbyte)this.selected);
 		}
 		if (this.chatTField != null && this.chatTField.isShow)
 		{

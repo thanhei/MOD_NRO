@@ -254,7 +254,7 @@ public class GameCanvas : IActionListener
 			{
 				if (mSystem.currentTimeMillis() - GameCanvas.lastTimePress > 20000L && GameCanvas.currentScreen == GameCanvas.loginScr)
 				{
-					GameMidlet.instance.exit();
+					// GameMidlet.instance.exit();
 				}
 				GameCanvas.gameTick = 0;
 			}

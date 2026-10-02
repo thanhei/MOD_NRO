@@ -8421,6 +8421,10 @@ public class Panel : IActionListener, IChatable
 								myVector4.addElement(new Command(mResources.kick_clan_mem, this, 5004, this.currMem));
 							}
 						}
+						if (this.currMem.ID != global::Char.myCharz().charID)
+						{
+							myVector4.addElement(new Command(mResources.den, this, 5006, this.currMem));
+						}
 						GameCanvas.menu.startAt(myVector4, this.X, (this.selected + 1) * this.ITEM_HEIGHT - this.cmy + this.yScroll);
 						this.addClanMemberDetail(this.currMem);
 					}
@@ -9413,6 +9417,11 @@ public class Panel : IActionListener, IChatable
 		{
 			Member member4 = (Member)p;
 			Service.gI().clanRemote(member4.ID, -1);
+		}
+		if (idAction == 5006)
+		{
+			Member member6 = (Member)p;
+			GameScr.myTele(member6.ID);
 		}
 		if (idAction == 9000)
 		{
